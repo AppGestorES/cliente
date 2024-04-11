@@ -1,8 +1,8 @@
-import Inicio from '@/pages/Inicio.jsx';
+import Inicio from "@/pages/Inicio.jsx";
 
 const routerConfig = [
   {
-    path: '/',
+    path: "/",
     element: <Inicio />,
   },
 ];
