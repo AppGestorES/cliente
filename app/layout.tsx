@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { PrimeReactProvider, PrimeReactContext } from "primereact/api";
 import { inter } from "@/public/fonts/fonts";
+import "@/public/themes/viva-dark/theme.css";
+import "primeicons/primeicons.css";
 
 export const metadata: Metadata = {
     title: "Create Next App",
