@@ -1,19 +1,31 @@
 "use client";
 import Menu from "@/app/components/Layout/Menu";
 import { MenuProps } from "./interfaces/MenuInterfaces";
+import ToggleTheme from "./components/ToggleTheme";
 
 export default function Home() {
     const opciones: MenuProps[] = [
         {
-            icon: "",
-            name: "nombre 1",
+            icon: "pi pi-home",
+            name: "Home",
             link: "/",
         },
         {
-            icon: "",
-            name: "nombre 2",
+            icon: "pi pi-user",
+            name: "Usuarios",
             link: "/prueba",
         },
+        {
+            icon: "pi pi-sign-out",
+            name: "Salir",
+            link: "/prueba",
+            className: "absolute bottom-0",
+        },
     ];
-    return <Menu prop={opciones} />;
+    return (
+        <div>
+            <ToggleTheme />
+            <Menu prop={opciones} />
+        </div>
+    );
 }
