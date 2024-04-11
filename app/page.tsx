@@ -1,6 +1,19 @@
 "use client";
-import ToggleTheme from "@/app/Components/ToggleTheme";
+import Menu from "@/app/components/Layout/Menu";
+import { MenuProps } from "./interfaces/MenuInterfaces";
 
 export default function Home() {
-    return <ToggleTheme />;
+    const opciones: MenuProps[] = [
+        {
+            icon: "",
+            name: "nombre 1",
+            link: "/",
+        },
+        {
+            icon: "",
+            name: "nombre 2",
+            link: "/prueba",
+        },
+    ];
+    return <Menu prop={opciones} />;
 }
