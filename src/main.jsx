@@ -1,10 +1,17 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { PrimeReactProvider, PrimeReactContext } from 'primereact/api';
 
-import "./styles/main.css";
+import routerConfig from './routerConfig';
+const router = createBrowserRouter(routerConfig);
 
-ReactDOM.createRoot(document.getElementById("root")).render(
+import './styles/main.css';
+
+ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <div className="bg-slate-500">hola</div>
+    <PrimeReactProvider>
+      <RouterProvider router={router} />
+    </PrimeReactProvider>
   </React.StrictMode>
 );
