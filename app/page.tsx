@@ -24,7 +24,6 @@ export default function Home() {
     ];
     return (
         <div>
-            <ToggleTheme />
             <Menu prop={opciones} />
         </div>
     );
