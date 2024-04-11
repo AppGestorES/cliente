@@ -1,6 +1,5 @@
 "use client";
 import { MenuProps } from "@/app/interfaces/MenuInterfaces";
-import Link from "next/link";
 import { MenuLink } from "./MenuComponents/MenuLink";
 
 interface Props {
@@ -14,6 +13,14 @@ const Menu: React.FC<Props> = ({ prop }) => {
                 {prop.map((opcion, index) => {
                     return <MenuLink prop={opcion} key={index} />;
                 })}
+                <MenuLink
+                    prop={{
+                        icon: "pi pi-sign-out",
+                        name: "Salir",
+                        link: "/",
+                        className: "bottom-0 absolute",
+                    }}
+                />
             </ul>
         </aside>
     );
