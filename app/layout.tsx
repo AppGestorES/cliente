@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
 import "./globals.css";
 import { PrimeReactProvider, PrimeReactContext } from "primereact/api";
-
-const inter = Poppins({ weight: "400", subsets: ["latin"] });
+import { inter } from "@/public/fonts/fonts";
 
 export const metadata: Metadata = {
     title: "Create Next App",
