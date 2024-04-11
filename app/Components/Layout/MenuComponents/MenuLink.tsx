@@ -10,7 +10,7 @@ export const MenuLink: React.FC<Props> = ({ prop }) => {
         <li>
             <Link
                 className={
-                    "flex gap-2 items-center hover:bg-[var(--primary-color)] transition-all w-full p-2 rounded-md " +
+                    "flex gap-2 items-center hover:bg-[var(--primary-color)] transition-all w-full p-2 rounded-[var(--border-radius)] " +
                     prop.className
                 }
                 href={prop.link}

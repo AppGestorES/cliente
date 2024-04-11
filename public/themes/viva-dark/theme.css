@@ -48,6 +48,10 @@
     color-scheme: dark;
 }
 
+::selection {
+    background-color: var(--highlight-bg);
+}
+
 /* poppins-300 - latin-ext_latin */
 @font-face {
     font-family: "Poppins";
