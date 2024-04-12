@@ -18,7 +18,7 @@ const Menu: React.FC<Props> = ({ prop }) => {
                         icon: "pi pi-sign-out",
                         name: "Salir",
                         link: "/",
-                        className: "bottom-0 absolute",
+                        className: "md:bottom-0 md:absolute",
                     }}
                 />
             </ul>
