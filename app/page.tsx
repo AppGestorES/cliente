@@ -15,12 +15,6 @@ export default function Home() {
             name: "Usuarios",
             link: "/prueba",
         },
-        {
-            icon: "pi pi-sign-out",
-            name: "Salir",
-            link: "/prueba",
-            className: "absolute bottom-0",
-        },
     ];
     return (
         <div>
