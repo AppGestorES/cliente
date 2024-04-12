@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { PrimeReactProvider, PrimeReactContext } from "primereact/api";
-import { inter } from "@/public/fonts/fonts";
+import { poppins } from "@/public/fonts/fonts";
 import "@/public/themes/viva-dark/theme.css";
 import "primeicons/primeicons.css";
 
@@ -18,7 +18,7 @@ export default function RootLayout({
     return (
         <html lang="es">
             <PrimeReactProvider>
-                <body className={inter.className}>{children}</body>
+                <body className={poppins.className}>{children}</body>
             </PrimeReactProvider>
         </html>
     );
