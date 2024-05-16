@@ -16,7 +16,7 @@ export const MenuLink: React.FC<Props> = ({ prop }) => {
                 href={prop.link}
             >
                 <i className={prop.icon + " text-lg"}></i>
-                <span className="hidden md:block">{prop.name}</span>
+                <span>{prop.name}</span>
             </Link>
         </li>
     );

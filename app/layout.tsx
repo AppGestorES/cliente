@@ -4,6 +4,7 @@ import { PrimeReactProvider, PrimeReactContext } from "primereact/api";
 import { poppins } from "@/public/fonts/fonts";
 import "@/public/themes/viva-dark/theme.css";
 import "primeicons/primeicons.css";
+import Menu from "@/app/components/Layout/Menu";
 
 export const metadata: Metadata = {
     title: "Create Next App",
@@ -18,7 +19,12 @@ export default function RootLayout({
     return (
         <html lang="es">
             <PrimeReactProvider>
-                <body className={poppins.className}>{children}</body>
+                <body className={poppins.className}>
+                    <div className="flex">
+                        <Menu />
+                        <div className="p-4">{children}</div>
+                    </div>
+                </body>
             </PrimeReactProvider>
         </html>
     );
