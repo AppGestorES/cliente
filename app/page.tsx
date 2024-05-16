@@ -1,6 +1,8 @@
 "use client";
-import ToggleTheme from "@/app/Components/ToggleTheme";
+import Menu from "@/app/components/Layout/Menu";
+import { MenuProps } from "./interfaces/MenuInterfaces";
+import ToggleTheme from "./components/ToggleTheme";
 
 export default function Home() {
-    return <ToggleTheme />;
+    return <div></div>;
 }
