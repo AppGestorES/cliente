@@ -46,7 +46,7 @@ const TablaProductos: React.FC = () => {
                 sortMode="multiple"
                 removableSort
                 scrollable
-                scrollHeight="500px"
+                scrollHeight="600px"
             >
                 {columns.map((col) => (
                     <Column
