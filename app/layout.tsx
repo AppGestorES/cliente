@@ -1,10 +1,7 @@
+// app/layout.tsx
 import type { Metadata } from "next";
 import "./globals.css";
-import { PrimeReactProvider, PrimeReactContext } from "primereact/api";
-import { poppins } from "@/public/fonts/fonts";
-import "@/public/themes/viva-dark/theme.css";
-import "primeicons/primeicons.css";
-import Menu from "@/app/components/Layout/Menu";
+import ClientProvider from "@/app/Components/ClientProvider";
 
 export const metadata: Metadata = {
     title: "Create Next App",
@@ -18,14 +15,9 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="es">
-            <PrimeReactProvider>
-                <body className={poppins.className}>
-                    <div className="flex">
-                        <Menu />
-                        <div className="p-4 w-full">{children}</div>
-                    </div>
-                </body>
-            </PrimeReactProvider>
+            <body>
+                <ClientProvider>{children}</ClientProvider>
+            </body>
         </html>
     );
 }

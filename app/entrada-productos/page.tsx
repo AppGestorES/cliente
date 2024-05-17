@@ -19,7 +19,7 @@ const EntradaProductos = () => {
     const [visible, setVisible] = useState(false);
 
     return (
-        <div className="w-full flex flex-col">
+        <div className="w-full">
             <h2 className="text-xl">Entrada de Productos</h2>
             <Button
                 label="Añadir producto"

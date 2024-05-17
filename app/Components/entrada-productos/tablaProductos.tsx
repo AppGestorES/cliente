@@ -1,45 +1,75 @@
+"use client";
+
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchProyectos } from "@/app/redux/slice/apiSlice";
+import type { RootState, AppDispatch } from "@/app/redux/store";
+import Image from "next/image";
+import { Button } from "primereact/button";
 
-const TablaProductos = () => {
-    const [products, setProducts] = useState<any>([]);
+const TablaProductos: React.FC = () => {
+    const dispatch: AppDispatch = useDispatch();
+    const proyectos = useSelector((state: RootState) => state.api.proyectos);
+    const status = useSelector((state: RootState) => state.api.status);
+    const error = useSelector((state: RootState) => state.api.error);
 
     useEffect(() => {
-        setProducts([
-            {
-                id: "1000",
-                code: "f230fh0g3",
-                name: "Bamboo Watch",
-                description: "Product Description",
-                image: "bamboo-watch.jpg",
-                price: 65,
-                category: "Accessories",
-                quantity: 24,
-                inventoryStatus: "INSTOCK",
-                rating: 5,
-            },
-        ]);
-    }, []);
+        if (status === "idle") {
+            dispatch(fetchProyectos());
+        }
+    }, [status, dispatch]);
 
     const columns = [
-        { field: "code", header: "Code" },
-        { field: "name", header: "Name" },
-        { field: "category", header: "Category" },
-        { field: "quantity", header: "Quantity" },
+        { field: "nombre", header: "Nombre" },
+        { field: "nif", header: "NIF" },
+        { field: "direccion", header: "Dirección" },
+        { field: "codigo_postal", header: "Código Postal" },
+        { field: "poblacion", header: "Población" },
+        { field: "telefono", header: "Teléfono" },
+        { field: "correo_electronico", header: "Correo Electrónico" },
     ];
 
     return (
         <div className="w-full mt-4">
-            <DataTable value={products} className="tabla">
-                {columns.map((col, i) => (
+            <DataTable
+                value={proyectos}
+                className="tabla"
+                loading={status === "loading"}
+                paginator
+                rows={5}
+                rowsPerPageOptions={[5, 10, 25, 50]}
+                stripedRows
+                paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
+                currentPageReportTemplate="{first} to {last} of {totalRecords}"
+                sortMode="multiple"
+                removableSort
+                scrollable
+                scrollHeight="500px"
+            >
+                {columns.map((col) => (
                     <Column
                         key={col.field}
                         field={col.field}
                         header={col.header}
+                        sortable
+                        body={
+                            col.field === "logo"
+                                ? (rowData: any) => (
+                                      <Image
+                                          src={rowData.logo}
+                                          alt="logo"
+                                          width={50}
+                                          height={50}
+                                      />
+                                  )
+                                : undefined
+                        }
                     />
                 ))}
             </DataTable>
+            {status === "failed" && <p>{error}</p>}
         </div>
     );
 };
