@@ -22,7 +22,7 @@ export default function RootLayout({
                 <body className={poppins.className}>
                     <div className="flex">
                         <Menu />
-                        <div className="p-4">{children}</div>
+                        <div className="p-4 w-full">{children}</div>
                     </div>
                 </body>
             </PrimeReactProvider>

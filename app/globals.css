@@ -1,3 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.p-datatable-wrapper {
+    border-radius: 10px;
+}

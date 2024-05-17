@@ -82,7 +82,7 @@ const Menu = () => {
     };
 
     return (
-        <aside className="menu bg-[var(--surface-c)] w-full h-[50px] absolute bottom-0 left-0 md:static flex justify-center items-center p-4 md:h-[100dvh] md:w-48 md:items-start md:justify-start">
+        <aside className="menu bg-[var(--surface-a)] w-full h-[50px] absolute bottom-0 left-0 md:static flex justify-center items-center p-4 md:h-[100dvh] md:w-48 md:items-start md:justify-start">
             <button
                 className="md:hidden block"
                 onClick={() => toggleMobileMenu()}
