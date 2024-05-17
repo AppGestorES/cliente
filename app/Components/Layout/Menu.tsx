@@ -1,6 +1,7 @@
 "use client";
+
 import { MenuProps } from "@/app/interfaces/MenuInterfaces";
-import { MenuLink } from "./MenuComponents/MenuLink";
+import MenuLink from "@/app/Components/Layout/MenuComponents/MenuLink";
 
 const prop: MenuProps[] = [
     {

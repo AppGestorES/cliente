@@ -1,3 +1,5 @@
+"use client";
+
 import { MenuProps } from "@/app/interfaces/MenuInterfaces";
 import Link from "next/link";
 
@@ -5,7 +7,7 @@ interface Props {
     prop: MenuProps;
 }
 
-export const MenuLink: React.FC<Props> = ({ prop }) => {
+const MenuLink: React.FC<Props> = ({ prop }) => {
     return (
         <li>
             <Link
@@ -21,3 +23,5 @@ export const MenuLink: React.FC<Props> = ({ prop }) => {
         </li>
     );
 };
+
+export default MenuLink;
