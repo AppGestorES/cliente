@@ -1,4 +1,3 @@
-// app/components/ClientProvider.tsx
 "use client";
 
 import { Provider } from "react-redux";
@@ -9,7 +8,7 @@ import "@/public/themes/viva-dark/theme.css";
 import "primeicons/primeicons.css";
 import Menu from "@/app/Components/Layout/Menu";
 
-const ClientProvider: React.FC<{ children: React.ReactNode }> = ({
+const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({
     children,
 }) => {
     return (
@@ -17,7 +16,11 @@ const ClientProvider: React.FC<{ children: React.ReactNode }> = ({
             <PrimeReactProvider>
                 <div className="flex">
                     <Menu />
-                    <div className="p-4 w-full overflow-auto max-h-screen">
+                    <div
+                        className={
+                            "p-4 w-full max-h-screen " + poppins.className
+                        }
+                    >
                         {children}
                     </div>
                 </div>
@@ -26,4 +29,4 @@ const ClientProvider: React.FC<{ children: React.ReactNode }> = ({
     );
 };
 
-export default ClientProvider;
+export default DashboardProvider;
