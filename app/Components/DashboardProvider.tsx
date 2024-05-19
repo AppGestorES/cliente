@@ -18,7 +18,8 @@ const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({
                     <Menu />
                     <div
                         className={
-                            "p-4 w-full max-h-screen " + poppins.className
+                            "p-4 w-full overflow-auto max-h-screen " +
+                            poppins.className
                         }
                     >
                         {children}

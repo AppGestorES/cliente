@@ -1,7 +1,9 @@
-"use client";
+import DashboardProvider from "@/app/Components/DashboardProvider";
 
-import DashboardProvider from "../Components/DashboardProvider";
-
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default function DashboardLayoutWrapper({
+    children,
+}: Readonly<{
+    children: React.ReactNode;
+}>) {
     return <DashboardProvider>{children}</DashboardProvider>;
 }

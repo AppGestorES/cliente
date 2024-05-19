@@ -3,7 +3,7 @@
 import { poppins } from "@/public/fonts/fonts";
 import { PrimeReactProvider } from "primereact/api";
 import { Provider } from "react-redux";
-import store from "../redux/store";
+import store from "@/app/redux/store";
 import "@/public/themes/viva-dark/theme.css";
 import "primeicons/primeicons.css";
 
