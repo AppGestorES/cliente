@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { PrimeReactProvider, PrimeReactContext } from "primereact/api";
-import { inter } from "@/public/fonts/fonts";
+import IndexProvider from "@/app/Components/IndexProvider";
 
 export const metadata: Metadata = {
     title: "Create Next App",
@@ -15,9 +14,9 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="es">
-            <PrimeReactProvider>
-                <body className={inter.className}>{children}</body>
-            </PrimeReactProvider>
+            <body>
+                <IndexProvider>{children}</IndexProvider>
+            </body>
         </html>
     );
 }
