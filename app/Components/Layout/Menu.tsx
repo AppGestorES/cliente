@@ -5,69 +5,69 @@ import MenuLink from "@/app/Components/Layout/MenuComponents/MenuLink";
 
 const prop: MenuProps[] = [
     {
-        icon: "pi pi-box", // Assuming a relevant icon
+        icon: "pi pi-box",
         name: "Entrada de productos",
         link: "/dashboard/entrada-productos",
     },
     {
-        icon: "pi pi-chart-line", // Assuming a relevant icon
+        icon: "pi pi-chart-line",
         name: "Análisis de control",
-        link: "/analisis-control",
+        link: "/dashboard/analisis-control",
     },
     {
-        icon: "pi pi-bell", // Assuming a relevant icon
+        icon: "pi pi-bell",
         name: "Alertas de stock",
-        link: "/alertas-stock",
+        link: "/dashboard/alertas-stock",
     },
     {
-        icon: "pi pi-exclamation-triangle", // Assuming a relevant icon
+        icon: "pi pi-exclamation-triangle",
         name: "Alertas de caducidad",
-        link: "/alertas-caducidad",
+        link: "/dashboard/alertas-caducidad",
     },
     {
-        icon: "pi pi-external-link", // Assuming a relevant icon
+        icon: "pi pi-external-link",
         name: "Salida de productos",
-        link: "/salida-productos",
+        link: "/dashboard/salida-productos",
     },
     {
-        icon: "pi pi-chart-bar", // Assuming a relevant icon again for análisis
+        icon: "pi pi-chart-bar",
         name: "Análisis de control",
-        link: "/analisis-control",
+        link: "/dashboard/analisis-control",
     },
     {
-        icon: "pi pi-stack", // Assuming a relevant icon
+        icon: "pi pi-stack",
         name: "Materias primas",
-        link: "/materias-primas",
+        link: "/dashboard/materias-primas",
     },
     {
-        icon: "pi pi-calculator", // Assuming a relevant icon
+        icon: "pi pi-calculator",
         name: "Fórmulas",
-        link: "/formulas",
+        link: "/dashboard/formulas",
     },
     {
-        icon: "pi pi-book", // Assuming a relevant icon
+        icon: "pi pi-book",
         name: "Productos finales",
-        link: "/productos-finales",
+        link: "/dashboard/productos-finales",
     },
     {
-        icon: "pi pi-search", // Assuming a relevant icon
+        icon: "pi pi-search",
         name: "Trazabilidad",
-        link: "/trazabilidad",
+        link: "/dashboard/trazabilidad",
     },
     {
-        icon: "pi pi-cog", // Assuming a relevant icon
+        icon: "pi pi-cog",
         name: "Configuración",
-        link: "/configuracion",
+        link: "/dashboard/configuracion",
     },
     {
-        icon: "pi pi-file", // Assuming a relevant icon
+        icon: "pi pi-file",
         name: "Registro de actividad",
-        link: "/registro-actividad",
+        link: "/dashboard/registro-actividad",
     },
     {
-        icon: "pi pi-shield", // Assuming a relevant icon
+        icon: "pi pi-shield",
         name: "Acerca de",
-        link: "/acerca-de",
+        link: "/dashboard/acerca-de",
     },
 ];
 
