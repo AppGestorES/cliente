@@ -82,14 +82,14 @@ export default function Menu() {
     };
 
     return (
-        <aside className="menu border-r-2 border-[var(--primary-color)] w-full h-[50px] absolute bottom-0 left-0 md:static flex justify-center items-center p-4 md:h-[100dvh] md:w-48 md:items-start md:justify-start">
+        <aside className="menu border-t-2 md:border-t-0 md:border-r-2 border-[var(--primary-color)] w-full h-[50px] absolute bottom-0 left-0 md:static flex justify-center items-center p-4 md:h-[100dvh] md:w-48 md:items-start md:justify-start">
             <button
                 className="md:hidden block"
                 onClick={() => toggleMobileMenu()}
             >
                 <i className={"pi pi-bars text-lg"}></i>
             </button>
-            <ul className="hidden gap-2 md:p-0 p-4 flex-col w-full md:h-full absolute mb-[50px] md:mb-0 bottom-0 left-0 translate-x-[-100%] md:translate-x-[0%] md:relative md:bg-transparent md:flex bg-[var(--surface-c)] menuList">
+            <ul className="hidden gap-2 md:p-0 p-4 flex-col w-full md:h-full absolute mb-[50px] md:mb-0 bottom-0 left-0 translate-x-[-100%] md:translate-x-[0%] md:relative md:bg-transparent md:flex bg-[var(--surface-b)] menuList z-10">
                 {prop.map((opcion, index) => {
                     return <MenuLink prop={opcion} key={index} />;
                 })}
