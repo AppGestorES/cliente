@@ -7,7 +7,7 @@ const prop: MenuProps[] = [
     {
         icon: "pi pi-box", // Assuming a relevant icon
         name: "Entrada de productos",
-        link: "/entrada-productos",
+        link: "/dashboard/entrada-productos",
     },
     {
         icon: "pi pi-chart-line", // Assuming a relevant icon
@@ -71,7 +71,7 @@ const prop: MenuProps[] = [
     },
 ];
 
-const Menu = () => {
+export default function Menu() {
     const toggleMobileMenu = () => {
         const menuList = document.querySelector<HTMLUListElement>(".menuList");
         menuList?.classList.toggle("hidden");
@@ -104,6 +104,4 @@ const Menu = () => {
             </ul>
         </aside>
     );
-};
-
-export default Menu;
+}

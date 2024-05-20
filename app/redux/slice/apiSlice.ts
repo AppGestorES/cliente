@@ -22,12 +22,14 @@ interface ApiState {
     proyectos: Proyecto[];
     status: "idle" | "loading" | "succeeded" | "failed";
     error: string | null;
+    token: string | null;
 }
 
 const initialState: ApiState = {
     proyectos: [],
     status: "idle",
     error: null,
+    token: null,
 };
 
 export const fetchProyectos = createAsyncThunk(
@@ -45,10 +47,43 @@ export const fetchProyectos = createAsyncThunk(
     }
 );
 
+export const registerUser = createAsyncThunk(
+    "api/registerUser",
+    async (usuarioData: {
+        nombre: string;
+        apellido: string;
+        contrasena: string;
+        identificador: string;
+        id_proyecto: number;
+    }) => {
+        const response = await fetch("http://localhost:3001/usuarios", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(usuarioData),
+        });
+
+        if (!response.ok) {
+            throw new Error("Network response was not ok");
+        }
+
+        const data = await response.json();
+        return data.result; // Assuming result contains the token
+    }
+);
+
 const apiSlice = createSlice({
     name: "api",
     initialState,
-    reducers: {},
+    reducers: {
+        setToken: (state, action: PayloadAction<string>) => {
+            state.token = action.payload;
+        },
+        clearToken: (state) => {
+            state.token = null;
+        },
+    },
     extraReducers: (builder) => {
         builder
             .addCase(fetchProyectos.pending, (state) => {
@@ -64,8 +99,22 @@ const apiSlice = createSlice({
             .addCase(fetchProyectos.rejected, (state, action) => {
                 state.status = "failed";
                 state.error = action.error.message || "Something went wrong";
+            })
+            .addCase(registerUser.pending, (state) => {
+                state.status = "loading";
+            })
+            .addCase(registerUser.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.token = action.payload; // Save token in the state
+                localStorage.setItem("authToken", action.payload); // Save token in localStorage
+            })
+            .addCase(registerUser.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.error.message || "Something went wrong";
             });
     },
 });
+
+export const { setToken, clearToken } = apiSlice.actions;
 
 export default apiSlice.reducer;

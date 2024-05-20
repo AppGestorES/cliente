@@ -1,7 +1,6 @@
-// app/layout.tsx
 import type { Metadata } from "next";
 import "./globals.css";
-import ClientProvider from "@/app/Components/ClientProvider";
+import IndexProvider from "@/app/Components/IndexProvider";
 
 export const metadata: Metadata = {
     title: "Create Next App",
@@ -16,7 +15,7 @@ export default function RootLayout({
     return (
         <html lang="es">
             <body>
-                <ClientProvider>{children}</ClientProvider>
+                <IndexProvider>{children}</IndexProvider>
             </body>
         </html>
     );
