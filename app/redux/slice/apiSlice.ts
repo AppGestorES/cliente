@@ -39,10 +39,36 @@ export const fetchProyectos = createAsyncThunk(
         if (!response.ok) {
             throw new Error("Network response was not ok");
         }
+
         const data: ApiResponse = await response.json();
+
         if (!data.success) {
             throw new Error("Failed to fetch data");
         }
+
+        return data.result;
+    }
+);
+
+export const loginUser = createAsyncThunk(
+    "api/loginUser",
+    async (usuarioData: { contrasena: string; usuario: string }) => {
+        const response = await fetch("http://localhost:3001/iniciarsesion", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(usuarioData),
+        });
+
+        if (!response.ok) {
+            if (response.status == 404) {
+                throw new Error("Crendenciales incorrectas");
+            }
+            throw new Error("Network response was not ok");
+        }
+
+        const data = await response.json();
         return data.result;
     }
 );
@@ -65,11 +91,14 @@ export const registerUser = createAsyncThunk(
         });
 
         if (!response.ok) {
+            if (response.status == 409) {
+                throw new Error("El usuario ya está registrado");
+            }
             throw new Error("Network response was not ok");
         }
 
         const data = await response.json();
-        return data.result; // Assuming result contains the token
+        return data.result;
     }
 );
 
@@ -105,12 +134,17 @@ const apiSlice = createSlice({
             })
             .addCase(registerUser.fulfilled, (state, action) => {
                 state.status = "succeeded";
-                state.token = action.payload; // Save token in the state
-                localStorage.setItem("authToken", action.payload); // Save token in localStorage
+                state.token = action.payload;
+                localStorage.setItem("authToken", action.payload);
             })
             .addCase(registerUser.rejected, (state, action) => {
                 state.status = "failed";
                 state.error = action.error.message || "Something went wrong";
+            })
+            .addCase(loginUser.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.token = action.payload;
+                localStorage.setItem("authToken", action.payload);
             });
     },
 });
