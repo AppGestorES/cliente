@@ -1,8 +1,10 @@
 "use client";
 
 import { Button } from "primereact/button";
+import { Calendar } from "primereact/calendar";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
+import { Nullable } from "primereact/ts-helpers";
 import { useEffect, useState } from "react";
 
 interface Props {
@@ -13,24 +15,24 @@ interface Props {
 const ModalEntradaProductos: React.FC<Props> = ({ visible, setVisible }) => {
     const [localVisible, setLocalVisible] = useState(visible);
     const [producto, setProducto] = useState("");
-    const [fecha, setFecha] = useState("");
+    const [fecha, setFecha] = useState<Nullable<Date>>(null);
     const [proveedor, setProveedor] = useState("");
     const [albaran, setAlbaran] = useState("");
     const [lote, setLote] = useState("");
     const [cantidad, setCantidad] = useState("");
-    const [fechaCaducidad, setFechaCaducidad] = useState("");
+    const [fechaCaducidad, setFechaCaducidad] = useState<Nullable<Date>>(null);
     const [humedad, setHumedad] = useState("");
     const [envasado, setEnvasado] = useState("");
     const [operario, setOperario] = useState("");
 
     const clearModalForm = () => {
         setProducto("");
-        setFecha("");
+        setFecha(null);
         setProveedor("");
         setAlbaran("");
         setLote("");
         setCantidad("");
-        setFechaCaducidad("");
+        setFechaCaducidad(null);
         setHumedad("");
         setEnvasado("");
         setOperario("");
@@ -56,13 +58,13 @@ const ModalEntradaProductos: React.FC<Props> = ({ visible, setVisible }) => {
                         clearModalForm();
                     }
                 }}
-                className="p-2 bg-[var(--primary-color)] mt-2"
+                className="mt-2 bg-[var(--primary-color)] p-2"
             />
             <Button
                 label="Cancelar"
                 icon="pi pi-times"
                 onClick={() => setVisible(false)}
-                className="p-2 bg-[var(--surface-c)] mt-2"
+                className="mt-2 hover:bg-[var(--red-400)] p-2"
             />
         </div>
     );
@@ -72,80 +74,85 @@ const ModalEntradaProductos: React.FC<Props> = ({ visible, setVisible }) => {
             header="Añadir producto"
             footer={footerContent}
             visible={visible}
-            className="md:w-[50vw] w-full bg-[var(--surface-c)] "
+            className="bg-[var(--surface-c)]"
+            breakpoints={{ "960px": "75vw", "641px": "100vw" }}
             onHide={() => setVisible(false)}
         >
-            <form>
-                <div className="flex w-full p-2 gap-2">
+            <form className="w-full grid gap-2">
+                <div className="flex flex-col gap-2 sm:flex-row">
                     <InputText
                         value={producto}
-                        className="p-2"
+                        className="p-inputtext p-component p-2"
                         onChange={(e) => setProducto(e.target.value)}
                         placeholder="Producto *"
                     />
-                    <InputText
-                        type="date"
+                    <Calendar
                         value={fecha}
-                        className="p-2"
-                        onChange={(e) => setFecha(e.target.value)}
+                        onChange={(e: any) => setFecha(e.target.value)}
                         placeholder="Fecha de entrada *"
+                        dateFormat="dd/mm/yy"
+                        showIcon
+                        showButtonBar
+                        className="p-calendar p-component"
                     />
                 </div>
-                <div className="flex w-full p-2 gap-2">
+                <div className="flex flex-col gap-2 sm:flex-row">
                     <InputText
                         value={proveedor}
-                        className="p-2"
+                        className="p-inputtext p-component p-2"
                         onChange={(e) => setProveedor(e.target.value)}
                         placeholder="Proveedor *"
                     />
                     <InputText
                         keyfilter="int"
                         value={albaran}
-                        className="p-2"
+                        className="p-inputtext p-component p-2"
                         onChange={(e) => setAlbaran(e.target.value)}
                         placeholder="Número de albaran *"
                     />
                     <InputText
                         keyfilter="int"
                         value={lote}
-                        className="p-2"
+                        className="p-inputtext p-component p-2"
                         onChange={(e) => setLote(e.target.value)}
                         placeholder="Número de lote *"
                     />
                 </div>
-                <div className="flex w-full p-2 gap-2">
+                <div className="flex flex-col gap-2 sm:flex-row">
                     <InputText
                         keyfilter="int"
                         value={cantidad}
-                        className="p-2"
+                        className="p-inputtext p-component p-2"
                         onChange={(e) => setCantidad(e.target.value)}
                         placeholder="Cantidad *"
                     />
-                    <InputText
-                        type="date"
+                    <Calendar
                         value={fechaCaducidad}
-                        className="p-2"
-                        onChange={(e) => setFechaCaducidad(e.target.value)}
-                        placeholder="Fecha de caducidad"
+                        onChange={(e: any) => setFechaCaducidad(e.target.value)}
+                        placeholder="Fecha de caducidad *"
+                        dateFormat="dd/mm/yy"
+                        showIcon
+                        showButtonBar
+                        className="p-calendar p-component"
                     />
                     <InputText
                         keyfilter="int"
                         value={humedad}
-                        className="p-2"
+                        className="p-inputtext p-component p-2"
                         onChange={(e) => setHumedad(e.target.value)}
                         placeholder="Humedad *"
                     />
                 </div>
-                <div className="flex w-full p-2 gap-2">
+                <div className="flex flex-col gap-2 sm:flex-row">
                     <InputText
                         value={envasado}
-                        className="p-2"
+                        className="p-inputtext p-component p-2"
                         onChange={(e) => setEnvasado(e.target.value)}
                         placeholder="Envasado *"
                     />
                     <InputText
                         value={operario}
-                        className="p-2"
+                        className="p-inputtext p-component p-2"
                         onChange={(e) => setOperario(e.target.value)}
                         placeholder="Operario *"
                     />

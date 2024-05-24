@@ -1,41 +1,30 @@
+import { EntradaDeProductos } from "@/app/interfaces/EntradaProductos";
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-
-interface Proyecto {
-    id: number;
-    nombre: string;
-    nif: string;
-    direccion: string;
-    codigo_postal: string;
-    poblacion: string;
-    telefono: string;
-    correo_electronico: string;
-    logo: string;
-}
 
 interface ApiResponse {
     status: number;
     success: boolean;
-    result: Proyecto[];
+    result: EntradaDeProductos[];
 }
 
 interface ApiState {
-    proyectos: Proyecto[];
+    productos: EntradaDeProductos[];
     status: "idle" | "loading" | "succeeded" | "failed";
     error: string | null;
     token: string | null;
 }
 
 const initialState: ApiState = {
-    proyectos: [],
+    productos: [],
     status: "idle",
     error: null,
     token: null,
 };
 
-export const fetchProyectos = createAsyncThunk(
-    "api/fetchProyectos",
+export const fecthEntradaProductos = createAsyncThunk(
+    "api/fecthEntradaProductos",
     async () => {
-        const response = await fetch("http://localhost:3001/proyectos");
+        const response = await fetch("http://localhost:3001/entradas");
         if (!response.ok) {
             throw new Error("Network response was not ok");
         }
@@ -47,6 +36,30 @@ export const fetchProyectos = createAsyncThunk(
         }
 
         return data.result;
+    }
+);
+
+export const deleteEntradaProductos = createAsyncThunk(
+    "api/deleteEntradaProductos",
+    (ids: number[]) => {
+        ids.map(async (id) => {
+            const response = await fetch(
+                "http://localhost:3001/entradas/" + id,
+                {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ ids }),
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+        });
+
+        return ids;
     }
 );
 
@@ -115,17 +128,33 @@ const apiSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(fetchProyectos.pending, (state) => {
+            .addCase(fecthEntradaProductos.pending, (state) => {
                 state.status = "loading";
             })
             .addCase(
-                fetchProyectos.fulfilled,
-                (state, action: PayloadAction<Proyecto[]>) => {
+                fecthEntradaProductos.fulfilled,
+                (state, action: PayloadAction<EntradaDeProductos[]>) => {
                     state.status = "succeeded";
-                    state.proyectos = action.payload;
+                    state.productos = action.payload;
                 }
             )
-            .addCase(fetchProyectos.rejected, (state, action) => {
+            .addCase(fecthEntradaProductos.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.error.message || "Something went wrong";
+            })
+            .addCase(deleteEntradaProductos.pending, (state) => {
+                state.status = "loading";
+            })
+            .addCase(
+                deleteEntradaProductos.fulfilled,
+                (state, action: PayloadAction<number[]>) => {
+                    state.status = "succeeded";
+                    state.productos = state.productos.filter(
+                        (producto) => !action.payload.includes(producto.id)
+                    );
+                }
+            )
+            .addCase(deleteEntradaProductos.rejected, (state, action) => {
                 state.status = "failed";
                 state.error = action.error.message || "Something went wrong";
             })
