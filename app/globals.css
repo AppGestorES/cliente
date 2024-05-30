@@ -22,3 +22,18 @@ body {
 .p-calendar > button {
     background-color: var(--primary-color);
 }
+
+.p-dialog-footer {
+    display: flex;
+    justify-content: end;
+    gap: 0.5rem;
+}
+
+.p-confirm-dialog-accept {
+    background-color: var(--primary-color);
+}
+
+.p-confirm-dialog-accept,
+.p-confirm-dialog-reject {
+    padding-inline: 5px;
+}
