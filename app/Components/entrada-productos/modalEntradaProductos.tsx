@@ -1,11 +1,14 @@
 "use client";
 
+import { postEntradaProductos } from "@/app/redux/slice/apiSlice";
+import { AppDispatch } from "@/app/redux/store";
 import { Button } from "primereact/button";
 import { Calendar } from "primereact/calendar";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import { Nullable } from "primereact/ts-helpers";
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 
 interface Props {
     visible: boolean;
@@ -13,8 +16,11 @@ interface Props {
 }
 
 const ModalEntradaProductos: React.FC<Props> = ({ visible, setVisible }) => {
+    const dispatch: AppDispatch = useDispatch();
+
     const [localVisible, setLocalVisible] = useState(visible);
     const [producto, setProducto] = useState("");
+    const [productoFinalId, setProductoFinalId] = useState("");
     const [fecha, setFecha] = useState<Nullable<Date>>(null);
     const [proveedor, setProveedor] = useState("");
     const [albaran, setAlbaran] = useState("");
@@ -27,6 +33,7 @@ const ModalEntradaProductos: React.FC<Props> = ({ visible, setVisible }) => {
 
     const clearModalForm = () => {
         setProducto("");
+        setProductoFinalId("");
         setFecha(null);
         setProveedor("");
         setAlbaran("");
@@ -43,7 +50,23 @@ const ModalEntradaProductos: React.FC<Props> = ({ visible, setVisible }) => {
     }, [visible]);
 
     const handleSubmit = () => {
-        return true;
+        const newEntradaProducto = {
+            producto_final_id: parseInt(productoFinalId, 10),
+            fecha_entrada: fecha ? Math.floor(fecha.getTime() / 1000) : 0,
+            proveedor: proveedor,
+            numero_albaran: albaran,
+            numero_lote: lote,
+            cantidad_kg: parseFloat(cantidad),
+            fecha_caducidad: fechaCaducidad
+                ? Math.floor(fechaCaducidad.getTime() / 1000)
+                : undefined,
+            envasado_id: envasado ? parseInt(envasado, 10) : undefined,
+            operario_id: operario ? parseInt(operario, 10) : undefined,
+            id_proyecto: 1,
+        };
+        dispatch(postEntradaProductos(newEntradaProducto));
+        setVisible(false);
+        clearModalForm();
     };
 
     const footerContent = (
@@ -52,12 +75,7 @@ const ModalEntradaProductos: React.FC<Props> = ({ visible, setVisible }) => {
                 type="submit"
                 label="Añadir"
                 icon="pi pi-check"
-                onClick={() => {
-                    if (handleSubmit()) {
-                        setVisible(false);
-                        clearModalForm();
-                    }
-                }}
+                onClick={handleSubmit}
                 className="mt-2 bg-[var(--primary-color)] p-2"
             />
             <Button
@@ -94,6 +112,12 @@ const ModalEntradaProductos: React.FC<Props> = ({ visible, setVisible }) => {
                         showIcon
                         showButtonBar
                         className="p-calendar p-component"
+                    />
+                    <InputText
+                        value={productoFinalId}
+                        className="p-inputtext p-component p-2"
+                        onChange={(e) => setProductoFinalId(e.target.value)}
+                        placeholder="ID del Producto Final *"
                     />
                 </div>
                 <div className="flex flex-col gap-2 sm:flex-row">

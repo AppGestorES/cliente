@@ -4,7 +4,7 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { fecthEntradaProductos } from "@/app/redux/slice/apiSlice";
+import { fetchEntradaProductos } from "@/app/redux/slice/apiSlice";
 import type { RootState, AppDispatch } from "@/app/redux/store";
 import { EntradaDeProductos } from "@/app/interfaces/EntradaProductos";
 import { formatDate } from "@/app/utils/utils";
@@ -28,7 +28,7 @@ const TablaProductos: React.FC<Props> = ({
 
     useEffect(() => {
         if (status === "idle") {
-            dispatch(fecthEntradaProductos());
+            dispatch(fetchEntradaProductos());
         }
     }, [status, dispatch]);
 

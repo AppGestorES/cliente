@@ -1,5 +1,5 @@
-import { EntradaDeProductos } from "@/app/interfaces/EntradaProductos";
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { EntradaDeProductos } from "@/app/interfaces/EntradaProductos";
 
 interface ApiResponse {
     status: number;
@@ -21,8 +21,8 @@ const initialState: ApiState = {
     token: null,
 };
 
-export const fecthEntradaProductos = createAsyncThunk(
-    "api/fecthEntradaProductos",
+export const fetchEntradaProductos = createAsyncThunk(
+    "api/fetchEntradaProductos",
     async () => {
         const response = await fetch("http://localhost:3001/entradas");
         if (!response.ok) {
@@ -39,26 +39,53 @@ export const fecthEntradaProductos = createAsyncThunk(
     }
 );
 
+export const postEntradaProductos = createAsyncThunk(
+    "api/postEntradaProductos",
+    async (newEntrada: Omit<EntradaDeProductos, "id">) => {
+        const response = await fetch("http://localhost:3001/entradas", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(newEntrada),
+        });
+
+        if (!response.ok) {
+            throw new Error("Network response was not ok");
+        }
+
+        const data: {
+            status: number;
+            success: boolean;
+            result: EntradaDeProductos;
+        } = await response.json();
+
+        if (!data.success) {
+            throw new Error("Failed to post data");
+        }
+
+        return data.result;
+    }
+);
+
 export const deleteEntradaProductos = createAsyncThunk(
     "api/deleteEntradaProductos",
-    (ids: number[]) => {
-        ids.map(async (id) => {
+    async (ids: number[]) => {
+        for (const id of ids) {
             const response = await fetch(
-                "http://localhost:3001/entradas/" + id,
+                `http://localhost:3001/entradas/${id}`,
                 {
                     method: "DELETE",
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({ ids }),
                 }
             );
 
             if (!response.ok) {
                 throw new Error("Network response was not ok");
             }
-        });
-
+        }
         return ids;
     }
 );
@@ -75,7 +102,7 @@ export const loginUser = createAsyncThunk(
         });
 
         if (!response.ok) {
-            if (response.status == 404) {
+            if (response.status === 404) {
                 throw new Error("Crendenciales incorrectas");
             }
             throw new Error("Network response was not ok");
@@ -104,7 +131,7 @@ export const registerUser = createAsyncThunk(
         });
 
         if (!response.ok) {
-            if (response.status == 409) {
+            if (response.status === 409) {
                 throw new Error("El usuario ya está registrado");
             }
             throw new Error("Network response was not ok");
@@ -128,17 +155,31 @@ const apiSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(fecthEntradaProductos.pending, (state) => {
+            .addCase(fetchEntradaProductos.pending, (state) => {
                 state.status = "loading";
             })
             .addCase(
-                fecthEntradaProductos.fulfilled,
+                fetchEntradaProductos.fulfilled,
                 (state, action: PayloadAction<EntradaDeProductos[]>) => {
                     state.status = "succeeded";
                     state.productos = action.payload;
                 }
             )
-            .addCase(fecthEntradaProductos.rejected, (state, action) => {
+            .addCase(fetchEntradaProductos.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.error.message || "Something went wrong";
+            })
+            .addCase(postEntradaProductos.pending, (state) => {
+                state.status = "loading";
+            })
+            .addCase(
+                postEntradaProductos.fulfilled,
+                (state, action: PayloadAction<EntradaDeProductos>) => {
+                    state.status = "succeeded";
+                    state.productos.push(action.payload);
+                }
+            )
+            .addCase(postEntradaProductos.rejected, (state, action) => {
                 state.status = "failed";
                 state.error = action.error.message || "Something went wrong";
             })
