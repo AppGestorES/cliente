@@ -1,15 +1,17 @@
-"use client";
-
 import { configureStore } from "@reduxjs/toolkit";
-import apiReducer from "./slice/apiSlice";
+import authSlice from "@/app/redux/slices/authSlice";
+import controlMateriaPrimaSlice from "@/app/redux/slices/controlMateriaPrimaSlice";
+import entradaProductosSlice from "@/app/redux/slices/entradaProductosSlice";
 
 const store = configureStore({
     reducer: {
-        api: apiReducer,
+        entradaProductos: entradaProductosSlice,
+        controlMateriaPrima: controlMateriaPrimaSlice,
+        auth: authSlice,
     },
 });
 
-export type AppDispatch = typeof store.dispatch;
 export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
 
 export default store;

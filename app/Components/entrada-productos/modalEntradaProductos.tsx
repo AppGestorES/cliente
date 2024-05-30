@@ -1,6 +1,6 @@
 "use client";
 
-import { postEntradaProductos } from "@/app/redux/slice/apiSlice";
+import { postEntradaProductos } from "@/app/redux/slices/entradaProductosSlice";
 import { AppDispatch } from "@/app/redux/store";
 import { Button } from "primereact/button";
 import { Calendar } from "primereact/calendar";

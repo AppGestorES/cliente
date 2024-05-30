@@ -1,15 +1,22 @@
 "use client";
 
 import { Button } from "primereact/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { z } from "zod";
-import ModalEntradaProductos from "../../Components/entrada-productos/modalEntradaProductos";
-import TablaProductos from "../../Components/entrada-productos/tablaProductos";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+/* import {
+    deleteControlMateriaPrima,
+    fetchControlMateriaPrima,
+} from "@/app/redux/slice/apiSlice";*/
 import { EntradaDeProductos } from "@/app/interfaces/EntradaProductos";
-import { AppDispatch } from "@/app/redux/store";
+import { AppDispatch, RootState } from "@/app/redux/store";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
-import { deleteEntradaProductos } from "@/app/redux/slices/entradaProductosSlice";
+import ModalControlMateriaPrima from "@/app/Components/analisis-control/modalControlMateriaPrima";
+import TablaControlMateriaPrima from "@/app/Components/analisis-control/tablaControlMateriaPrima";
+import {
+    deleteMateriasPrimas,
+    fetchMateriasPrimas,
+} from "@/app/redux/slices/controlMateriaPrimaSlice";
 
 const invalid_type_error =
     "Tipo de dato inválido proporcionado para este campo";
@@ -21,18 +28,30 @@ export const FormSchema = z.object({
         .min(1, { message: required_error }),
 });
 
-const EntradaProductos: React.FC = () => {
+const ControlMateriaPrima: React.FC = () => {
     const [visible, setVisible] = useState(false);
     const [botonEliminar, setBotonEliminar] = useState(false);
     const [selectedProducts, setSelectedProducts] = useState<
         EntradaDeProductos[]
     >([]);
     const dispatch: AppDispatch = useDispatch();
+    const productos = useSelector(
+        (state: RootState) => state.controlMateriaPrima.materiasPrimas
+    );
+    const status = useSelector(
+        (state: RootState) => state.controlMateriaPrima.status
+    );
+
+    useEffect(() => {
+        if (status === "idle") {
+            dispatch(fetchMateriasPrimas());
+        }
+    }, [status, dispatch]);
 
     const handleDelete = () => {
         if (selectedProducts.length > 0) {
             const idsToDelete = selectedProducts.map((product) => product.id);
-            dispatch(deleteEntradaProductos(idsToDelete));
+            dispatch(deleteMateriasPrimas(idsToDelete[0]));
             setSelectedProducts([]);
             setBotonEliminar(false);
         }
@@ -55,7 +74,9 @@ const EntradaProductos: React.FC = () => {
         <div className="w-full">
             <ConfirmDialog />
             <div className="flex flex-col md:flex-row w-full md:items-center justify-between px-4">
-                <h2 className="text-xl">Entrada de Productos</h2>
+                <h2 className="text-xl">
+                    Análisis de control de materia prima
+                </h2>
                 <div className="flex gap-2 items-center">
                     {botonEliminar && (
                         <Button
@@ -73,8 +94,11 @@ const EntradaProductos: React.FC = () => {
                     />
                 </div>
             </div>
-            <ModalEntradaProductos visible={visible} setVisible={setVisible} />
-            <TablaProductos
+            <ModalControlMateriaPrima
+                visible={visible}
+                setVisible={setVisible}
+            />
+            <TablaControlMateriaPrima
                 setSelectedProducts={setSelectedProducts}
                 setBotonEliminar={setBotonEliminar}
             />
@@ -82,4 +106,4 @@ const EntradaProductos: React.FC = () => {
     );
 };
 
-export default EntradaProductos;
+export default ControlMateriaPrima;
