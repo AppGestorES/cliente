@@ -1,19 +1,23 @@
-import { getMateriasPrimasInterface } from "@/app/interfaces/MateriasPrimas";
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import {
+    getMateriasPrimasInterface,
+    postMateriasPrimasInterface,
+    putMateriasPrimasInterface,
+} from "@/app/interfaces/MateriasPrimas";
 
-interface ApiResponse {
+interface ApiResponse<T> {
     status: number;
     success: boolean;
-    result: getMateriasPrimasInterface[];
+    result: T;
 }
 
-interface ApiState {
-    materiasPrimas: getMateriasPrimasInterface[];
+interface ApiState<T> {
+    materiasPrimas: T[];
     status: "idle" | "loading" | "succeeded" | "failed";
     error: string | null;
 }
 
-const initialState: ApiState = {
+const initialState: ApiState<getMateriasPrimasInterface> = {
     materiasPrimas: [],
     status: "idle",
     error: null,
@@ -27,7 +31,8 @@ export const fetchMateriasPrimas = createAsyncThunk(
             throw new Error("Network response was not ok");
         }
 
-        const data: ApiResponse = await response.json();
+        const data: ApiResponse<getMateriasPrimasInterface[]> =
+            await response.json();
 
         if (!data.success) {
             throw new Error("Failed to fetch data");
@@ -47,7 +52,8 @@ export const fetchMateriasPrimasByNombre = createAsyncThunk(
             throw new Error("Network response was not ok");
         }
 
-        const data: ApiResponse = await response.json();
+        const data: ApiResponse<getMateriasPrimasInterface[]> =
+            await response.json();
 
         if (!data.success) {
             throw new Error("Failed to fetch data");
@@ -67,7 +73,8 @@ export const fetchMateriasPrimasByProyecto = createAsyncThunk(
             throw new Error("Network response was not ok");
         }
 
-        const data: ApiResponse = await response.json();
+        const data: ApiResponse<getMateriasPrimasInterface[]> =
+            await response.json();
 
         if (!data.success) {
             throw new Error("Failed to fetch data");
@@ -79,7 +86,7 @@ export const fetchMateriasPrimasByProyecto = createAsyncThunk(
 
 export const postMateriasPrimas = createAsyncThunk(
     "materiasPrimas/postMateriasPrimas",
-    async (newMateriaPrima: Omit<getMateriasPrimasInterface, "id">) => {
+    async (newMateriaPrima: postMateriasPrimasInterface) => {
         const response = await fetch("http://localhost:3001/materias_primas", {
             method: "POST",
             headers: {
@@ -92,11 +99,8 @@ export const postMateriasPrimas = createAsyncThunk(
             throw new Error("Network response was not ok");
         }
 
-        const data: {
-            status: number;
-            success: boolean;
-            result: getMateriasPrimasInterface;
-        } = await response.json();
+        const data: ApiResponse<getMateriasPrimasInterface> =
+            await response.json();
 
         if (!data.success) {
             throw new Error("Failed to post data");
@@ -113,7 +117,7 @@ export const putMateriasPrimas = createAsyncThunk(
         updatedMateriaPrima,
     }: {
         id: number;
-        updatedMateriaPrima: Omit<getMateriasPrimasInterface, "id">;
+        updatedMateriaPrima: putMateriasPrimasInterface;
     }) => {
         const response = await fetch(
             `http://localhost:3001/materias_primas/${id}`,
@@ -130,11 +134,8 @@ export const putMateriasPrimas = createAsyncThunk(
             throw new Error("Network response was not ok");
         }
 
-        const data: {
-            status: number;
-            success: boolean;
-            result: getMateriasPrimasInterface;
-        } = await response.json();
+        const data: ApiResponse<getMateriasPrimasInterface> =
+            await response.json();
 
         if (!data.success) {
             throw new Error("Failed to update data");
@@ -146,22 +147,23 @@ export const putMateriasPrimas = createAsyncThunk(
 
 export const deleteMateriasPrimas = createAsyncThunk(
     "materiasPrimas/deleteMateriasPrimas",
-    async (id: number) => {
-        const response = await fetch(
-            `http://localhost:3001/materias_primas/${id}`,
-            {
+    async (ids: number[]) => {
+        const promises = ids.map((id) =>
+            fetch(`http://localhost:3001/materias_primas/${id}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
                 },
-            }
+            }).then((response) => {
+                if (!response.ok) {
+                    throw new Error(`Failed to delete item with id ${id}`);
+                }
+            })
         );
 
-        if (!response.ok) {
-            throw new Error("Network response was not ok");
-        }
+        await Promise.all(promises);
 
-        return id;
+        return ids;
     }
 );
 
@@ -264,10 +266,10 @@ const controlMateriaPrimaSlice = createSlice({
             })
             .addCase(
                 deleteMateriasPrimas.fulfilled,
-                (state, action: PayloadAction<number>) => {
+                (state, action: PayloadAction<number[]>) => {
                     state.status = "succeeded";
                     state.materiasPrimas = state.materiasPrimas.filter(
-                        (materia) => materia.id !== action.payload
+                        (materia) => !action.payload.includes(materia.id)
                     );
                 }
             )

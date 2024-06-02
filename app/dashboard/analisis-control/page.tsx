@@ -1,16 +1,13 @@
 "use client";
 
 import { Button } from "primereact/button";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { z } from "zod";
 import { useDispatch, useSelector } from "react-redux";
-/* import {
-    deleteControlMateriaPrima,
-    fetchControlMateriaPrima,
-} from "@/app/redux/slice/apiSlice";*/
 import { EntradaDeProductos } from "@/app/interfaces/EntradaProductos";
 import { AppDispatch, RootState } from "@/app/redux/store";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
+import { Toast } from "primereact/toast";
 import ModalControlMateriaPrima from "@/app/Components/analisis-control/modalControlMateriaPrima";
 import TablaControlMateriaPrima from "@/app/Components/analisis-control/tablaControlMateriaPrima";
 import {
@@ -41,6 +38,7 @@ const ControlMateriaPrima: React.FC = () => {
     const status = useSelector(
         (state: RootState) => state.controlMateriaPrima.status
     );
+    const toast = useRef<Toast>(null);
 
     useEffect(() => {
         if (status === "idle") {
@@ -51,9 +49,25 @@ const ControlMateriaPrima: React.FC = () => {
     const handleDelete = () => {
         if (selectedProducts.length > 0) {
             const idsToDelete = selectedProducts.map((product) => product.id);
-            dispatch(deleteMateriasPrimas(idsToDelete[0]));
-            setSelectedProducts([]);
-            setBotonEliminar(false);
+            dispatch(deleteMateriasPrimas(idsToDelete)).then((result) => {
+                if (result.meta.requestStatus === "fulfilled") {
+                    toast.current?.show({
+                        severity: "success",
+                        summary: "Eliminación Exitosa",
+                        detail: "Las materias primas fueron eliminadas",
+                        life: 3000,
+                    });
+                } else {
+                    toast.current?.show({
+                        severity: "error",
+                        summary: "Error al Eliminar",
+                        detail: "Hubo un error al eliminar las materias primas",
+                        life: 3000,
+                    });
+                }
+                setSelectedProducts([]);
+                setBotonEliminar(false);
+            });
         }
     };
 
@@ -72,6 +86,7 @@ const ControlMateriaPrima: React.FC = () => {
 
     return (
         <div className="w-full">
+            <Toast ref={toast} />
             <ConfirmDialog />
             <div className="flex flex-col md:flex-row w-full md:items-center justify-between px-4">
                 <h2 className="text-xl">
@@ -97,10 +112,12 @@ const ControlMateriaPrima: React.FC = () => {
             <ModalControlMateriaPrima
                 visible={visible}
                 setVisible={setVisible}
+                toast={toast}
             />
             <TablaControlMateriaPrima
                 setSelectedProducts={setSelectedProducts}
                 setBotonEliminar={setBotonEliminar}
+                toast={toast}
             />
         </div>
     );

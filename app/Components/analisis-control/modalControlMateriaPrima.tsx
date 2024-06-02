@@ -5,60 +5,67 @@ import { Calendar } from "primereact/calendar";
 import { InputText } from "primereact/inputtext";
 import { Dialog } from "primereact/dialog";
 import { Nullable } from "primereact/ts-helpers";
-import { useState, useEffect } from "react";
+import { useState, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/app/redux/store";
-// import { postControlMateriaPrima } from "@/app/redux/slice/apiSlice"; // Placeholder import
+import {
+    postMateriasPrimas,
+    fetchMateriasPrimas,
+} from "@/app/redux/slices/controlMateriaPrimaSlice";
+import { Toast } from "primereact/toast";
 
 interface ModalProps {
     visible: boolean;
     setVisible: (visible: boolean) => void;
+    toast: React.RefObject<Toast>;
 }
 
 const ModalControlMateriaPrima: React.FC<ModalProps> = ({
     visible,
     setVisible,
+    toast,
 }) => {
     const dispatch: AppDispatch = useDispatch();
 
-    const [producto, setProducto] = useState("");
-    const [proveedor, setProveedor] = useState("");
-    const [fechaGenerado, setFechaGenerado] = useState<Nullable<Date>>(null);
-    const [cantidadGenerada, setCantidadGenerada] = useState("");
-    const [fechaRealizado, setFechaRealizado] = useState<Nullable<Date>>(null);
-    const [cantidadRealizada, setCantidadRealizada] = useState("");
-    const [numeroLote, setNumeroLote] = useState("");
-    const [informe, setInforme] = useState("");
+    const [nombre, setNombre] = useState("");
+    const [caducidad, setCaducidad] = useState<Nullable<Date>>(null);
+    const [stockKgs, setStockKgs] = useState("");
+    const [idProyecto, setIdProyecto] = useState("");
 
     const clearForm = () => {
-        setProducto("");
-        setProveedor("");
-        setFechaGenerado(null);
-        setCantidadGenerada("");
-        setFechaRealizado(null);
-        setCantidadRealizada("");
-        setNumeroLote("");
-        setInforme("");
+        setNombre("");
+        setCaducidad(null);
+        setStockKgs("");
+        setIdProyecto("");
     };
 
     const handleSubmit = () => {
-        const newControl = {
-            producto,
-            proveedor,
-            fecha_generado: fechaGenerado
-                ? Math.floor(fechaGenerado.getTime() / 1000)
-                : 0,
-            cantidad_generada: parseFloat(cantidadGenerada),
-            fecha_realizado: fechaRealizado
-                ? Math.floor(fechaRealizado.getTime() / 1000)
-                : 0,
-            cantidad_realizada: parseFloat(cantidadRealizada),
-            numero_lote: numeroLote,
-            informe,
+        const newMateriaPrima = {
+            nombre,
+            caducidad: caducidad ? Math.floor(caducidad.getTime() / 1000) : 0,
+            stock_kgs: parseFloat(stockKgs),
+            id_proyecto: parseInt(idProyecto, 10),
         };
-        // dispatch(postControlMateriaPrima(newControl)); // Placeholder dispatch
-        setVisible(false);
-        clearForm();
+        dispatch(postMateriasPrimas(newMateriaPrima)).then((result) => {
+            if (result.meta.requestStatus === "fulfilled") {
+                toast.current?.show({
+                    severity: "success",
+                    summary: "Creación Exitosa",
+                    detail: "La materia prima fue agregada",
+                    life: 3000,
+                });
+                dispatch(fetchMateriasPrimas());
+            } else {
+                toast.current?.show({
+                    severity: "error",
+                    summary: "Error al Crear",
+                    detail: "Hubo un error al agregar la materia prima",
+                    life: 3000,
+                });
+            }
+            setVisible(false);
+            clearForm();
+        });
     };
 
     const footerContent = (
@@ -80,71 +87,46 @@ const ModalControlMateriaPrima: React.FC<ModalProps> = ({
     );
 
     return (
-        <Dialog
-            header="Análisis de control de materia prima"
-            visible={visible}
-            onHide={() => setVisible(false)}
-            footer={footerContent}
-        >
-            <form className="w-full grid gap-2">
-                <InputText
-                    value={proveedor}
-                    onChange={(e) => setProveedor(e.target.value)}
-                    placeholder="Proveedor"
-                    className="w-full p-2"
-                />
-                <InputText
-                    value={producto}
-                    onChange={(e) => setProducto(e.target.value)}
-                    placeholder="Producto"
-                    className="w-full p-2"
-                />
-                <div className="flex gap-2">
-                    <Calendar
-                        value={fechaGenerado}
-                        onChange={(e) => setFechaGenerado(e.value)}
-                        placeholder="Generado en"
-                        dateFormat="dd/mm/yy"
-                        showIcon
-                        className="w-1/2"
-                    />
+        <div>
+            <Dialog
+                header="Añadir Materia Prima"
+                visible={visible}
+                onHide={() => setVisible(false)}
+                footer={footerContent}
+            >
+                <form className="w-full grid gap-2">
                     <InputText
-                        value={cantidadGenerada}
-                        onChange={(e) => setCantidadGenerada(e.target.value)}
-                        placeholder="Cantidad acumulada (kg)"
-                        className="w-1/2 p-2"
+                        value={nombre}
+                        onChange={(e) => setNombre(e.target.value)}
+                        placeholder="Nombre"
+                        className="w-full p-2"
                     />
-                </div>
-                <div className="flex gap-2">
-                    <Calendar
-                        value={fechaRealizado}
-                        onChange={(e) => setFechaRealizado(e.value)}
-                        placeholder="Realizado en"
-                        dateFormat="dd/mm/yy"
-                        showIcon
-                        className="w-1/2"
-                    />
+                    <div className="flex gap-2">
+                        <Calendar
+                            value={caducidad}
+                            onChange={(e) => setCaducidad(e.value)}
+                            placeholder="Caducidad"
+                            dateFormat="dd/mm/yy"
+                            showIcon
+                            className="w-1/2"
+                            showButtonBar
+                        />
+                        <InputText
+                            value={stockKgs}
+                            onChange={(e) => setStockKgs(e.target.value)}
+                            placeholder="Stock (kg)"
+                            className="w-1/2 p-2"
+                        />
+                    </div>
                     <InputText
-                        value={cantidadRealizada}
-                        onChange={(e) => setCantidadRealizada(e.target.value)}
-                        placeholder="Cantidad acumulada (kg)"
-                        className="w-1/2 p-2"
+                        value={idProyecto}
+                        onChange={(e) => setIdProyecto(e.target.value)}
+                        placeholder="ID Proyecto"
+                        className="w-full p-2"
                     />
-                    <InputText
-                        value={numeroLote}
-                        onChange={(e) => setNumeroLote(e.target.value)}
-                        placeholder="Número de lote"
-                        className="w-1/2 p-2"
-                    />
-                </div>
-                <InputText
-                    value={informe}
-                    onChange={(e) => setInforme(e.target.value)}
-                    placeholder="Informe"
-                    className="w-full p-2"
-                />
-            </form>
-        </Dialog>
+                </form>
+            </Dialog>
+        </div>
     );
 };
 

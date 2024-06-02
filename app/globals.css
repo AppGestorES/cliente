@@ -35,5 +35,8 @@ body {
 
 .p-confirm-dialog-accept,
 .p-confirm-dialog-reject {
-    padding-inline: 5px;
+    padding: 0.3rem 0.7rem;
+    max-width: 200px;
 }
+
+/* bg-[var(--surface-a)] p-2 hover:bg-[var(--primary-color)] mt-2 max-w-[200px] */

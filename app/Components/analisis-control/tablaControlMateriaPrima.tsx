@@ -2,21 +2,23 @@
 
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { Button } from "primereact/button";
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "@/app/redux/store";
 import { getMateriasPrimasInterface } from "@/app/interfaces/MateriasPrimas";
 import { fetchMateriasPrimas } from "@/app/redux/slices/controlMateriaPrimaSlice";
+import { Toast } from "primereact/toast";
 
 interface Props {
     setSelectedProducts: (products: getMateriasPrimasInterface[]) => void;
     setBotonEliminar: (botonEliminar: boolean) => void;
+    toast: React.RefObject<Toast>;
 }
 
 const TablaControlMateriaPrima: React.FC<Props> = ({
     setSelectedProducts,
     setBotonEliminar,
+    toast,
 }) => {
     const dispatch: AppDispatch = useDispatch();
     const productos = useSelector(
@@ -43,6 +45,17 @@ const TablaControlMateriaPrima: React.FC<Props> = ({
         setBotonEliminar(selectedProducts.length > 0);
     }, [selectedProducts, setSelectedProducts, setBotonEliminar]);
 
+    useEffect(() => {
+        if (status === "failed" && toast.current) {
+            toast.current.show({
+                severity: "error",
+                summary: "Error",
+                detail: error,
+                life: 3000,
+            });
+        }
+    }, [status, error, toast]);
+
     const columns = [
         { field: "id", header: "ID" },
         { field: "nombre", header: "Nombre" },
@@ -54,7 +67,7 @@ const TablaControlMateriaPrima: React.FC<Props> = ({
     return (
         <div className="w-full mt-4">
             <DataTable
-                value={productos}
+                value={Array.isArray(productos) ? productos : []}
                 className="tabla"
                 loading={status === "loading"}
                 paginator
@@ -69,7 +82,11 @@ const TablaControlMateriaPrima: React.FC<Props> = ({
                 scrollHeight="600px"
                 selectionMode="multiple"
                 selection={selectedProducts}
-                onSelectionChange={(e) => setSelectedProductsState(e.value)}
+                onSelectionChange={(e) =>
+                    setSelectedProductsState(
+                        e.value as getMateriasPrimasInterface[]
+                    )
+                }
             >
                 <Column
                     selectionMode="multiple"
@@ -84,7 +101,6 @@ const TablaControlMateriaPrima: React.FC<Props> = ({
                     />
                 ))}
             </DataTable>
-            {status === "failed" && <p>{error}</p>}
         </div>
     );
 };
