@@ -5,61 +5,62 @@ import { Column } from "primereact/column";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import type { RootState, AppDispatch } from "@/app/redux/store";
-import { EntradaDeProductos } from "@/app/interfaces/EntradaProductos";
+import { salidaProductosInterface } from "@/app/interfaces/SalidaProductos";
 import { formatDate } from "@/app/utils/utils";
-import { fetchEntradaProductos } from "@/app/redux/slices/entradaProductosSlice";
+import { fetchSalidas } from "@/app/redux/slices/salidaProductosSlice";
 
 interface Props {
-    setSelectedProducts: (products: EntradaDeProductos[]) => void;
+    setSelectedSalidas: (salidas: salidaProductosInterface[]) => void;
     setBotonEliminar: (botonEliminar: boolean) => void;
 }
 
-const TablaProductos: React.FC<Props> = ({
-    setSelectedProducts,
+const TablaSalidaProductos: React.FC<Props> = ({
+    setSelectedSalidas,
     setBotonEliminar,
 }) => {
     const dispatch: AppDispatch = useDispatch();
-    const productos = useSelector(
-        (state: RootState) => state.entradaProductos.productos
+    const salidas = useSelector(
+        (state: RootState) => state.salidaProductos.salidas
     );
     const status = useSelector(
-        (state: RootState) => state.entradaProductos.status
+        (state: RootState) => state.salidaProductos.status
     );
     const error = useSelector(
-        (state: RootState) => state.entradaProductos.error
+        (state: RootState) => state.salidaProductos.error
     );
-    const [selectedProducts, setSelectedProductsState] = useState<
-        EntradaDeProductos[]
+    const [selectedSalidasState, setSelectedSalidasState] = useState<
+        salidaProductosInterface[]
     >([]);
 
     useEffect(() => {
         if (status === "idle") {
-            dispatch(fetchEntradaProductos());
+            dispatch(fetchSalidas());
         }
     }, [status, dispatch]);
 
     useEffect(() => {
-        setSelectedProducts(selectedProducts);
-        setBotonEliminar(selectedProducts.length > 0);
-    }, [selectedProducts, setSelectedProducts, setBotonEliminar]);
+        setSelectedSalidas(selectedSalidasState);
+        setBotonEliminar(selectedSalidasState.length > 0);
+    }, [selectedSalidasState, setSelectedSalidas, setBotonEliminar]);
 
     const columns = [
         { field: "id", header: "ID" },
         { field: "producto_final_id", header: "Producto Final Id" },
-        { field: "fecha_entrada", header: "Fecha Entrada" },
-        { field: "proveedor", header: "Proveedor" },
-        { field: "numero_albaran", header: "Número Albaran" },
-        { field: "numero_lote", header: "Numero lote" },
-        { field: "cantidad_kg", header: "Cantidad (KG)" },
-        { field: "fecha_caducidad", header: "Fecha Caducidad" },
+        { field: "formula_id", header: "ID Formula" },
+        { field: "numero_lote", header: "Número de lote" },
+        { field: "fecha_salida", header: "Fecha de salida" },
+        { field: "cantidad", header: "Cantidad" },
+        { field: "fecha_caducidad", header: "Fecha de caducidad" },
         { field: "envasado_id", header: "ID Envasado" },
-        { field: "operario_id", header: "ID Operario" },
+        { field: "formato_id", header: "ID Formato" },
+        { field: "destino_id", header: "ID Destino" },
+        { field: "vehiculo_id", header: "ID Vehiculo" },
         { field: "id_proyecto", header: "ID Proyecto" },
     ];
 
     const renderDateColumn = (
-        rowData: EntradaDeProductos,
-        field: keyof EntradaDeProductos
+        rowData: salidaProductosInterface,
+        field: keyof salidaProductosInterface
     ) => {
         const value = rowData[field];
         return value ? formatDate(value as number) : "";
@@ -68,7 +69,7 @@ const TablaProductos: React.FC<Props> = ({
     return (
         <div className="w-full mt-4">
             <DataTable
-                value={productos}
+                value={salidas}
                 className="tabla"
                 loading={status === "loading"}
                 paginator
@@ -82,8 +83,8 @@ const TablaProductos: React.FC<Props> = ({
                 scrollable
                 scrollHeight="600px"
                 selectionMode="multiple"
-                selection={selectedProducts}
-                onSelectionChange={(e) => setSelectedProductsState(e.value)}
+                selection={selectedSalidasState}
+                onSelectionChange={(e) => setSelectedSalidasState(e.value)}
             >
                 <Column
                     selectionMode="multiple"
@@ -96,12 +97,12 @@ const TablaProductos: React.FC<Props> = ({
                         header={col.header}
                         sortable
                         body={
-                            col.field === "fecha_entrada" ||
+                            col.field === "fecha_salida" ||
                             col.field === "fecha_caducidad"
-                                ? (rowData: EntradaDeProductos) =>
+                                ? (rowData: salidaProductosInterface) =>
                                       renderDateColumn(
                                           rowData,
-                                          col.field as keyof EntradaDeProductos
+                                          col.field as keyof salidaProductosInterface
                                       )
                                 : undefined
                         }
@@ -113,4 +114,4 @@ const TablaProductos: React.FC<Props> = ({
     );
 };
 
-export default TablaProductos;
+export default TablaSalidaProductos;

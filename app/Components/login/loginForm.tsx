@@ -10,8 +10,8 @@ import { useRef, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { AppDispatch } from "@/app/redux/store";
-import { loginUser, registerUser } from "@/app/redux/slice/apiSlice";
 import Link from "next/link";
+import { loginUser } from "@/app/redux/slices/authSlice";
 
 const schema = z.object({
     nombreUsuario: z.string(),

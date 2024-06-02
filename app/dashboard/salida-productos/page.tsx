@@ -3,13 +3,13 @@
 import { Button } from "primereact/button";
 import { useState } from "react";
 import { z } from "zod";
-import ModalEntradaProductos from "../../Components/entrada-productos/modalEntradaProductos";
-import TablaProductos from "../../Components/entrada-productos/tablaProductos";
+import ModalSalidaProductos from "../../Components/salida-productos/modalSalidaProductos"; // Ensure this component exists
+import TablaSalidaProductos from "../../Components/salida-productos/tablaSalidaProductos";
 import { useDispatch } from "react-redux";
-import { EntradaDeProductos } from "@/app/interfaces/EntradaProductos";
+import { salidaProductosInterface } from "@/app/interfaces/SalidaProductos";
 import { AppDispatch } from "@/app/redux/store";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
-import { deleteEntradaProductos } from "@/app/redux/slices/entradaProductosSlice";
+import { deleteSalidas } from "@/app/redux/slices/salidaProductosSlice";
 
 const invalid_type_error =
     "Tipo de dato inválido proporcionado para este campo";
@@ -21,19 +21,19 @@ export const FormSchema = z.object({
         .min(1, { message: required_error }),
 });
 
-const EntradaProductos: React.FC = () => {
+const SalidaProductos: React.FC = () => {
     const [visible, setVisible] = useState(false);
     const [botonEliminar, setBotonEliminar] = useState(false);
-    const [selectedProducts, setSelectedProducts] = useState<
-        EntradaDeProductos[]
+    const [selectedSalidas, setSelectedSalidas] = useState<
+        salidaProductosInterface[]
     >([]);
     const dispatch: AppDispatch = useDispatch();
 
     const handleDelete = () => {
-        if (selectedProducts.length > 0) {
-            const idsToDelete = selectedProducts.map((product) => product.id);
-            dispatch(deleteEntradaProductos(idsToDelete));
-            setSelectedProducts([]);
+        if (selectedSalidas.length > 0) {
+            const idsToDelete = selectedSalidas.map((salida) => salida.id);
+            dispatch(deleteSalidas(idsToDelete));
+            setSelectedSalidas([]);
             setBotonEliminar(false);
         }
     };
@@ -41,7 +41,7 @@ const EntradaProductos: React.FC = () => {
     const confirmDelete = () => {
         confirmDialog({
             message:
-                "¿Está seguro de que desea eliminar los productos seleccionados?",
+                "¿Está seguro de que desea eliminar las salidas seleccionadas?",
             header: "Confirmación",
             icon: "pi pi-exclamation-triangle",
             acceptLabel: "Sí",
@@ -55,7 +55,7 @@ const EntradaProductos: React.FC = () => {
         <div className="w-full">
             <ConfirmDialog />
             <div className="flex flex-col md:flex-row w-full md:items-center justify-between px-4">
-                <h2 className="text-xl">Entrada de Productos</h2>
+                <h2 className="text-xl">Salida de Productos</h2>
                 <div className="flex gap-2 items-center">
                     {botonEliminar && (
                         <Button
@@ -66,20 +66,20 @@ const EntradaProductos: React.FC = () => {
                         />
                     )}
                     <Button
-                        label="Añadir producto"
+                        label="Añadir salida"
                         icon="pi pi-plus"
                         className="bg-[var(--surface-a)] p-2 hover:bg-[var(--primary-color)] mt-2 max-w-[200px]"
                         onClick={() => setVisible(true)}
                     />
                 </div>
             </div>
-            <ModalEntradaProductos visible={visible} setVisible={setVisible} />
-            <TablaProductos
-                setSelectedProducts={setSelectedProducts}
+            <ModalSalidaProductos visible={visible} setVisible={setVisible} />
+            <TablaSalidaProductos
+                setSelectedSalidas={setSelectedSalidas}
                 setBotonEliminar={setBotonEliminar}
             />
         </div>
     );
 };
 
-export default EntradaProductos;
+export default SalidaProductos;
