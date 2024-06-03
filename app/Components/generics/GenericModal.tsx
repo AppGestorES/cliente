@@ -10,10 +10,11 @@ interface Props<T> {
     visible: boolean;
     setVisible: (visible: boolean) => void;
     initialValues: T;
-    onSubmit: (values: T) => Promise<void>;
+    onSubmit: (values: T) => void;
     fields: { key: keyof T; label: string; type: "text" | "number" | "date" }[];
-    onAfterSubmit?: () => void;
 }
+
+const isDate = (value: any): value is Date => value instanceof Date;
 
 const GenericModal = <T,>({
     visible,
@@ -21,7 +22,6 @@ const GenericModal = <T,>({
     initialValues,
     onSubmit,
     fields,
-    onAfterSubmit,
 }: Props<T>) => {
     const [formValues, setFormValues] = useState<T>(initialValues);
     const toast = useRef<Toast>(null);
@@ -37,10 +37,22 @@ const GenericModal = <T,>({
         }));
     };
 
-    const handleSubmit = async () => {
-        await onSubmit(formValues);
+    const handleSubmit = () => {
+        const updatedValues = { ...formValues };
+
+        fields.forEach((field) => {
+            if (field.type === "date") {
+                const dateValue = updatedValues[field.key];
+                if (isDate(dateValue)) {
+                    updatedValues[field.key] = Math.floor(
+                        dateValue.getTime() / 1000
+                    ) as unknown as T[keyof T];
+                }
+            }
+        });
+
+        onSubmit(updatedValues);
         setVisible(false);
-        onAfterSubmit?.();
     };
 
     const footerContent = (
