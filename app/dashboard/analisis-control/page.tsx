@@ -1,36 +1,22 @@
 "use client";
 
-import { Button } from "primereact/button";
 import { useState, useEffect, useRef } from "react";
-import { z } from "zod";
 import { useDispatch, useSelector } from "react-redux";
-import { EntradaDeProductos } from "@/app/interfaces/EntradaProductos";
-import { AppDispatch, RootState } from "@/app/redux/store";
-import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
-import { Toast } from "primereact/toast";
-import ModalControlMateriaPrima from "@/app/Components/analisis-control/modalControlMateriaPrima";
-import TablaControlMateriaPrima from "@/app/Components/analisis-control/tablaControlMateriaPrima";
 import {
+    postMateriasPrimas,
+    putMateriasPrimas,
     deleteMateriasPrimas,
     fetchMateriasPrimas,
 } from "@/app/redux/slices/controlMateriaPrimaSlice";
-
-const invalid_type_error =
-    "Tipo de dato inválido proporcionado para este campo";
-const required_error = "Este campo no puede estar vacío";
-
-export const FormSchema = z.object({
-    producto: z
-        .string({ invalid_type_error, required_error })
-        .min(1, { message: required_error }),
-});
+import GenericTable from "@/app/Components/generics/GenericTable";
+import GenericModal from "@/app/Components/generics/GenericModal";
+import { getMateriasPrimasInterface } from "@/app/interfaces/MateriasPrimas";
+import { AppDispatch, RootState } from "@/app/redux/store";
+import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
+import { Button } from "primereact/button";
+import { Toast } from "primereact/toast";
 
 const ControlMateriaPrima: React.FC = () => {
-    const [visible, setVisible] = useState(false);
-    const [botonEliminar, setBotonEliminar] = useState(false);
-    const [selectedProducts, setSelectedProducts] = useState<
-        EntradaDeProductos[]
-    >([]);
     const dispatch: AppDispatch = useDispatch();
     const productos = useSelector(
         (state: RootState) => state.controlMateriaPrima.materiasPrimas
@@ -38,6 +24,16 @@ const ControlMateriaPrima: React.FC = () => {
     const status = useSelector(
         (state: RootState) => state.controlMateriaPrima.status
     );
+    const error = useSelector(
+        (state: RootState) => state.controlMateriaPrima.error
+    );
+
+    const [selectedProducts, setSelectedProducts] = useState<
+        getMateriasPrimasInterface[]
+    >([]);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [selectedProduct, setSelectedProduct] =
+        useState<getMateriasPrimasInterface | null>(null);
     const toast = useRef<Toast>(null);
 
     useEffect(() => {
@@ -45,6 +41,11 @@ const ControlMateriaPrima: React.FC = () => {
             dispatch(fetchMateriasPrimas());
         }
     }, [status, dispatch]);
+
+    const handleEdit = (product: getMateriasPrimasInterface) => {
+        setSelectedProduct(product);
+        setModalVisible(true);
+    };
 
     const handleDelete = () => {
         if (selectedProducts.length > 0) {
@@ -66,7 +67,6 @@ const ControlMateriaPrima: React.FC = () => {
                     });
                 }
                 setSelectedProducts([]);
-                setBotonEliminar(false);
             });
         }
     };
@@ -84,6 +84,54 @@ const ControlMateriaPrima: React.FC = () => {
         });
     };
 
+    const handleModalSubmit = (product: getMateriasPrimasInterface) => {
+        if (selectedProduct) {
+            dispatch(
+                putMateriasPrimas({
+                    id: selectedProduct.id,
+                    updatedProduct: product,
+                })
+            ).then((result) => {
+                if (result.meta.requestStatus === "fulfilled") {
+                    toast.current?.show({
+                        severity: "success",
+                        summary: "Actualización Exitosa",
+                        detail: "La materia prima fue actualizada",
+                        life: 3000,
+                    });
+                } else {
+                    toast.current?.show({
+                        severity: "error",
+                        summary: "Error al Actualizar",
+                        detail: "Hubo un error al actualizar la materia prima",
+                        life: 3000,
+                    });
+                }
+                setSelectedProduct(null);
+                setModalVisible(false);
+            });
+        } else {
+            dispatch(postMateriasPrimas(product)).then((result) => {
+                if (result.meta.requestStatus === "fulfilled") {
+                    toast.current?.show({
+                        severity: "success",
+                        summary: "Creación Exitosa",
+                        detail: "La materia prima fue agregada",
+                        life: 3000,
+                    });
+                } else {
+                    toast.current?.show({
+                        severity: "error",
+                        summary: "Error al Crear",
+                        detail: "Hubo un error al agregar la materia prima",
+                        life: 3000,
+                    });
+                }
+                setModalVisible(false);
+            });
+        }
+    };
+
     return (
         <div className="w-full">
             <Toast ref={toast} />
@@ -93,7 +141,7 @@ const ControlMateriaPrima: React.FC = () => {
                     Análisis de control de materia prima
                 </h2>
                 <div className="flex gap-2 items-center">
-                    {botonEliminar && (
+                    {selectedProducts.length > 0 && (
                         <Button
                             label="Eliminar seleccionados"
                             icon="pi pi-trash"
@@ -105,19 +153,49 @@ const ControlMateriaPrima: React.FC = () => {
                         label="Añadir producto"
                         icon="pi pi-plus"
                         className="bg-[var(--surface-a)] p-2 hover:bg-[var(--primary-color)] mt-2 max-w-[200px]"
-                        onClick={() => setVisible(true)}
+                        onClick={() => setModalVisible(true)}
                     />
                 </div>
             </div>
-            <ModalControlMateriaPrima
-                visible={visible}
-                setVisible={setVisible}
-                toast={toast}
+            <GenericTable
+                data={productos}
+                columns={[
+                    { field: "id", header: "ID" },
+                    { field: "nombre", header: "Nombre" },
+                    { field: "caducidad", header: "Caducidad (días)" },
+                    { field: "stock_kgs", header: "Stock (kg)" },
+                    { field: "id_proyecto", header: "ID Proyecto" },
+                ]}
+                selectedItems={selectedProducts}
+                setSelectedItems={setSelectedProducts}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                loading={status === "loading"}
+                error={error}
             />
-            <TablaControlMateriaPrima
-                setSelectedProducts={setSelectedProducts}
-                setBotonEliminar={setBotonEliminar}
-                toast={toast}
+            <GenericModal
+                visible={modalVisible}
+                setVisible={setModalVisible}
+                initialValues={
+                    selectedProduct || {
+                        id: 0,
+                        nombre: "",
+                        caducidad: 0,
+                        stock_kgs: 0,
+                        id_proyecto: 0,
+                    }
+                }
+                onSubmit={handleModalSubmit}
+                fields={[
+                    { key: "nombre", label: "Nombre", type: "text" },
+                    { key: "caducidad", label: "Caducidad", type: "date" },
+                    { key: "stock_kgs", label: "Stock (kg)", type: "number" },
+                    {
+                        key: "id_proyecto",
+                        label: "ID Proyecto",
+                        type: "number",
+                    },
+                ]}
             />
         </div>
     );
