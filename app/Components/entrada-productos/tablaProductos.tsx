@@ -2,21 +2,27 @@
 
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { useEffect, useState } from "react";
+import { Button } from "primereact/button";
+import { useEffect, useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { fetchEntradaProductos } from "@/app/redux/slices/entradaProductosSlice";
 import type { RootState, AppDispatch } from "@/app/redux/store";
 import { EntradaDeProductos } from "@/app/interfaces/EntradaProductos";
 import { formatDate } from "@/app/utils/utils";
-import { fetchEntradaProductos } from "@/app/redux/slices/entradaProductosSlice";
+import { Toast } from "primereact/toast";
 
 interface Props {
     setSelectedProducts: (products: EntradaDeProductos[]) => void;
     setBotonEliminar: (botonEliminar: boolean) => void;
+    setVisible: (visible: boolean) => void;
+    setSelectedProduct: (product: EntradaDeProductos | null) => void;
 }
 
 const TablaProductos: React.FC<Props> = ({
     setSelectedProducts,
     setBotonEliminar,
+    setVisible,
+    setSelectedProduct,
 }) => {
     const dispatch: AppDispatch = useDispatch();
     const productos = useSelector(
@@ -31,6 +37,7 @@ const TablaProductos: React.FC<Props> = ({
     const [selectedProducts, setSelectedProductsState] = useState<
         EntradaDeProductos[]
     >([]);
+    const toast = useRef<Toast>(null);
 
     useEffect(() => {
         if (status === "idle") {
@@ -42,6 +49,22 @@ const TablaProductos: React.FC<Props> = ({
         setSelectedProducts(selectedProducts);
         setBotonEliminar(selectedProducts.length > 0);
     }, [selectedProducts, setSelectedProducts, setBotonEliminar]);
+
+    useEffect(() => {
+        if (status === "failed" && error) {
+            toast.current?.show({
+                severity: "error",
+                summary: "Error",
+                detail: error,
+                life: 3000,
+            });
+        }
+    }, [status, error]);
+
+    const handleEdit = (product: EntradaDeProductos) => {
+        setSelectedProduct(product);
+        setVisible(true);
+    };
 
     const columns = [
         { field: "id", header: "ID" },
@@ -67,6 +90,7 @@ const TablaProductos: React.FC<Props> = ({
 
     return (
         <div className="w-full mt-4">
+            <Toast ref={toast} />
             <DataTable
                 value={productos}
                 className="tabla"
@@ -83,12 +107,24 @@ const TablaProductos: React.FC<Props> = ({
                 scrollHeight="600px"
                 selectionMode="multiple"
                 selection={selectedProducts}
-                onSelectionChange={(e) => setSelectedProductsState(e.value)}
+                onSelectionChange={(e) =>
+                    setSelectedProductsState(e.value as EntradaDeProductos[])
+                }
             >
+                <Column
+                    body={(rowData: EntradaDeProductos) => (
+                        <Button
+                            icon="pi pi-pencil"
+                            className="p-button-rounded p-button-text"
+                            onClick={() => handleEdit(rowData)}
+                        />
+                    )}
+                    headerStyle={{ width: "3rem" }}
+                />
                 <Column
                     selectionMode="multiple"
                     headerStyle={{ width: "3rem" }}
-                ></Column>
+                />
                 {columns.map((col) => (
                     <Column
                         key={col.field}
@@ -108,7 +144,6 @@ const TablaProductos: React.FC<Props> = ({
                     />
                 ))}
             </DataTable>
-            {status === "failed" && <p>{error}</p>}
         </div>
     );
 };

@@ -3,13 +3,13 @@
 import { Button } from "primereact/button";
 import { useState } from "react";
 import { z } from "zod";
-import ModalEntradaProductos from "../../Components/entrada-productos/modalEntradaProductos";
-import TablaProductos from "../../Components/entrada-productos/tablaProductos";
+import ModalEntradaProductos from "@/app/Components/entrada-productos/modalEntradaProductos";
+import TablaProductos from "@/app/Components/entrada-productos/tablaProductos";
 import { useDispatch } from "react-redux";
+import { deleteEntradaProductos } from "@/app/redux/slices/entradaProductosSlice";
 import { EntradaDeProductos } from "@/app/interfaces/EntradaProductos";
 import { AppDispatch } from "@/app/redux/store";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
-import { deleteEntradaProductos } from "@/app/redux/slices/entradaProductosSlice";
 
 const invalid_type_error =
     "Tipo de dato inválido proporcionado para este campo";
@@ -27,6 +27,8 @@ const EntradaProductos: React.FC = () => {
     const [selectedProducts, setSelectedProducts] = useState<
         EntradaDeProductos[]
     >([]);
+    const [selectedProduct, setSelectedProduct] =
+        useState<EntradaDeProductos | null>(null);
     const dispatch: AppDispatch = useDispatch();
 
     const handleDelete = () => {
@@ -69,14 +71,23 @@ const EntradaProductos: React.FC = () => {
                         label="Añadir producto"
                         icon="pi pi-plus"
                         className="bg-[var(--surface-a)] p-2 hover:bg-[var(--primary-color)] mt-2 max-w-[200px]"
-                        onClick={() => setVisible(true)}
+                        onClick={() => {
+                            setSelectedProduct(null);
+                            setVisible(true);
+                        }}
                     />
                 </div>
             </div>
-            <ModalEntradaProductos visible={visible} setVisible={setVisible} />
+            <ModalEntradaProductos
+                visible={visible}
+                setVisible={setVisible}
+                selectedProduct={selectedProduct}
+            />
             <TablaProductos
                 setSelectedProducts={setSelectedProducts}
                 setBotonEliminar={setBotonEliminar}
+                setVisible={setVisible}
+                setSelectedProduct={setSelectedProduct}
             />
         </div>
     );
