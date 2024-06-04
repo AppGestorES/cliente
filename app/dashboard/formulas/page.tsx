@@ -3,75 +3,67 @@
 import { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-    fetchMateriasPrimas,
-    postMateriasPrimas,
-    putMateriasPrimas,
-    deleteMateriasPrimas,
-} from "@/app/redux/slices/controlMateriaPrimaSlice";
+    fetchFormulas,
+    postFormulas,
+    putFormulas,
+    deleteFormulas,
+} from "@/app/redux/slices/formulasSlice";
 import GenericTable from "@/app/Components/generics/GenericTable";
 import GenericModal from "@/app/Components/generics/GenericModal";
 import {
-    getMateriasPrimasInterface,
-    postMateriasPrimasInterface,
-} from "@/app/interfaces/MateriasPrimas";
+    getFormulasInterface,
+    postFormulasInterface,
+} from "@/app/interfaces/Formulas";
 import { AppDispatch, RootState } from "@/app/redux/store";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
 
-const MateriasPrimasPage: React.FC = () => {
+const FormulasPage: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
-    const materiasPrimas = useSelector(
-        (state: RootState) => state.controlMateriaPrima.materiasPrimas
-    );
-    const status = useSelector(
-        (state: RootState) => state.controlMateriaPrima.status
-    );
-    const error = useSelector(
-        (state: RootState) => state.controlMateriaPrima.error
-    );
+    const formulas = useSelector((state: RootState) => state.formulas.formulas);
+    const status = useSelector((state: RootState) => state.formulas.status);
+    const error = useSelector((state: RootState) => state.formulas.error);
 
-    const [selectedMateriasPrimas, setSelectedMateriasPrimas] = useState<
-        getMateriasPrimasInterface[]
+    const [selectedFormulas, setSelectedFormulas] = useState<
+        getFormulasInterface[]
     >([]);
     const [modalVisible, setModalVisible] = useState(false);
-    const [selectedMateriaPrima, setSelectedMateriaPrima] =
-        useState<getMateriasPrimasInterface | null>(null);
+    const [selectedFormula, setSelectedFormula] =
+        useState<getFormulasInterface | null>(null);
     const toast = useRef<Toast>(null);
 
     useEffect(() => {
         if (status === "idle") {
-            dispatch(fetchMateriasPrimas());
+            dispatch(fetchFormulas());
         }
     }, [status, dispatch]);
 
-    const handleEdit = (materiaPrima: getMateriasPrimasInterface) => {
-        setSelectedMateriaPrima(materiaPrima);
+    const handleEdit = (formula: getFormulasInterface) => {
+        setSelectedFormula(formula);
         setModalVisible(true);
     };
 
     const handleDelete = () => {
-        if (selectedMateriasPrimas.length > 0) {
-            const idsToDelete = selectedMateriasPrimas.map(
-                (materiaPrima) => materiaPrima.id
-            );
-            dispatch(deleteMateriasPrimas(idsToDelete)).then((result) => {
+        if (selectedFormulas.length > 0) {
+            const idsToDelete = selectedFormulas.map((formula) => formula.id);
+            dispatch(deleteFormulas(idsToDelete)).then((result) => {
                 if (result.meta.requestStatus === "fulfilled") {
                     toast.current?.show({
                         severity: "success",
                         summary: "Eliminación Exitosa",
-                        detail: "Las materias primas fueron eliminadas",
+                        detail: "Las fórmulas fueron eliminadas",
                         life: 3000,
                     });
                 } else {
                     toast.current?.show({
                         severity: "error",
                         summary: "Error al Eliminar",
-                        detail: "Hubo un error al eliminar las materias primas",
+                        detail: "Hubo un error al eliminar las fórmulas",
                         life: 3000,
                     });
                 }
-                setSelectedMateriasPrimas([]);
+                setSelectedFormulas([]);
             });
         }
     };
@@ -79,7 +71,7 @@ const MateriasPrimasPage: React.FC = () => {
     const confirmDelete = () => {
         confirmDialog({
             message:
-                "¿Está seguro de que desea eliminar las materias primas seleccionadas?",
+                "¿Está seguro de que desea eliminar las fórmulas seleccionadas?",
             header: "Confirmación",
             icon: "pi pi-exclamation-triangle",
             acceptLabel: "Sí",
@@ -89,18 +81,18 @@ const MateriasPrimasPage: React.FC = () => {
         });
     };
 
-    const handleModalSubmit = (materiaPrima: postMateriasPrimasInterface) => {
-        if (selectedMateriaPrima) {
+    const handleModalSubmit = (formula: postFormulasInterface) => {
+        if (selectedFormula) {
             dispatch(
-                putMateriasPrimas({
-                    id: selectedMateriaPrima.id,
-                    updatedMateriaPrima: materiaPrima,
+                putFormulas({
+                    id: selectedFormula.id,
+                    updatedFormula: formula,
                 })
             );
         } else {
-            dispatch(postMateriasPrimas(materiaPrima));
+            dispatch(postFormulas(formula));
         }
-        setSelectedMateriaPrima(null);
+        setSelectedFormula(null);
         setModalVisible(false);
     };
 
@@ -109,9 +101,9 @@ const MateriasPrimasPage: React.FC = () => {
             <Toast ref={toast} />
             <ConfirmDialog />
             <div className="flex flex-col md:flex-row w-full md:items-center justify-between px-4">
-                <h2 className="text-xl">Materias Primas</h2>
+                <h2 className="text-xl">Fórmulas</h2>
                 <div className="flex gap-2 items-center">
-                    {selectedMateriasPrimas.length > 0 && (
+                    {selectedFormulas.length > 0 && (
                         <Button
                             label="Eliminar seleccionados"
                             icon="pi pi-trash"
@@ -120,7 +112,7 @@ const MateriasPrimasPage: React.FC = () => {
                         />
                     )}
                     <Button
-                        label="Añadir materia prima"
+                        label="Añadir fórmula"
                         icon="pi pi-plus"
                         className="bg-[var(--surface-a)] p-2 hover:bg-[var(--primary-color)] mt-2 max-w-[200px]"
                         onClick={() => setModalVisible(true)}
@@ -128,7 +120,7 @@ const MateriasPrimasPage: React.FC = () => {
                 </div>
             </div>
             <GenericTable
-                data={materiasPrimas}
+                data={formulas}
                 columns={[
                     { field: "id", header: "ID" },
                     { field: "nombre", header: "Nombre" },
@@ -140,11 +132,10 @@ const MateriasPrimasPage: React.FC = () => {
                                 rowData.caducidad * 1000
                             ).toLocaleDateString(),
                     },
-                    { field: "stock_kgs", header: "Stock (kg)" },
                     { field: "id_proyecto", header: "ID Proyecto" },
                 ]}
-                selectedItems={selectedMateriasPrimas}
-                setSelectedItems={setSelectedMateriasPrimas}
+                selectedItems={selectedFormulas}
+                setSelectedItems={setSelectedFormulas}
                 onEdit={handleEdit}
                 onDelete={handleDelete}
                 loading={status === "loading"}
@@ -154,16 +145,15 @@ const MateriasPrimasPage: React.FC = () => {
                 visible={modalVisible}
                 setVisible={setModalVisible}
                 initialValues={
-                    selectedMateriaPrima || {
+                    selectedFormula || {
                         id: 0,
                         nombre: "",
                         caducidad: 0,
-                        stock_kgs: 0,
                         id_proyecto: 0,
                     }
                 }
-                onSuccess={() => dispatch(fetchMateriasPrimas())}
                 onSubmit={handleModalSubmit}
+                onSuccess={() => dispatch(fetchFormulas())}
                 fields={[
                     {
                         key: "nombre",
@@ -176,11 +166,6 @@ const MateriasPrimasPage: React.FC = () => {
                         type: "date",
                     },
                     {
-                        key: "stock_kgs",
-                        label: "Stock (kg)",
-                        type: "number",
-                    },
-                    {
                         key: "id_proyecto",
                         label: "ID Proyecto",
                         type: "number",
@@ -191,4 +176,4 @@ const MateriasPrimasPage: React.FC = () => {
     );
 };
 
-export default MateriasPrimasPage;
+export default FormulasPage;

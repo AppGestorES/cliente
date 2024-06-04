@@ -11,16 +11,16 @@ interface Props<T> {
     setVisible: (visible: boolean) => void;
     initialValues: T;
     onSubmit: (values: T) => void;
+    onSuccess: () => void;
     fields: { key: keyof T; label: string; type: "text" | "number" | "date" }[];
 }
-
-const isDate = (value: any): value is Date => value instanceof Date;
 
 const GenericModal = <T,>({
     visible,
     setVisible,
     initialValues,
     onSubmit,
+    onSuccess,
     fields,
 }: Props<T>) => {
     const [formValues, setFormValues] = useState<T>(initialValues);
@@ -42,8 +42,8 @@ const GenericModal = <T,>({
 
         fields.forEach((field) => {
             if (field.type === "date") {
-                const dateValue = updatedValues[field.key];
-                if (isDate(dateValue)) {
+                const dateValue = formValues[field.key];
+                if (dateValue instanceof Date) {
                     updatedValues[field.key] = Math.floor(
                         dateValue.getTime() / 1000
                     ) as unknown as T[keyof T];
@@ -53,6 +53,7 @@ const GenericModal = <T,>({
 
         onSubmit(updatedValues);
         setVisible(false);
+        onSuccess();
     };
 
     const footerContent = (
@@ -118,6 +119,7 @@ const GenericModal = <T,>({
                                                 e.target.value
                                             )
                                         }
+                                        type={field.type}
                                         keyfilter={
                                             field.type === "number"
                                                 ? "int"

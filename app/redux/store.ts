@@ -4,6 +4,8 @@ import controlMateriaPrimaSlice from "@/app/redux/slices/controlMateriaPrimaSlic
 import entradaProductosSlice from "@/app/redux/slices/entradaProductosSlice";
 import salidaProductosSlice from "@/app/redux/slices/salidaProductosSlice";
 import materiasPrimasSlice from "./slices/materiasPrimasSlice";
+import formulasSlice from "./slices/formulasSlice";
+import prodcutosFinalesSlice from "./slices/prodcutosFinalesSlice";
 
 const store = configureStore({
     reducer: {
@@ -12,6 +14,8 @@ const store = configureStore({
         auth: authSlice,
         salidaProductos: salidaProductosSlice,
         materiasPrimas: materiasPrimasSlice,
+        formulas: formulasSlice,
+        productosFinales: prodcutosFinalesSlice,
     },
 });
 
