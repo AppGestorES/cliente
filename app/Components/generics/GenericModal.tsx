@@ -10,9 +10,9 @@ interface Props<T> {
     visible: boolean;
     setVisible: (visible: boolean) => void;
     initialValues: T;
-    onSubmit: (values: T) => Promise<void>;
+    onSubmit: (values: T) => void;
+    onSuccess: () => void;
     fields: { key: keyof T; label: string; type: "text" | "number" | "date" }[];
-    onAfterSubmit?: () => void;
 }
 
 const GenericModal = <T,>({
@@ -20,8 +20,8 @@ const GenericModal = <T,>({
     setVisible,
     initialValues,
     onSubmit,
+    onSuccess,
     fields,
-    onAfterSubmit,
 }: Props<T>) => {
     const [formValues, setFormValues] = useState<T>(initialValues);
     const toast = useRef<Toast>(null);
@@ -37,10 +37,23 @@ const GenericModal = <T,>({
         }));
     };
 
-    const handleSubmit = async () => {
-        await onSubmit(formValues);
+    const handleSubmit = () => {
+        const updatedValues = { ...formValues };
+
+        fields.forEach((field) => {
+            if (field.type === "date") {
+                const dateValue = formValues[field.key];
+                if (dateValue instanceof Date) {
+                    updatedValues[field.key] = Math.floor(
+                        dateValue.getTime() / 1000
+                    ) as unknown as T[keyof T];
+                }
+            }
+        });
+
+        onSubmit(updatedValues);
         setVisible(false);
-        onAfterSubmit?.();
+        onSuccess();
     };
 
     const footerContent = (
@@ -106,6 +119,7 @@ const GenericModal = <T,>({
                                                 e.target.value
                                             )
                                         }
+                                        type={field.type}
                                         keyfilter={
                                             field.type === "number"
                                                 ? "int"
