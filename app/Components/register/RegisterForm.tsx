@@ -10,7 +10,7 @@ import { useRef, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { AppDispatch } from "@/app/redux/store";
-import { registerUser } from "@/app/redux/slice/apiSlice";
+import { registerUser } from "@/app/redux/slices/authSlice";
 import Link from "next/link";
 
 const schema = z.object({

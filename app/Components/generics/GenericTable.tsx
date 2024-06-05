@@ -17,6 +17,7 @@ interface Props<T> {
     onDelete: (items: T[]) => void;
     loading: boolean;
     error: string | null;
+    edit: boolean;
 }
 
 const GenericTable = <T extends { id: number }>({
@@ -28,6 +29,7 @@ const GenericTable = <T extends { id: number }>({
     onDelete,
     loading,
     error,
+    edit,
 }: Props<T>) => {
     const toast = useRef<Toast>(null);
 
@@ -76,15 +78,17 @@ const GenericTable = <T extends { id: number }>({
                         body={col.render ? col.render : undefined}
                     />
                 ))}
-                <Column
-                    header="Edit"
-                    body={(rowData: T) => (
-                        <Button
-                            icon="pi pi-pencil"
-                            onClick={() => onEdit(rowData)}
-                        />
-                    )}
-                />
+                {edit ? (
+                    <Column
+                        header="Edit"
+                        body={(rowData: T) => (
+                            <Button
+                                icon="pi pi-pencil"
+                                onClick={() => onEdit(rowData)}
+                            />
+                        )}
+                    />
+                ) : undefined}
             </DataTable>
         </div>
     );
