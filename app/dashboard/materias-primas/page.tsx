@@ -3,25 +3,27 @@
 import { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-    fetchMateriasPrimas,
     postMateriasPrimas,
     putMateriasPrimas,
     deleteMateriasPrimas,
+    fetchMateriasPrimas,
 } from "@/app/redux/slices/controlMateriaPrimaSlice";
 import GenericTable from "@/app/Components/generics/GenericTable";
-import GenericModal from "@/app/Components/generics/GenericModal";
 import {
     getMateriasPrimasInterface,
     postMateriasPrimasInterface,
+    putMateriasPrimasInterface,
 } from "@/app/interfaces/MateriasPrimas";
 import { AppDispatch, RootState } from "@/app/redux/store";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
+import CreateMateriaPrimaModal from "@/app/Components/analisis-control/analisisControlModal";
+import EditMateriaPrimaModal from "@/app/Components/analisis-control/editAnalisisControlModal";
 
-const MateriasPrimasPage: React.FC = () => {
+const ControlMateriaPrima: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
-    const materiasPrimas = useSelector(
+    const productos = useSelector(
         (state: RootState) => state.controlMateriaPrima.materiasPrimas
     );
     const status = useSelector(
@@ -31,12 +33,13 @@ const MateriasPrimasPage: React.FC = () => {
         (state: RootState) => state.controlMateriaPrima.error
     );
 
-    const [selectedMateriasPrimas, setSelectedMateriasPrimas] = useState<
+    const [selectedProducts, setSelectedProducts] = useState<
         getMateriasPrimasInterface[]
     >([]);
     const [modalVisible, setModalVisible] = useState(false);
-    const [selectedMateriaPrima, setSelectedMateriaPrima] =
+    const [selectedProduct, setSelectedProduct] =
         useState<getMateriasPrimasInterface | null>(null);
+    const [createModalVisible, setCreateModalVisible] = useState(false);
     const toast = useRef<Toast>(null);
 
     useEffect(() => {
@@ -45,16 +48,14 @@ const MateriasPrimasPage: React.FC = () => {
         }
     }, [status, dispatch]);
 
-    const handleEdit = (materiaPrima: getMateriasPrimasInterface) => {
-        setSelectedMateriaPrima(materiaPrima);
+    const handleEdit = (product: getMateriasPrimasInterface) => {
+        setSelectedProduct(product);
         setModalVisible(true);
     };
 
     const handleDelete = () => {
-        if (selectedMateriasPrimas.length > 0) {
-            const idsToDelete = selectedMateriasPrimas.map(
-                (materiaPrima) => materiaPrima.id
-            );
+        if (selectedProducts.length > 0) {
+            const idsToDelete = selectedProducts.map((product) => product.id);
             dispatch(deleteMateriasPrimas(idsToDelete)).then((result) => {
                 if (result.meta.requestStatus === "fulfilled") {
                     toast.current?.show({
@@ -71,7 +72,7 @@ const MateriasPrimasPage: React.FC = () => {
                         life: 3000,
                     });
                 }
-                setSelectedMateriasPrimas([]);
+                setSelectedProducts([]);
             });
         }
     };
@@ -79,7 +80,7 @@ const MateriasPrimasPage: React.FC = () => {
     const confirmDelete = () => {
         confirmDialog({
             message:
-                "¿Está seguro de que desea eliminar las materias primas seleccionadas?",
+                "¿Está seguro de que desea eliminar los productos seleccionados?",
             header: "Confirmación",
             icon: "pi pi-exclamation-triangle",
             acceptLabel: "Sí",
@@ -89,19 +90,57 @@ const MateriasPrimasPage: React.FC = () => {
         });
     };
 
-    const handleModalSubmit = (materiaPrima: postMateriasPrimasInterface) => {
-        if (selectedMateriaPrima) {
-            dispatch(
-                putMateriasPrimas({
-                    id: selectedMateriaPrima.id,
-                    updatedMateriaPrima: materiaPrima,
-                })
-            );
-        } else {
-            dispatch(postMateriasPrimas(materiaPrima));
-        }
-        setSelectedMateriaPrima(null);
-        setModalVisible(false);
+    const handleSuccess = () => {
+        dispatch(fetchMateriasPrimas());
+        toast.current?.show({
+            severity: "success",
+            summary: "Éxito",
+            detail: "La operación se realizó con éxito",
+            life: 3000,
+        });
+    };
+
+    const handleCreateSubmit = (product: postMateriasPrimasInterface) => {
+        dispatch(postMateriasPrimas(product)).then((result) => {
+            if (result.meta.requestStatus === "fulfilled") {
+                toast.current?.show({
+                    severity: "success",
+                    summary: "Creación Exitosa",
+                    detail: "La materia prima fue agregada",
+                    life: 3000,
+                });
+                setCreateModalVisible(false);
+            } else {
+                toast.current?.show({
+                    severity: "error",
+                    summary: "Error al Crear",
+                    detail: "Hubo un error al agregar la materia prima",
+                    life: 3000,
+                });
+            }
+        });
+    };
+
+    const handleEditSubmit = (product: putMateriasPrimasInterface) => {
+        dispatch(putMateriasPrimas(product)).then((result) => {
+            if (result.meta.requestStatus === "fulfilled") {
+                toast.current?.show({
+                    severity: "success",
+                    summary: "Actualización Exitosa",
+                    detail: "La materia prima fue actualizada",
+                    life: 3000,
+                });
+                setModalVisible(false);
+                setSelectedProduct(null);
+            } else {
+                toast.current?.show({
+                    severity: "error",
+                    summary: "Error al Actualizar",
+                    detail: "Hubo un error al actualizar la materia prima",
+                    life: 3000,
+                });
+            }
+        });
     };
 
     return (
@@ -109,9 +148,11 @@ const MateriasPrimasPage: React.FC = () => {
             <Toast ref={toast} />
             <ConfirmDialog />
             <div className="flex flex-col md:flex-row w-full md:items-center justify-between px-4">
-                <h2 className="text-xl">Materias Primas</h2>
+                <h2 className="text-xl">
+                    Análisis de control de materia prima
+                </h2>
                 <div className="flex gap-2 items-center">
-                    {selectedMateriasPrimas.length > 0 && (
+                    {selectedProducts.length > 0 && (
                         <Button
                             label="Eliminar seleccionados"
                             icon="pi pi-trash"
@@ -119,76 +160,26 @@ const MateriasPrimasPage: React.FC = () => {
                             onClick={confirmDelete}
                         />
                     )}
-                    <Button
-                        label="Añadir materia prima"
-                        icon="pi pi-plus"
-                        className="bg-[var(--surface-a)] p-2 hover:bg-[var(--primary-color)] mt-2 max-w-[200px]"
-                        onClick={() => setModalVisible(true)}
-                    />
+                    <CreateMateriaPrimaModal />
                 </div>
             </div>
             <GenericTable
-                data={materiasPrimas}
+                data={productos}
                 columns={[
                     { field: "id", header: "ID" },
                     { field: "nombre", header: "Nombre" },
-                    {
-                        field: "caducidad",
-                        header: "Caducidad",
-                        render: (rowData) =>
-                            new Date(
-                                rowData.caducidad * 1000
-                            ).toLocaleDateString(),
-                    },
+                    { field: "caducidad", header: "Caducidad (días)" },
                     { field: "stock_kgs", header: "Stock (kg)" },
                     { field: "id_proyecto", header: "ID Proyecto" },
                 ]}
-                selectedItems={selectedMateriasPrimas}
-                setSelectedItems={setSelectedMateriasPrimas}
-                onEdit={handleEdit}
+                selectedItems={selectedProducts}
+                setSelectedItems={setSelectedProducts}
                 onDelete={handleDelete}
                 loading={status === "loading"}
                 error={error}
-            />
-            <GenericModal
-                visible={modalVisible}
-                setVisible={setModalVisible}
-                initialValues={
-                    selectedMateriaPrima || {
-                        id: 0,
-                        nombre: "",
-                        caducidad: 0,
-                        stock_kgs: 0,
-                        id_proyecto: 0,
-                    }
-                }
-                onSuccess={() => dispatch(fetchMateriasPrimas())}
-                onSubmit={handleModalSubmit}
-                fields={[
-                    {
-                        key: "nombre",
-                        label: "Nombre",
-                        type: "text",
-                    },
-                    {
-                        key: "caducidad",
-                        label: "Caducidad",
-                        type: "date",
-                    },
-                    {
-                        key: "stock_kgs",
-                        label: "Stock (kg)",
-                        type: "number",
-                    },
-                    {
-                        key: "id_proyecto",
-                        label: "ID Proyecto",
-                        type: "number",
-                    },
-                ]}
             />
         </div>
     );
 };
 
-export default MateriasPrimasPage;
+export default ControlMateriaPrima;

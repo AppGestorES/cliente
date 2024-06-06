@@ -86,7 +86,7 @@ const EntradaProductosModal = () => {
                 breakpoints={{ "960px": "75vw", "641px": "100vw" }}
                 onHide={() => setVisible(false)}
             >
-                <form className="w-full grid grid-cols-3 gap-6 p-5">
+                <form className="w-full grid grid-cols-1 md:grid-cols-3 gap-6 p-5">
                     <div className="flex flex-col gap-2 sm:flex-row">
                         <FloatLabel>
                             <InputText
@@ -127,6 +127,7 @@ const EntradaProductosModal = () => {
                         <FloatLabel>
                             <InputText
                                 id="numero_albaran"
+                                keyfilter={"int"}
                                 value={numeroAlbaran}
                                 onChange={(e) =>
                                     setNumeroAlbaran(e.target.value)
