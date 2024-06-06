@@ -19,6 +19,7 @@ import { AppDispatch, RootState } from "@/app/redux/store";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Button } from "primereact/button";
 import React from "react";
+import EntradaProductosModal from "@/app/Components/entrada-productos/entradaProductosModal";
 
 const EntradaProductosPage: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -46,7 +47,12 @@ const EntradaProductosPage: React.FC = () => {
     }, [status, dispatch]);
 
     const handleEdit = (product: EntradaDeProductos) => {
-        setSelectedProduct(product);
+        setSelectedProduct({
+            ...product,
+            envasado_id: product.envasado_id ?? 0,
+            operario_id: product.operario_id ?? 0,
+            id_proyecto: product.id_proyecto ?? 0,
+        });
         setModalVisible(true);
     };
 
@@ -86,10 +92,14 @@ const EntradaProductosPage: React.FC = () => {
                 numero_lote: product.numero_lote,
                 cantidad_kg: product.cantidad_kg,
                 fecha_caducidad: product.fecha_caducidad,
-                envasado_id: product.envasado_id ?? 0,
-                operario_id: product.operario_id ?? 0,
-                id_proyecto: product.id_proyecto ?? 0,
+                envasado_id:
+                    product.envasado!.id ?? selectedProduct.envasado_id,
+                operario_id:
+                    product.operario!.id ?? selectedProduct.operario_id,
+                id_proyecto:
+                    product.proyecto!.id ?? selectedProduct.id_proyecto,
             };
+            console.log(updatedProduct);
 
             dispatch(
                 putEntradaProductos({
@@ -122,7 +132,10 @@ const EntradaProductosPage: React.FC = () => {
                         label="Añadir producto"
                         icon="pi pi-plus"
                         className="bg-[var(--surface-a)] p-2 hover:bg-[var(--primary-color)] mt-2 max-w-[200px]"
-                        onClick={() => setModalVisible(true)}
+                        onClick={() => {
+                            setSelectedProduct(null);
+                            setModalVisible(true);
+                        }}
                     />
                 </div>
             </div>
@@ -143,7 +156,7 @@ const EntradaProductosPage: React.FC = () => {
                                     ).toLocaleDateString()}
                                 </span>
                             ) : (
-                                <span></span>
+                                <React.Fragment />
                             ),
                     },
                     { field: "proveedor", header: "Proveedor" },
@@ -151,27 +164,13 @@ const EntradaProductosPage: React.FC = () => {
                     { field: "numero_lote", header: "Número de lote" },
                     { field: "cantidad_kg", header: "Cantidad (KG)" },
                     {
-                        field: "fecha_caducidad",
-                        header: "Fecha Caducidad",
-                        render: (rowData) =>
-                            rowData.fecha_caducidad ? (
-                                <span>
-                                    {new Date(
-                                        rowData.fecha_caducidad * 1000
-                                    ).toLocaleDateString()}
-                                </span>
-                            ) : (
-                                <React.Fragment />
-                            ),
-                    },
-                    {
                         field: "envasado_id",
                         header: "ID Envasado",
                         render: (rowData) =>
                             rowData.envasado && rowData.envasado.id ? (
                                 <span>{rowData.envasado.id}</span>
                             ) : (
-                                <span></span>
+                                <React.Fragment />
                             ),
                     },
                     {
@@ -181,7 +180,7 @@ const EntradaProductosPage: React.FC = () => {
                             rowData.operario && rowData.operario.id ? (
                                 <span>{rowData.operario.id}</span>
                             ) : (
-                                <span></span>
+                                <React.Fragment />
                             ),
                     },
                     {
@@ -191,7 +190,7 @@ const EntradaProductosPage: React.FC = () => {
                             rowData.proyecto && rowData.proyecto.id ? (
                                 <span>{rowData.proyecto.id}</span>
                             ) : (
-                                <span></span>
+                                <React.Fragment />
                             ),
                     },
                 ]}
@@ -202,70 +201,7 @@ const EntradaProductosPage: React.FC = () => {
                 loading={status === "loading"}
                 error={error}
             />
-            <GenericModal
-                visible={modalVisible}
-                setVisible={setModalVisible}
-                initialValues={
-                    selectedProduct || {
-                        id: 0,
-                        producto_final_id: 0,
-                        fecha_entrada: Math.floor(Date.now() / 1000),
-                        proveedor: "",
-                        numero_albaran: "",
-                        numero_lote: "",
-                        cantidad_kg: 0,
-                        fecha_caducidad: 0,
-                        envasado_id: 0,
-                        operario_id: 0,
-                        id_proyecto: 1,
-                    }
-                }
-                onSubmit={handleModalSubmit}
-                onSuccess={handleSubmit}
-                fields={[
-                    {
-                        key: "producto_final_id",
-                        label: "ID del Producto Final",
-                        type: "number",
-                    },
-                    {
-                        key: "fecha_entrada",
-                        label: "Fecha de entrada",
-                        type: "date",
-                    },
-                    { key: "proveedor", label: "Proveedor", type: "text" },
-                    {
-                        key: "numero_albaran",
-                        label: "Número de albarán",
-                        type: "text",
-                    },
-                    {
-                        key: "numero_lote",
-                        label: "Número de lote",
-                        type: "text",
-                    },
-                    {
-                        key: "cantidad_kg",
-                        label: "Cantidad (KG)",
-                        type: "number",
-                    },
-                    {
-                        key: "fecha_caducidad",
-                        label: "Fecha de caducidad",
-                        type: "date",
-                    },
-                    {
-                        key: "envasado_id",
-                        label: "ID Envasado",
-                        type: "number",
-                    },
-                    {
-                        key: "operario_id",
-                        label: "ID Operario",
-                        type: "number",
-                    },
-                ]}
-            />
+            <EntradaProductosModal />
         </div>
     );
 };

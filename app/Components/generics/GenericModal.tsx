@@ -56,24 +56,6 @@ const GenericModal = <T,>({
         onSuccess();
     };
 
-    const footerContent = (
-        <div className="flex gap-2">
-            <Button
-                type="submit"
-                label="Guardar"
-                icon="pi pi-check"
-                onClick={handleSubmit}
-                className="mt-2 bg-[var(--primary-color)] p-2"
-            />
-            <Button
-                label="Cancelar"
-                icon="pi pi-times"
-                onClick={() => setVisible(false)}
-                className="mt-2 hover:bg-[var(--red-400)] p-2"
-            />
-        </div>
-    );
-
     return (
         <>
             <Toast ref={toast} />
@@ -119,7 +101,6 @@ const GenericModal = <T,>({
                                                 e.target.value
                                             )
                                         }
-                                        type={field.type}
                                         keyfilter={
                                             field.type === "number"
                                                 ? "int"

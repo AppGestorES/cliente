@@ -4,7 +4,7 @@ import {
     putEntradasInterface,
     getEntradasInterface,
 } from "@/app/interfaces/EntradaProductos";
-import { RootState } from "@/app/redux/store"; // Import RootState
+import { RootState } from "@/app/redux/store";
 
 interface ApiResponse<T> {
     status: number;
