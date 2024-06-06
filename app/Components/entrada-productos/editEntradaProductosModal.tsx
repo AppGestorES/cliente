@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { Calendar } from "primereact/calendar";
@@ -7,29 +7,52 @@ import { InputText } from "primereact/inputtext";
 import { Toast } from "primereact/toast";
 import { AppDispatch } from "@/app/redux/store";
 import { useDispatch } from "react-redux";
-import { postEntradasInterface } from "@/app/interfaces/EntradaProductos";
+import {
+    EntradaDeProductos,
+    putEntradasInterface,
+} from "@/app/interfaces/EntradaProductos";
 import {
     fetchEntradaProductos,
-    postEntradaProductos,
+    putEntradaProductos,
 } from "@/app/redux/slices/entradaProductosSlice";
 
-const EntradaProductosModal = () => {
-    const [visible, setVisible] = useState<boolean>(false);
-    const [productoFinalId, setProductoFinalId] = useState<number>(0);
-    const [fechaEntrada, setFechaEntrada] = useState<Date | null>(null);
-    const [proveedor, setProveedor] = useState<string>("");
-    const [numeroAlbaran, setNumeroAlbaran] = useState<string>("");
-    const [numeroLote, setNumeroLote] = useState<string>("");
-    const [cantidadKg, setCantidadKg] = useState<number>(0);
-    const [fechaCaducidad, setFechaCaducidad] = useState<Date | null>(null);
-    const [envasadoId, setEnvasadoId] = useState<number>(0);
-    const [operarioId, setOperarioId] = useState<number>(0);
-    const [idProyecto, setIdProyecto] = useState<number>(0);
+interface Props {
+    producto: EntradaDeProductos;
+    onHide: () => void;
+}
+
+const EditEntradaProductosModal: React.FC<Props> = ({ producto, onHide }) => {
+    const [visible, setVisible] = useState<boolean>(true);
+    const [productoFinalId, setProductoFinalId] = useState<number>(
+        producto.producto_final_id
+    );
+    const [fechaEntrada, setFechaEntrada] = useState<Date | null>(
+        new Date(producto.fecha_entrada * 1000)
+    );
+    const [proveedor, setProveedor] = useState<string>(producto.proveedor);
+    const [numeroAlbaran, setNumeroAlbaran] = useState<string>(
+        producto.numero_albaran
+    );
+    const [numeroLote, setNumeroLote] = useState<string>(producto.numero_lote);
+    const [cantidadKg, setCantidadKg] = useState<number>(producto.cantidad_kg);
+    const [fechaCaducidad, setFechaCaducidad] = useState<Date | null>(
+        new Date(producto.fecha_caducidad * 1000)
+    );
+    const [envasadoId, setEnvasadoId] = useState<number>(
+        producto.envasado!.id ?? 0
+    );
+    const [operarioId, setOperarioId] = useState<number>(
+        producto.operario!.id ?? 0
+    );
+    const [idProyecto, setIdProyecto] = useState<number>(
+        producto.proyecto!.id ?? 0
+    );
     const toast = useRef<Toast>(null);
     const dispatch: AppDispatch = useDispatch();
 
     const handleSubmit = () => {
-        const addProduct: postEntradasInterface = {
+        const updatedProduct: putEntradasInterface = {
+            id: producto.id,
             producto_final_id: productoFinalId,
             fecha_entrada: fechaEntrada ? fechaEntrada.getTime() / 1000 : 0,
             proveedor: proveedor,
@@ -45,9 +68,10 @@ const EntradaProductosModal = () => {
         };
 
         try {
-            dispatch(postEntradaProductos(addProduct));
+            dispatch(putEntradaProductos(updatedProduct));
             dispatch(fetchEntradaProductos());
             setVisible(false);
+            onHide();
         } catch (error) {
             console.error("Error");
         }
@@ -65,7 +89,10 @@ const EntradaProductosModal = () => {
             <Button
                 label="Cancelar"
                 icon="pi pi-times"
-                onClick={() => setVisible(false)}
+                onClick={() => {
+                    setVisible(false);
+                    onHide();
+                }}
                 className="mt-2 hover:bg-[var(--red-400)] p-2"
             />
         </div>
@@ -73,18 +100,16 @@ const EntradaProductosModal = () => {
 
     return (
         <div className="card flex justify-content-center">
-            <Button
-                label="Añadir producto"
-                icon="pi pi-external-link"
-                onClick={() => setVisible(true)}
-            />
             <Dialog
-                header="Añadir"
+                header="Editar Producto"
                 footer={footerContent}
                 visible={visible}
                 className="bg-[var(--surface-c)]"
                 breakpoints={{ "960px": "75vw", "641px": "100vw" }}
-                onHide={() => setVisible(false)}
+                onHide={() => {
+                    setVisible(false);
+                    onHide();
+                }}
             >
                 <form className="w-full grid grid-cols-3 gap-6 p-5">
                     <div className="flex flex-col gap-2 sm:flex-row">
@@ -176,7 +201,7 @@ const EntradaProductosModal = () => {
                         <FloatLabel>
                             <InputText
                                 id="envasado_id"
-                                value={envasadoId?.toString() || ""}
+                                value={envasadoId.toString()}
                                 onChange={(e) =>
                                     setEnvasadoId(parseInt(e.target.value))
                                 }
@@ -189,7 +214,7 @@ const EntradaProductosModal = () => {
                         <FloatLabel>
                             <InputText
                                 id="operario_id"
-                                value={operarioId?.toString() || ""}
+                                value={operarioId.toString()}
                                 onChange={(e) =>
                                     setOperarioId(parseInt(e.target.value))
                                 }
@@ -202,7 +227,7 @@ const EntradaProductosModal = () => {
                         <FloatLabel>
                             <InputText
                                 id="id_proyecto"
-                                value={idProyecto?.toString() || ""}
+                                value={idProyecto.toString()}
                                 onChange={(e) =>
                                     setIdProyecto(parseInt(e.target.value))
                                 }
@@ -217,4 +242,4 @@ const EntradaProductosModal = () => {
     );
 };
 
-export default EntradaProductosModal;
+export default EditEntradaProductosModal;

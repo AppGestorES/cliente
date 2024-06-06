@@ -9,17 +9,13 @@ import {
     deleteEntradaProductos,
 } from "@/app/redux/slices/entradaProductosSlice";
 import GenericTable from "@/app/Components/generics/GenericTable";
-import GenericModal from "@/app/Components/generics/GenericModal";
-import {
-    EntradaDeProductos,
-    postEntradasInterface,
-    putEntradasInterface,
-} from "@/app/interfaces/EntradaProductos";
-import { AppDispatch, RootState } from "@/app/redux/store";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Button } from "primereact/button";
 import React from "react";
 import EntradaProductosModal from "@/app/Components/entrada-productos/entradaProductosModal";
+import EditEntradaProductosModal from "@/app/Components/entrada-productos/editEntradaProductosModal";
+import { EntradaDeProductos } from "@/app/interfaces/EntradaProductos";
+import { AppDispatch, RootState } from "@/app/redux/store";
 
 const EntradaProductosPage: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -36,7 +32,6 @@ const EntradaProductosPage: React.FC = () => {
     const [selectedProducts, setSelectedProducts] = useState<
         EntradaDeProductos[]
     >([]);
-    const [modalVisible, setModalVisible] = useState(false);
     const [selectedProduct, setSelectedProduct] =
         useState<EntradaDeProductos | null>(null);
 
@@ -45,16 +40,6 @@ const EntradaProductosPage: React.FC = () => {
             dispatch(fetchEntradaProductos());
         }
     }, [status, dispatch]);
-
-    const handleEdit = (product: EntradaDeProductos) => {
-        setSelectedProduct({
-            ...product,
-            envasado_id: product.envasado_id ?? 0,
-            operario_id: product.operario_id ?? 0,
-            id_proyecto: product.id_proyecto ?? 0,
-        });
-        setModalVisible(true);
-    };
 
     const handleDelete = () => {
         if (selectedProducts.length > 0) {
@@ -77,43 +62,6 @@ const EntradaProductosPage: React.FC = () => {
         });
     };
 
-    const handleSubmit = () => {
-        dispatch(fetchEntradaProductos());
-    };
-
-    const handleModalSubmit = (product: EntradaDeProductos) => {
-        if (selectedProduct) {
-            const updatedProduct: putEntradasInterface = {
-                id: selectedProduct.id,
-                producto_final_id: product.producto_final_id,
-                fecha_entrada: product.fecha_entrada,
-                proveedor: product.proveedor,
-                numero_albaran: product.numero_albaran,
-                numero_lote: product.numero_lote,
-                cantidad_kg: product.cantidad_kg,
-                fecha_caducidad: product.fecha_caducidad,
-                envasado_id:
-                    product.envasado!.id ?? selectedProduct.envasado_id,
-                operario_id:
-                    product.operario!.id ?? selectedProduct.operario_id,
-                id_proyecto:
-                    product.proyecto!.id ?? selectedProduct.id_proyecto,
-            };
-            console.log(updatedProduct);
-
-            dispatch(
-                putEntradaProductos({
-                    id: selectedProduct.id,
-                    updatedProduct: updatedProduct,
-                })
-            );
-        } else {
-            dispatch(postEntradaProductos(product as postEntradasInterface));
-        }
-        setSelectedProduct(null);
-        setModalVisible(false);
-    };
-
     return (
         <div className="w-full">
             <ConfirmDialog />
@@ -128,19 +76,10 @@ const EntradaProductosPage: React.FC = () => {
                             onClick={confirmDelete}
                         />
                     )}
-                    <Button
-                        label="Añadir producto"
-                        icon="pi pi-plus"
-                        className="bg-[var(--surface-a)] p-2 hover:bg-[var(--primary-color)] mt-2 max-w-[200px]"
-                        onClick={() => {
-                            setSelectedProduct(null);
-                            setModalVisible(true);
-                        }}
-                    />
+                    <EntradaProductosModal />
                 </div>
             </div>
             <GenericTable
-                edit={true}
                 data={productos}
                 columns={[
                     { field: "id", header: "ID" },
@@ -196,12 +135,16 @@ const EntradaProductosPage: React.FC = () => {
                 ]}
                 selectedItems={selectedProducts}
                 setSelectedItems={setSelectedProducts}
-                onEdit={handleEdit}
                 onDelete={handleDelete}
                 loading={status === "loading"}
                 error={error}
+                editComponent={(item, onHide) => (
+                    <EditEntradaProductosModal
+                        producto={item}
+                        onHide={onHide}
+                    />
+                )}
             />
-            <EntradaProductosModal />
         </div>
     );
 };
