@@ -5,7 +5,7 @@ export interface materiasPrimasInterface {
     nombre: string;
     caducidad: number;
     stock_kgs: number;
-    id_proyecto: proyectosInterface;
+    proyecto: proyectosInterface;
 }
 
 export interface getMateriasPrimasInterface {
@@ -13,7 +13,7 @@ export interface getMateriasPrimasInterface {
     nombre: string;
     caducidad: number;
     stock_kgs: number;
-    id_proyecto: proyectosInterface;
+    proyecto: proyectosInterface;
 }
 
 export interface postMateriasPrimasInterface {

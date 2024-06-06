@@ -5,7 +5,10 @@ import { Calendar } from "primereact/calendar";
 import { FloatLabel } from "primereact/floatlabel";
 import { InputText } from "primereact/inputtext";
 import { InputNumber } from "primereact/inputnumber";
-import { postMateriasPrimasInterface } from "@/app/interfaces/MateriasPrimas";
+import {
+    materiasPrimasInterface,
+    postMateriasPrimasInterface,
+} from "@/app/interfaces/MateriasPrimas";
 import { AppDispatch } from "@/app/redux/store";
 import { useDispatch } from "react-redux";
 import {

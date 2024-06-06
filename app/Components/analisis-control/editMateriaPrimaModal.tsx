@@ -9,7 +9,7 @@ import { Toast } from "primereact/toast";
 import { AppDispatch } from "@/app/redux/store";
 import { useDispatch } from "react-redux";
 import {
-    getMateriasPrimasInterface,
+    materiasPrimasInterface,
     putMateriasPrimasInterface,
 } from "@/app/interfaces/MateriasPrimas";
 import {
@@ -18,35 +18,28 @@ import {
 } from "@/app/redux/slices/controlMateriaPrimaSlice";
 
 interface Props {
-    producto: getMateriasPrimasInterface;
+    materiaPrima: materiasPrimasInterface;
     onHide: () => void;
 }
 
-const EditMateriaPrimaModal: React.FC<Props> = ({ producto, onHide }) => {
+const EditMateriaPrimaModal: React.FC<Props> = ({ materiaPrima, onHide }) => {
     const [visible, setVisible] = useState<boolean>(true);
-    const [nombre, setNombre] = useState<string>(producto.nombre);
+    const [nombre, setNombre] = useState<string>(materiaPrima.nombre);
     const [caducidad, setCaducidad] = useState<Date | null>(
-        new Date(producto.caducidad * 1000)
+        new Date(materiaPrima.caducidad * 1000)
     );
-    const [stockKgs, setStockKgs] = useState<number>(producto.stock_kgs);
+    const [stockKgs, setStockKgs] = useState<number>(materiaPrima.stock_kgs);
     const [idProyecto, setIdProyecto] = useState<number>(
-        producto.id_proyecto.id
+        materiaPrima.proyecto.id
     );
     const toast = useRef<Toast>(null);
     const dispatch: AppDispatch = useDispatch();
 
-    useEffect(() => {
-        setNombre(producto.nombre);
-        setCaducidad(new Date(producto.caducidad * 1000));
-        setStockKgs(producto.stock_kgs);
-        setIdProyecto(producto.id_proyecto.id);
-    }, [producto]);
-
     const handleSubmit = () => {
         if (caducidad) {
             const updatedProduct: putMateriasPrimasInterface = {
-                id: producto.id,
-                nombre,
+                id: materiaPrima.id,
+                nombre: nombre,
                 caducidad: caducidad.getTime() / 1000,
                 stock_kgs: stockKgs,
                 id_proyecto: idProyecto,
@@ -60,6 +53,7 @@ const EditMateriaPrimaModal: React.FC<Props> = ({ producto, onHide }) => {
                         life: 3000,
                     });
                     setVisible(false);
+                    dispatch(fetchMateriasPrimas());
                     onHide();
                 } else {
                     toast.current?.show({
@@ -97,7 +91,7 @@ const EditMateriaPrimaModal: React.FC<Props> = ({ producto, onHide }) => {
     return (
         <div className="card flex justify-content-center">
             <Dialog
-                header="Editar Materia Prima"
+                header="Editar Producto"
                 footer={footerContent}
                 visible={visible}
                 className="bg-[var(--surface-c)]"
@@ -132,10 +126,12 @@ const EditMateriaPrimaModal: React.FC<Props> = ({ producto, onHide }) => {
                     </div>
                     <div className="flex flex-col gap-2 sm:flex-row">
                         <FloatLabel>
-                            <InputNumber
+                            <InputText
                                 id="stockKgs"
-                                value={stockKgs}
-                                onValueChange={(e: any) => setStockKgs(e.value)}
+                                value={stockKgs.toString()}
+                                onChange={(e: any) =>
+                                    setStockKgs(parseInt(e.target.value))
+                                }
                                 className="p-inputnumber p-component p-2"
                             />
                             <label htmlFor="stockKgs">Stock (kg)</label>
@@ -143,11 +139,11 @@ const EditMateriaPrimaModal: React.FC<Props> = ({ producto, onHide }) => {
                     </div>
                     <div className="flex flex-col gap-2 sm:flex-row">
                         <FloatLabel>
-                            <InputNumber
+                            <InputText
                                 id="idProyecto"
-                                value={idProyecto}
-                                onValueChange={(e: any) =>
-                                    setIdProyecto(e.value)
+                                value={idProyecto.toString()}
+                                onChange={(e: any) =>
+                                    setIdProyecto(parseInt(e.target.value))
                                 }
                                 className="p-inputnumber p-component p-2"
                             />

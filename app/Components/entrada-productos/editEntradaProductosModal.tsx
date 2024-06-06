@@ -67,14 +67,26 @@ const EditEntradaProductosModal: React.FC<Props> = ({ producto, onHide }) => {
             id_proyecto: idProyecto,
         };
 
-        try {
-            dispatch(putEntradaProductos(updatedProduct));
-            dispatch(fetchEntradaProductos());
-            setVisible(false);
-            onHide();
-        } catch (error) {
-            console.error("Error");
-        }
+        dispatch(putEntradaProductos(updatedProduct)).then((result) => {
+            if (result.meta.requestStatus === "fulfilled") {
+                toast.current?.show({
+                    severity: "success",
+                    summary: "Actualización Exitosa",
+                    detail: "La materia prima fue actualizada",
+                    life: 3000,
+                });
+                dispatch(fetchEntradaProductos());
+                setVisible(false);
+                onHide();
+            } else {
+                toast.current?.show({
+                    severity: "error",
+                    summary: "Error al Actualizar",
+                    detail: "Hubo un error al actualizar la materia prima",
+                    life: 3000,
+                });
+            }
+        });
     };
 
     const footerContent = (

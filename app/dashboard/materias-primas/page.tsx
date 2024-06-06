@@ -18,8 +18,8 @@ import { AppDispatch, RootState } from "@/app/redux/store";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
-import CreateMateriaPrimaModal from "@/app/Components/analisis-control/analisisControlModal";
-import EditMateriaPrimaModal from "@/app/Components/analisis-control/editAnalisisControlModal";
+import CreateMateriaPrimaModal from "@/app/Components/analisis-control/materiaPrimaModal";
+import EditMateriaPrimaModal from "@/app/Components/analisis-control/editMateriaPrimaModal";
 
 const ControlMateriaPrima: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -39,7 +39,6 @@ const ControlMateriaPrima: React.FC = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedProduct, setSelectedProduct] =
         useState<getMateriasPrimasInterface | null>(null);
-    const [createModalVisible, setCreateModalVisible] = useState(false);
     const toast = useRef<Toast>(null);
 
     useEffect(() => {
@@ -47,11 +46,6 @@ const ControlMateriaPrima: React.FC = () => {
             dispatch(fetchMateriasPrimas());
         }
     }, [status, dispatch]);
-
-    const handleEdit = (product: getMateriasPrimasInterface) => {
-        setSelectedProduct(product);
-        setModalVisible(true);
-    };
 
     const handleDelete = () => {
         if (selectedProducts.length > 0) {
@@ -90,59 +84,6 @@ const ControlMateriaPrima: React.FC = () => {
         });
     };
 
-    const handleSuccess = () => {
-        dispatch(fetchMateriasPrimas());
-        toast.current?.show({
-            severity: "success",
-            summary: "Éxito",
-            detail: "La operación se realizó con éxito",
-            life: 3000,
-        });
-    };
-
-    const handleCreateSubmit = (product: postMateriasPrimasInterface) => {
-        dispatch(postMateriasPrimas(product)).then((result) => {
-            if (result.meta.requestStatus === "fulfilled") {
-                toast.current?.show({
-                    severity: "success",
-                    summary: "Creación Exitosa",
-                    detail: "La materia prima fue agregada",
-                    life: 3000,
-                });
-                setCreateModalVisible(false);
-            } else {
-                toast.current?.show({
-                    severity: "error",
-                    summary: "Error al Crear",
-                    detail: "Hubo un error al agregar la materia prima",
-                    life: 3000,
-                });
-            }
-        });
-    };
-
-    const handleEditSubmit = (product: putMateriasPrimasInterface) => {
-        dispatch(putMateriasPrimas(product)).then((result) => {
-            if (result.meta.requestStatus === "fulfilled") {
-                toast.current?.show({
-                    severity: "success",
-                    summary: "Actualización Exitosa",
-                    detail: "La materia prima fue actualizada",
-                    life: 3000,
-                });
-                setModalVisible(false);
-                setSelectedProduct(null);
-            } else {
-                toast.current?.show({
-                    severity: "error",
-                    summary: "Error al Actualizar",
-                    detail: "Hubo un error al actualizar la materia prima",
-                    life: 3000,
-                });
-            }
-        });
-    };
-
     return (
         <div className="w-full">
             <Toast ref={toast} />
@@ -177,6 +118,12 @@ const ControlMateriaPrima: React.FC = () => {
                 onDelete={handleDelete}
                 loading={status === "loading"}
                 error={error}
+                editComponent={(item, onHide) => (
+                    <EditMateriaPrimaModal
+                        materiaPrima={item}
+                        onHide={onHide}
+                    />
+                )}
             />
         </div>
     );

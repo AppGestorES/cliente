@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
     fetchEntradaProductos,
@@ -16,6 +16,7 @@ import EntradaProductosModal from "@/app/Components/entrada-productos/entradaPro
 import EditEntradaProductosModal from "@/app/Components/entrada-productos/editEntradaProductosModal";
 import { EntradaDeProductos } from "@/app/interfaces/EntradaProductos";
 import { AppDispatch, RootState } from "@/app/redux/store";
+import { Toast } from "primereact/toast";
 
 const EntradaProductosPage: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -32,8 +33,7 @@ const EntradaProductosPage: React.FC = () => {
     const [selectedProducts, setSelectedProducts] = useState<
         EntradaDeProductos[]
     >([]);
-    const [selectedProduct, setSelectedProduct] =
-        useState<EntradaDeProductos | null>(null);
+    const toast = useRef<Toast>(null);
 
     useEffect(() => {
         if (status === "idle") {
@@ -64,6 +64,7 @@ const EntradaProductosPage: React.FC = () => {
 
     return (
         <div className="w-full">
+            <Toast ref={toast} />
             <ConfirmDialog />
             <div className="flex flex-col md:flex-row w-full md:items-center justify-between px-4">
                 <h2 className="text-xl">Entrada de Productos</h2>
