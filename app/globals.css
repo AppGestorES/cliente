@@ -39,4 +39,12 @@ body {
     max-width: 200px;
 }
 
+.p-dropdown {
+    width: 100%;
+}
+
+.p-paginator-bottom > .p-dropdown {
+    width: auto;
+}
+
 /* bg-[var(--surface-a)] p-2 hover:bg-[var(--primary-color)] mt-2 max-w-[200px] */
