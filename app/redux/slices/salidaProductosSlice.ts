@@ -4,6 +4,7 @@ import {
     postSalidaProductosInterface,
     putSalidaProductosInterface,
 } from "@/app/interfaces/SalidaProductos";
+import { RootState } from "@/app/redux/store";
 
 interface ApiResponse<T> {
     status: number;
@@ -23,16 +24,34 @@ const initialState: ApiState<getSalidaProductosInterface> = {
     error: null,
 };
 
+// Selector to get the token from the auth slice
+const selectAuthToken = (state: RootState) => state.auth.token;
+
+const fetchWithToken = async (
+    url: string,
+    options: RequestInit = {},
+    token: string | null
+) => {
+    const headers = new Headers(options.headers || {});
+    if (token) {
+        headers.append("Authorization", token);
+    }
+    options.headers = headers;
+    const response = await fetch(url, options);
+    if (!response.ok) {
+        throw new Error("Network response was not ok");
+    }
+    return response.json();
+};
+
 export const fetchSalidas = createAsyncThunk(
     "salidaProductos/fetchSalidas",
-    async () => {
-        const response = await fetch("http://localhost:3001/salidas");
-        if (!response.ok) {
-            throw new Error("Network response was not ok");
-        }
+    async (_, { getState }) => {
+        const state = getState() as RootState;
+        const token = selectAuthToken(state);
 
         const data: ApiResponse<getSalidaProductosInterface[]> =
-            await response.json();
+            await fetchWithToken("http://localhost:3001/salidas", {}, token);
 
         if (!data.success) {
             throw new Error("Failed to fetch data");
@@ -44,16 +63,16 @@ export const fetchSalidas = createAsyncThunk(
 
 export const fetchSalidasByProductoFinal = createAsyncThunk(
     "salidaProductos/fetchSalidasByProductoFinal",
-    async (producto_final_id: number) => {
-        const response = await fetch(
-            `http://localhost:3001/salidas/producto_final/${producto_final_id}`
-        );
-        if (!response.ok) {
-            throw new Error("Network response was not ok");
-        }
+    async (producto_final_id: number, { getState }) => {
+        const state = getState() as RootState;
+        const token = selectAuthToken(state);
 
         const data: ApiResponse<getSalidaProductosInterface[]> =
-            await response.json();
+            await fetchWithToken(
+                `http://localhost:3001/salidas/producto_final/${producto_final_id}`,
+                {},
+                token
+            );
 
         if (!data.success) {
             throw new Error("Failed to fetch data");
@@ -65,16 +84,16 @@ export const fetchSalidasByProductoFinal = createAsyncThunk(
 
 export const fetchSalidasByFechaSalida = createAsyncThunk(
     "salidaProductos/fetchSalidasByFechaSalida",
-    async (fecha_salida: number) => {
-        const response = await fetch(
-            `http://localhost:3001/salidas/fecha_salida/${fecha_salida}`
-        );
-        if (!response.ok) {
-            throw new Error("Network response was not ok");
-        }
+    async (fecha_salida: number, { getState }) => {
+        const state = getState() as RootState;
+        const token = selectAuthToken(state);
 
         const data: ApiResponse<getSalidaProductosInterface[]> =
-            await response.json();
+            await fetchWithToken(
+                `http://localhost:3001/salidas/fecha_salida/${fecha_salida}`,
+                {},
+                token
+            );
 
         if (!data.success) {
             throw new Error("Failed to fetch data");
@@ -86,16 +105,16 @@ export const fetchSalidasByFechaSalida = createAsyncThunk(
 
 export const fetchSalidasByProyecto = createAsyncThunk(
     "salidaProductos/fetchSalidasByProyecto",
-    async (id_proyecto: number) => {
-        const response = await fetch(
-            `http://localhost:3001/salidas/proyecto/${id_proyecto}`
-        );
-        if (!response.ok) {
-            throw new Error("Network response was not ok");
-        }
+    async (id_proyecto: number, { getState }) => {
+        const state = getState() as RootState;
+        const token = selectAuthToken(state);
 
         const data: ApiResponse<getSalidaProductosInterface[]> =
-            await response.json();
+            await fetchWithToken(
+                `http://localhost:3001/salidas/proyecto/${id_proyecto}`,
+                {},
+                token
+            );
 
         if (!data.success) {
             throw new Error("Failed to fetch data");
@@ -107,21 +126,22 @@ export const fetchSalidasByProyecto = createAsyncThunk(
 
 export const postSalidas = createAsyncThunk(
     "salidaProductos/postSalidas",
-    async (newSalida: postSalidaProductosInterface) => {
-        const response = await fetch("http://localhost:3001/salidas", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(newSalida),
-        });
-
-        if (!response.ok) {
-            throw new Error("Network response was not ok");
-        }
+    async (newSalida: postSalidaProductosInterface, { getState }) => {
+        const state = getState() as RootState;
+        const token = selectAuthToken(state);
 
         const data: ApiResponse<getSalidaProductosInterface> =
-            await response.json();
+            await fetchWithToken(
+                "http://localhost:3001/salidas",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(newSalida),
+                },
+                token
+            );
 
         if (!data.success) {
             throw new Error("Failed to post data");
@@ -133,24 +153,22 @@ export const postSalidas = createAsyncThunk(
 
 export const putSalidas = createAsyncThunk(
     "salidaProductos/putSalidas",
-    async (updatedSalida: putSalidaProductosInterface) => {
-        const response = await fetch(
-            `http://localhost:3001/salidas/${updatedSalida.id}`,
-            {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(updatedSalida),
-            }
-        );
-
-        if (!response.ok) {
-            throw new Error("Network response was not ok");
-        }
+    async (updatedSalida: putSalidaProductosInterface, { getState }) => {
+        const state = getState() as RootState;
+        const token = selectAuthToken(state);
 
         const data: ApiResponse<getSalidaProductosInterface> =
-            await response.json();
+            await fetchWithToken(
+                `http://localhost:3001/salidas/${updatedSalida.id}`,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(updatedSalida),
+                },
+                token
+            );
 
         if (!data.success) {
             throw new Error("Failed to update data");
@@ -162,18 +180,21 @@ export const putSalidas = createAsyncThunk(
 
 export const deleteSalidas = createAsyncThunk(
     "salidaProductos/deleteSalidas",
-    async (ids: number[]) => {
+    async (ids: number[], { getState }) => {
+        const state = getState() as RootState;
+        const token = selectAuthToken(state);
+
         const promises = ids.map((id) =>
-            fetch(`http://localhost:3001/salidas/${id}`, {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
+            fetchWithToken(
+                `http://localhost:3001/salidas/${id}`,
+                {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
                 },
-            }).then((response) => {
-                if (!response.ok) {
-                    throw new Error(`Failed to delete item with id ${id}`);
-                }
-            })
+                token
+            )
         );
 
         await Promise.all(promises);
