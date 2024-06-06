@@ -10,10 +10,15 @@ import {
 } from "@/app/redux/slices/entradaProductosSlice";
 import GenericTable from "@/app/Components/generics/GenericTable";
 import GenericModal from "@/app/Components/generics/GenericModal";
-import { EntradaDeProductos } from "@/app/interfaces/EntradaProductos";
+import {
+    EntradaDeProductos,
+    postEntradasInterface,
+    putEntradasInterface,
+} from "@/app/interfaces/EntradaProductos";
 import { AppDispatch, RootState } from "@/app/redux/store";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Button } from "primereact/button";
+import React from "react";
 
 const EntradaProductosPage: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -66,16 +71,34 @@ const EntradaProductosPage: React.FC = () => {
         });
     };
 
+    const handleSubmit = () => {
+        dispatch(fetchEntradaProductos());
+    };
+
     const handleModalSubmit = (product: EntradaDeProductos) => {
         if (selectedProduct) {
+            const updatedProduct: putEntradasInterface = {
+                id: selectedProduct.id,
+                producto_final_id: product.producto_final_id,
+                fecha_entrada: product.fecha_entrada,
+                proveedor: product.proveedor,
+                numero_albaran: product.numero_albaran,
+                numero_lote: product.numero_lote,
+                cantidad_kg: product.cantidad_kg,
+                fecha_caducidad: product.fecha_caducidad,
+                envasado_id: product.envasado_id ?? 0,
+                operario_id: product.operario_id ?? 0,
+                id_proyecto: product.id_proyecto ?? 0,
+            };
+
             dispatch(
                 putEntradaProductos({
                     id: selectedProduct.id,
-                    updatedProduct: product,
+                    updatedProduct: updatedProduct,
                 })
             );
         } else {
-            dispatch(postEntradaProductos(product));
+            dispatch(postEntradaProductos(product as postEntradasInterface));
         }
         setSelectedProduct(null);
         setModalVisible(false);
@@ -104,17 +127,24 @@ const EntradaProductosPage: React.FC = () => {
                 </div>
             </div>
             <GenericTable
+                edit={true}
                 data={productos}
                 columns={[
                     { field: "id", header: "ID" },
                     { field: "producto_final_id", header: "Producto Final Id" },
                     {
-                        field: "fecha_entrada",
-                        header: "Fecha Entrada",
+                        field: "fecha_caducidad",
+                        header: "Fecha Caducidad",
                         render: (rowData) =>
-                            new Date(
-                                rowData.fecha_entrada * 1000
-                            ).toLocaleDateString(),
+                            rowData.fecha_caducidad ? (
+                                <span>
+                                    {new Date(
+                                        rowData.fecha_caducidad * 1000
+                                    ).toLocaleDateString()}
+                                </span>
+                            ) : (
+                                <span></span>
+                            ),
                     },
                     { field: "proveedor", header: "Proveedor" },
                     { field: "numero_albaran", header: "Número Albaran" },
@@ -124,15 +154,46 @@ const EntradaProductosPage: React.FC = () => {
                         field: "fecha_caducidad",
                         header: "Fecha Caducidad",
                         render: (rowData) =>
-                            rowData.fecha_caducidad
-                                ? new Date(
-                                      rowData.fecha_caducidad * 1000
-                                  ).toLocaleDateString()
-                                : "",
+                            rowData.fecha_caducidad ? (
+                                <span>
+                                    {new Date(
+                                        rowData.fecha_caducidad * 1000
+                                    ).toLocaleDateString()}
+                                </span>
+                            ) : (
+                                <React.Fragment />
+                            ),
                     },
-                    { field: "envasado_id", header: "ID Envasado" },
-                    { field: "operario_id", header: "ID Operario" },
-                    { field: "id_proyecto", header: "ID Proyecto" },
+                    {
+                        field: "envasado_id",
+                        header: "ID Envasado",
+                        render: (rowData) =>
+                            rowData.envasado && rowData.envasado.id ? (
+                                <span>{rowData.envasado.id}</span>
+                            ) : (
+                                <span></span>
+                            ),
+                    },
+                    {
+                        field: "operario_id",
+                        header: "ID Operario",
+                        render: (rowData) =>
+                            rowData.operario && rowData.operario.id ? (
+                                <span>{rowData.operario.id}</span>
+                            ) : (
+                                <span></span>
+                            ),
+                    },
+                    {
+                        field: "id_proyecto",
+                        header: "ID Proyecto",
+                        render: (rowData) =>
+                            rowData.proyecto && rowData.proyecto.id ? (
+                                <span>{rowData.proyecto.id}</span>
+                            ) : (
+                                <span></span>
+                            ),
+                    },
                 ]}
                 selectedItems={selectedProducts}
                 setSelectedItems={setSelectedProducts}
@@ -160,6 +221,7 @@ const EntradaProductosPage: React.FC = () => {
                     }
                 }
                 onSubmit={handleModalSubmit}
+                onSuccess={handleSubmit}
                 fields={[
                     {
                         key: "producto_final_id",

@@ -15,6 +15,7 @@ import { AppDispatch, RootState } from "@/app/redux/store";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
+import { fetchEntradaProductos } from "@/app/redux/slices/entradaProductosSlice";
 
 const ControlMateriaPrima: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -84,12 +85,22 @@ const ControlMateriaPrima: React.FC = () => {
         });
     };
 
+    const handleSuccess = () => {
+        dispatch(fetchEntradaProductos());
+        toast.current?.show({
+            severity: "success",
+            summary: "Éxito",
+            detail: "La operación se realizó con éxito",
+            life: 3000,
+        });
+    };
+
     const handleModalSubmit = (product: getMateriasPrimasInterface) => {
         if (selectedProduct) {
             dispatch(
                 putMateriasPrimas({
                     id: selectedProduct.id,
-                    updatedProduct: product,
+                    updatedMateriaPrima: product,
                 })
             ).then((result) => {
                 if (result.meta.requestStatus === "fulfilled") {
@@ -172,10 +183,12 @@ const ControlMateriaPrima: React.FC = () => {
                 onDelete={handleDelete}
                 loading={status === "loading"}
                 error={error}
+                edit={true}
             />
             <GenericModal
                 visible={modalVisible}
                 setVisible={setModalVisible}
+                onSuccess={handleSuccess}
                 initialValues={
                     selectedProduct || {
                         id: 0,
