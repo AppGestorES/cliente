@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { RootState } from "@/app/redux/store";
 
 interface AuthState {
     token: string | null;
@@ -7,7 +8,8 @@ interface AuthState {
 }
 
 const initialState: AuthState = {
-    token: null,
+    token:
+        typeof window !== "undefined" ? localStorage.getItem("authToken") : "",
     status: "idle",
     error: null,
 };
@@ -44,7 +46,7 @@ export const registerUser = createAsyncThunk(
         identificador: string;
         id_proyecto: number;
     }) => {
-        const response = await fetch("http://localhost:3001/usuarios", {
+        const response = await fetch("http://localhost:3001/registrarSesion", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -70,9 +72,11 @@ const authSlice = createSlice({
     reducers: {
         setToken: (state, action: PayloadAction<string>) => {
             state.token = action.payload;
+            localStorage.setItem("authToken", action.payload);
         },
         clearToken: (state) => {
             state.token = null;
+            localStorage.removeItem("authToken");
         },
     },
     extraReducers: (builder) => {
@@ -105,5 +109,7 @@ const authSlice = createSlice({
 });
 
 export const { setToken, clearToken } = authSlice.actions;
+
+export const getToken = (state: RootState): string | null => state.auth.token;
 
 export default authSlice.reducer;

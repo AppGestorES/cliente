@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { RootState } from "@/app/redux/store";
 import {
     getMateriasPrimasInterface,
     postMateriasPrimasInterface,
@@ -23,10 +24,20 @@ const initialState: ApiState<getMateriasPrimasInterface> = {
     error: null,
 };
 
+// Selector to get the token from the auth slice
+const selectAuthToken = (state: RootState) => state.auth.token;
+
 export const fetchMateriasPrimas = createAsyncThunk(
     "materiasPrimas/fetchMateriasPrimas",
-    async () => {
-        const response = await fetch("http://localhost:3001/materias_primas");
+    async (_, { getState }) => {
+        const state = getState() as RootState;
+        const token = selectAuthToken(state);
+
+        const response = await fetch("http://localhost:3001/materias_primas", {
+            headers: {
+                Authorization: token + "",
+            },
+        });
         if (!response.ok) {
             throw new Error("Network response was not ok");
         }
@@ -44,9 +55,17 @@ export const fetchMateriasPrimas = createAsyncThunk(
 
 export const fetchMateriasPrimasByNombre = createAsyncThunk(
     "materiasPrimas/fetchMateriasPrimasByNombre",
-    async (nombre: string) => {
+    async (nombre: string, { getState }) => {
+        const state = getState() as RootState;
+        const token = selectAuthToken(state);
+
         const response = await fetch(
-            `http://localhost:3001/materias_primas/nombre/${nombre}`
+            `http://localhost:3001/materias_primas/nombre/${nombre}`,
+            {
+                headers: {
+                    Authorization: token + "",
+                },
+            }
         );
         if (!response.ok) {
             throw new Error("Network response was not ok");
@@ -65,9 +84,17 @@ export const fetchMateriasPrimasByNombre = createAsyncThunk(
 
 export const fetchMateriasPrimasByProyecto = createAsyncThunk(
     "materiasPrimas/fetchMateriasPrimasByProyecto",
-    async (id_proyecto: number) => {
+    async (id_proyecto: number, { getState }) => {
+        const state = getState() as RootState;
+        const token = selectAuthToken(state);
+
         const response = await fetch(
-            `http://localhost:3001/materias_primas/proyecto/${id_proyecto}`
+            `http://localhost:3001/materias_primas/proyecto/${id_proyecto}`,
+            {
+                headers: {
+                    Authorization: token + "",
+                },
+            }
         );
         if (!response.ok) {
             throw new Error("Network response was not ok");
@@ -86,11 +113,15 @@ export const fetchMateriasPrimasByProyecto = createAsyncThunk(
 
 export const postMateriasPrimas = createAsyncThunk(
     "materiasPrimas/postMateriasPrimas",
-    async (newMateriaPrima: postMateriasPrimasInterface) => {
+    async (newMateriaPrima: postMateriasPrimasInterface, { getState }) => {
+        const state = getState() as RootState;
+        const token = selectAuthToken(state);
+
         const response = await fetch("http://localhost:3001/materias_primas", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                Authorization: token + "",
             },
             body: JSON.stringify(newMateriaPrima),
         });
@@ -112,19 +143,26 @@ export const postMateriasPrimas = createAsyncThunk(
 
 export const putMateriasPrimas = createAsyncThunk(
     "materiasPrimas/putMateriasPrimas",
-    async ({
-        id,
-        updatedMateriaPrima,
-    }: {
-        id: number;
-        updatedMateriaPrima: putMateriasPrimasInterface;
-    }) => {
+    async (
+        {
+            id,
+            updatedMateriaPrima,
+        }: {
+            id: number;
+            updatedMateriaPrima: putMateriasPrimasInterface;
+        },
+        { getState }
+    ) => {
+        const state = getState() as RootState;
+        const token = selectAuthToken(state);
+
         const response = await fetch(
             `http://localhost:3001/materias_primas/${id}`,
             {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: token + "",
                 },
                 body: JSON.stringify(updatedMateriaPrima),
             }
@@ -147,12 +185,16 @@ export const putMateriasPrimas = createAsyncThunk(
 
 export const deleteMateriasPrimas = createAsyncThunk(
     "materiasPrimas/deleteMateriasPrimas",
-    async (ids: number[]) => {
+    async (ids: number[], { getState }) => {
+        const state = getState() as RootState;
+        const token = selectAuthToken(state);
+
         const promises = ids.map((id) =>
             fetch(`http://localhost:3001/materias_primas/${id}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: token + "",
                 },
             }).then((response) => {
                 if (!response.ok) {

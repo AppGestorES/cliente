@@ -4,6 +4,7 @@ import {
     postProductosFinalesInterface,
     putProductosFinalesInterface,
 } from "@/app/interfaces/ProductosFinales";
+import { RootState } from "@/app/redux/store"; // Import RootState
 
 interface ApiResponse {
     status: number;
@@ -23,15 +24,37 @@ const initialState: ApiState = {
     error: null,
 };
 
+// Selector to get the token from the auth slice
+const selectAuthToken = (state: RootState) => state.auth.token;
+
+const fetchWithToken = async (
+    url: string,
+    options: RequestInit = {},
+    token: string | null
+) => {
+    const headers = new Headers(options.headers || {});
+    if (token) {
+        headers.append("Authorization", token);
+    }
+    options.headers = headers;
+    const response = await fetch(url, options);
+    if (!response.ok) {
+        throw new Error("Network response was not ok");
+    }
+    return response.json();
+};
+
 export const fetchProductosFinales = createAsyncThunk(
     "productosFinales/fetchProductosFinales",
-    async () => {
-        const response = await fetch("http://localhost:3001/productos_finales");
-        if (!response.ok) {
-            throw new Error("Network response was not ok");
-        }
+    async (_, { getState }) => {
+        const state = getState() as RootState;
+        const token = selectAuthToken(state);
 
-        const data: ApiResponse = await response.json();
+        const data: ApiResponse = await fetchWithToken(
+            "http://localhost:3001/productos_finales",
+            {},
+            token
+        );
 
         if (!data.success) {
             throw new Error("Failed to fetch data");
@@ -43,8 +66,15 @@ export const fetchProductosFinales = createAsyncThunk(
 
 export const postProductosFinales = createAsyncThunk(
     "productosFinales/postProductosFinales",
-    async (newProductoFinal: postProductosFinalesInterface) => {
-        const response = await fetch(
+    async (newProductoFinal: postProductosFinalesInterface, { getState }) => {
+        const state = getState() as RootState;
+        const token = selectAuthToken(state);
+
+        const data: {
+            status: number;
+            success: boolean;
+            result: getProductosFinalesInterface;
+        } = await fetchWithToken(
             "http://localhost:3001/productos_finales",
             {
                 method: "POST",
@@ -52,18 +82,9 @@ export const postProductosFinales = createAsyncThunk(
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify(newProductoFinal),
-            }
+            },
+            token
         );
-
-        if (!response.ok) {
-            throw new Error("Network response was not ok");
-        }
-
-        const data: {
-            status: number;
-            success: boolean;
-            result: getProductosFinalesInterface;
-        } = await response.json();
 
         if (!data.success) {
             throw new Error("Failed to post data");
@@ -75,14 +96,24 @@ export const postProductosFinales = createAsyncThunk(
 
 export const putProductosFinales = createAsyncThunk(
     "productosFinales/putProductosFinales",
-    async ({
-        id,
-        updatedProductoFinal,
-    }: {
-        id: number;
-        updatedProductoFinal: putProductosFinalesInterface;
-    }) => {
-        const response = await fetch(
+    async (
+        {
+            id,
+            updatedProductoFinal,
+        }: {
+            id: number;
+            updatedProductoFinal: putProductosFinalesInterface;
+        },
+        { getState }
+    ) => {
+        const state = getState() as RootState;
+        const token = selectAuthToken(state);
+
+        const data: {
+            status: number;
+            success: boolean;
+            result: getProductosFinalesInterface;
+        } = await fetchWithToken(
             `http://localhost:3001/productos_finales/${id}`,
             {
                 method: "PUT",
@@ -90,18 +121,9 @@ export const putProductosFinales = createAsyncThunk(
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify(updatedProductoFinal),
-            }
+            },
+            token
         );
-
-        if (!response.ok) {
-            throw new Error("Network response was not ok");
-        }
-
-        const data: {
-            status: number;
-            success: boolean;
-            result: getProductosFinalesInterface;
-        } = await response.json();
 
         if (!data.success) {
             throw new Error("Failed to update data");
@@ -113,22 +135,25 @@ export const putProductosFinales = createAsyncThunk(
 
 export const deleteProductosFinales = createAsyncThunk(
     "productosFinales/deleteProductosFinales",
-    async (ids: number[]) => {
-        for (const id of ids) {
-            const response = await fetch(
+    async (ids: number[], { getState }) => {
+        const state = getState() as RootState;
+        const token = selectAuthToken(state);
+
+        const promises = ids.map((id) =>
+            fetchWithToken(
                 `http://localhost:3001/productos_finales/${id}`,
                 {
                     method: "DELETE",
                     headers: {
                         "Content-Type": "application/json",
                     },
-                }
-            );
+                },
+                token
+            )
+        );
 
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
-            }
-        }
+        await Promise.all(promises);
+
         return ids;
     }
 );

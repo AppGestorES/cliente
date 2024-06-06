@@ -1,10 +1,10 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import {
-    EntradaDeProductos,
     postEntradasInterface,
     putEntradasInterface,
     getEntradasInterface,
 } from "@/app/interfaces/EntradaProductos";
+import { RootState } from "@/app/redux/store"; // Import RootState
 
 interface ApiResponse<T> {
     status: number;
@@ -18,21 +18,43 @@ interface ApiState<T> {
     error: string | null;
 }
 
-const initialState: ApiState<EntradaDeProductos> = {
+const initialState: ApiState<getEntradasInterface> = {
     productos: [],
     status: "idle",
     error: null,
 };
 
+// Selector to get the token from the auth slice
+const selectAuthToken = (state: RootState) => state.auth.token;
+
+const fetchWithToken = async (
+    url: string,
+    options: RequestInit = {},
+    token: string | null
+) => {
+    const headers = new Headers(options.headers || {});
+    if (token) {
+        headers.append("Authorization", token);
+    }
+    options.headers = headers;
+    const response = await fetch(url, options);
+    if (!response.ok) {
+        throw new Error("Network response was not ok");
+    }
+    return response.json();
+};
+
 export const fetchEntradaProductos = createAsyncThunk(
     "entradaProductos/fetchEntradaProductos",
-    async () => {
-        const response = await fetch("http://localhost:3001/entradas");
-        if (!response.ok) {
-            throw new Error("Network response was not ok");
-        }
+    async (_, { getState }) => {
+        const state = getState() as RootState;
+        const token = selectAuthToken(state);
 
-        const data: ApiResponse<getEntradasInterface[]> = await response.json();
+        const data: ApiResponse<getEntradasInterface[]> = await fetchWithToken(
+            "http://localhost:3001/entradas",
+            {},
+            token
+        );
 
         if (!data.success) {
             throw new Error("Failed to fetch data");
@@ -44,20 +66,21 @@ export const fetchEntradaProductos = createAsyncThunk(
 
 export const postEntradaProductos = createAsyncThunk(
     "entradaProductos/postEntradaProductos",
-    async (newEntrada: postEntradasInterface) => {
-        const response = await fetch("http://localhost:3001/entradas", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
+    async (newEntrada: postEntradasInterface, { getState }) => {
+        const state = getState() as RootState;
+        const token = selectAuthToken(state);
+
+        const data: ApiResponse<getEntradasInterface> = await fetchWithToken(
+            "http://localhost:3001/entradas",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(newEntrada),
             },
-            body: JSON.stringify(newEntrada),
-        });
-
-        if (!response.ok) {
-            throw new Error("Network response was not ok");
-        }
-
-        const data: ApiResponse<getEntradasInterface> = await response.json();
+            token
+        );
 
         if (!data.success) {
             throw new Error("Failed to post data");
@@ -69,26 +92,30 @@ export const postEntradaProductos = createAsyncThunk(
 
 export const putEntradaProductos = createAsyncThunk(
     "entradaProductos/putEntradaProductos",
-    async ({
-        id,
-        updatedProduct,
-    }: {
-        id: number;
-        updatedProduct: putEntradasInterface;
-    }) => {
-        const response = await fetch(`http://localhost:3001/entradas/${id}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
+    async (
+        {
+            id,
+            updatedProduct,
+        }: {
+            id: number;
+            updatedProduct: putEntradasInterface;
+        },
+        { getState }
+    ) => {
+        const state = getState() as RootState;
+        const token = selectAuthToken(state);
+
+        const data: ApiResponse<getEntradasInterface> = await fetchWithToken(
+            `http://localhost:3001/entradas/${id}`,
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(updatedProduct),
             },
-            body: JSON.stringify(updatedProduct),
-        });
-
-        if (!response.ok) {
-            throw new Error("Network response was not ok");
-        }
-
-        const data: ApiResponse<getEntradasInterface> = await response.json();
+            token
+        );
 
         if (!data.success) {
             throw new Error("Failed to update data");
@@ -100,22 +127,25 @@ export const putEntradaProductos = createAsyncThunk(
 
 export const deleteEntradaProductos = createAsyncThunk(
     "entradaProductos/deleteEntradaProductos",
-    async (ids: number[]) => {
-        for (const id of ids) {
-            const response = await fetch(
+    async (ids: number[], { getState }) => {
+        const state = getState() as RootState;
+        const token = selectAuthToken(state);
+
+        const promises = ids.map((id) =>
+            fetchWithToken(
                 `http://localhost:3001/entradas/${id}`,
                 {
                     method: "DELETE",
                     headers: {
                         "Content-Type": "application/json",
                     },
-                }
-            );
+                },
+                token
+            )
+        );
 
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
-            }
-        }
+        await Promise.all(promises);
+
         return ids;
     }
 );

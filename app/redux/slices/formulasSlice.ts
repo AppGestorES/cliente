@@ -4,6 +4,7 @@ import {
     postFormulasInterface,
     putFormulasInterface,
 } from "@/app/interfaces/Formulas";
+import { RootState } from "@/app/redux/store";
 
 interface ApiResponse {
     status: number;
@@ -23,10 +24,20 @@ const initialState: ApiState = {
     error: null,
 };
 
+const selectAuthToken = (state: RootState) => state.auth.token;
+
 export const fetchFormulas = createAsyncThunk(
     "formulas/fetchFormulas",
-    async () => {
-        const response = await fetch("http://localhost:3001/formulas");
+    async (_, { getState }) => {
+        const state = getState() as RootState;
+        const token = selectAuthToken(state);
+
+        const response = await fetch("http://localhost:3001/formulas", {
+            headers: {
+                Authorization: token + "",
+            },
+        });
+
         if (!response.ok) {
             throw new Error("Network response was not ok");
         }
@@ -43,11 +54,15 @@ export const fetchFormulas = createAsyncThunk(
 
 export const postFormulas = createAsyncThunk(
     "formulas/postFormulas",
-    async (newFormula: postFormulasInterface) => {
+    async (newFormula: postFormulasInterface, { getState }) => {
+        const state = getState() as RootState;
+        const token = selectAuthToken(state);
+
         const response = await fetch("http://localhost:3001/formulas", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                Authorization: token + "",
             },
             body: JSON.stringify(newFormula),
         });
@@ -72,17 +87,24 @@ export const postFormulas = createAsyncThunk(
 
 export const putFormulas = createAsyncThunk(
     "formulas/putFormulas",
-    async ({
-        id,
-        updatedFormula,
-    }: {
-        id: number;
-        updatedFormula: putFormulasInterface;
-    }) => {
+    async (
+        {
+            id,
+            updatedFormula,
+        }: {
+            id: number;
+            updatedFormula: putFormulasInterface;
+        },
+        { getState }
+    ) => {
+        const state = getState() as RootState;
+        const token = selectAuthToken(state);
+
         const response = await fetch(`http://localhost:3001/formulas/${id}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
+                Authorization: token + "",
             },
             body: JSON.stringify(updatedFormula),
         });
@@ -107,22 +129,25 @@ export const putFormulas = createAsyncThunk(
 
 export const deleteFormulas = createAsyncThunk(
     "formulas/deleteFormulas",
-    async (ids: number[]) => {
-        for (const id of ids) {
-            const response = await fetch(
-                `http://localhost:3001/formulas/${id}`,
-                {
-                    method: "DELETE",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                }
-            );
+    async (ids: number[], { getState }) => {
+        const state = getState() as RootState;
+        const token = selectAuthToken(state);
 
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
-            }
-        }
+        const promises = ids.map((id) =>
+            fetch(`http://localhost:3001/formulas/${id}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: token + "",
+                },
+            }).then((response) => {
+                if (!response.ok) {
+                    throw new Error(`Failed to delete item with id ${id}`);
+                }
+            })
+        );
+
+        await Promise.all(promises);
 
         return ids;
     }
