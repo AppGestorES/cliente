@@ -9,7 +9,6 @@ import {
     deleteFormulas,
 } from "@/app/redux/slices/formulasSlice";
 import GenericTable from "@/app/Components/generics/GenericTable";
-import GenericModal from "@/app/Components/generics/GenericModal";
 import {
     getFormulasInterface,
     postFormulasInterface,
