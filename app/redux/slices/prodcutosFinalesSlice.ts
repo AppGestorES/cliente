@@ -97,13 +97,7 @@ export const postProductosFinales = createAsyncThunk(
 export const putProductosFinales = createAsyncThunk(
     "productosFinales/putProductosFinales",
     async (
-        {
-            id,
-            updatedProductoFinal,
-        }: {
-            id: number;
-            updatedProductoFinal: putProductosFinalesInterface;
-        },
+        updatedProductoFinal: putProductosFinalesInterface,
         { getState }
     ) => {
         const state = getState() as RootState;
@@ -114,7 +108,7 @@ export const putProductosFinales = createAsyncThunk(
             success: boolean;
             result: getProductosFinalesInterface;
         } = await fetchWithToken(
-            `http://localhost:3001/productos_finales/${id}`,
+            `http://localhost:3001/productos_finales/${updatedProductoFinal.id}`,
             {
                 method: "PUT",
                 headers: {

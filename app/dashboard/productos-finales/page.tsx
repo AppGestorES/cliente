@@ -13,11 +13,16 @@ import GenericModal from "@/app/Components/generics/GenericModal";
 import {
     getProductosFinalesInterface,
     postProductosFinalesInterface,
+    putProductosFinalesInterface,
 } from "@/app/interfaces/ProductosFinales";
 import { AppDispatch, RootState } from "@/app/redux/store";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
+import ProductosFinalesModal from "@/app/Components/productos-finales/productosFinalesModal";
+import React from "react";
+import EditEntradaProductosModal from "@/app/Components/entrada-productos/editEntradaProductosModal";
+import EditProductosFinalesModal from "@/app/Components/productos-finales/editProductosFinalesModal";
 
 const ProductosFinalesPage: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -44,11 +49,6 @@ const ProductosFinalesPage: React.FC = () => {
             dispatch(fetchProductosFinales());
         }
     }, [status, dispatch]);
-
-    const handleEdit = (producto: getProductosFinalesInterface) => {
-        setSelectedProducto(producto);
-        setModalVisible(true);
-    };
 
     const handleDelete = () => {
         if (selectedProductos.length > 0) {
@@ -89,25 +89,6 @@ const ProductosFinalesPage: React.FC = () => {
         });
     };
 
-    const handleModalSubmit = (producto: postProductosFinalesInterface) => {
-        if (selectedProducto) {
-            dispatch(
-                putProductosFinales({
-                    id: selectedProducto.id,
-                    updatedProductoFinal: producto,
-                })
-            ).then(() => {
-                dispatch(fetchProductosFinales());
-            });
-        } else {
-            dispatch(postProductosFinales(producto)).then(() => {
-                dispatch(fetchProductosFinales());
-            });
-        }
-        setSelectedProducto(null);
-        setModalVisible(false);
-    };
-
     return (
         <div className="w-full">
             <Toast ref={toast} />
@@ -123,12 +104,7 @@ const ProductosFinalesPage: React.FC = () => {
                             onClick={confirmDelete}
                         />
                     )}
-                    <Button
-                        label="Añadir producto final"
-                        icon="pi pi-plus"
-                        className="bg-[var(--surface-a)] p-2 hover:bg-[var(--primary-color)] mt-2 max-w-[200px]"
-                        onClick={() => setModalVisible(true)}
-                    />
+                    <ProductosFinalesModal />
                 </div>
             </div>
             <GenericTable
@@ -139,57 +115,40 @@ const ProductosFinalesPage: React.FC = () => {
                     { field: "formula_id", header: "ID Fórmula" },
                     {
                         field: "caducidad",
-                        header: "Caducidad",
+                        header: "Fecha Caducidad",
                         render: (rowData) =>
-                            new Date(
-                                rowData.caducidad * 1000
-                            ).toLocaleDateString(),
+                            rowData.caducidad ? (
+                                <span>
+                                    {new Date(
+                                        rowData.caducidad * 1000
+                                    ).toLocaleDateString()}
+                                </span>
+                            ) : (
+                                <React.Fragment />
+                            ),
                     },
-                    { field: "id_proyecto", header: "ID Proyecto" },
+                    {
+                        field: "proyecto",
+                        header: "ID Proyecto",
+                        render: (rowData) =>
+                            rowData.proyecto && rowData.proyecto.id ? (
+                                <span>{rowData.proyecto.id}</span>
+                            ) : (
+                                <React.Fragment />
+                            ),
+                    },
                 ]}
                 selectedItems={selectedProductos}
                 setSelectedItems={setSelectedProductos}
-                onEdit={handleEdit}
                 onDelete={handleDelete}
                 loading={status === "loading"}
                 error={error}
-            />
-            <GenericModal
-                visible={modalVisible}
-                setVisible={setModalVisible}
-                initialValues={
-                    selectedProducto || {
-                        id: 0,
-                        nombre: "",
-                        formula_id: 0,
-                        caducidad: 0,
-                        id_proyecto: 0,
-                    }
-                }
-                onSubmit={handleModalSubmit}
-                onSuccess={() => dispatch(fetchProductosFinales())}
-                fields={[
-                    {
-                        key: "nombre",
-                        label: "Nombre",
-                        type: "text",
-                    },
-                    {
-                        key: "formula_id",
-                        label: "ID Fórmula",
-                        type: "number",
-                    },
-                    {
-                        key: "caducidad",
-                        label: "Caducidad",
-                        type: "date",
-                    },
-                    {
-                        key: "id_proyecto",
-                        label: "ID Proyecto",
-                        type: "number",
-                    },
-                ]}
+                editComponent={(item, onHide) => (
+                    <EditProductosFinalesModal
+                        producto={item}
+                        onHide={onHide}
+                    />
+                )}
             />
         </div>
     );
