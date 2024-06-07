@@ -16,7 +16,7 @@ interface Props<T> {
     onDelete: (items: T[]) => void;
     loading: boolean;
     error: string | null;
-    editComponent?: (item: T, onHide: () => void) => JSX.Element;
+    editComponent?: (item: T, onHide: () => void) => JSX.Element | null;
 }
 
 const GenericTable = <T extends { id: number }>({
@@ -101,7 +101,7 @@ const GenericTable = <T extends { id: number }>({
                             />
                         )}
                     />
-                ) : undefined}
+                ) : null}
             </DataTable>
             {editItem && editComponent && visible && (
                 <div>{editComponent(editItem, handleHide)}</div>

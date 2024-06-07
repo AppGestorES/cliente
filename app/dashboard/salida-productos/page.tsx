@@ -90,20 +90,6 @@ const SalidaProductos: React.FC = () => {
         });
     };
 
-    const handleModalSubmit = async (salida: putSalidaProductosInterface) => {
-        if (selectedSalida) {
-            await dispatch(putSalidas(salida));
-        } else {
-            await dispatch(postSalidas(salida));
-        }
-        setSelectedSalida(null);
-        setModalVisible(false);
-    };
-
-    const onAfterSubmit = () => {
-        dispatch(fetchSalidas());
-    };
-
     return (
         <div className="w-full">
             <Toast ref={toast} />
