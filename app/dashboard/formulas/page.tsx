@@ -118,10 +118,10 @@ const FormulasPage: React.FC = () => {
                     },
                     {
                         field: "proyecto",
-                        header: "ID proyecto",
+                        header: "Proyecto",
                         render: (rowData) =>
-                            rowData.proyecto && rowData.proyecto.id ? (
-                                <span>{rowData.proyecto.id}</span>
+                            rowData.proyecto && rowData.proyecto.nombre ? (
+                                <span>{rowData.proyecto.nombre}</span>
                             ) : (
                                 <React.Fragment />
                             ),

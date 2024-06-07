@@ -105,30 +105,30 @@ const EntradaProductosPage: React.FC = () => {
                     { field: "cantidad_kg", header: "Cantidad (KG)" },
                     {
                         field: "envasado_id",
-                        header: "ID Envasado",
+                        header: "Envasado",
                         render: (rowData) =>
-                            rowData.envasado && rowData.envasado.id ? (
-                                <span>{rowData.envasado.id}</span>
+                            rowData.envasado && rowData.envasado.nombre ? (
+                                <span>{rowData.envasado.nombre}</span>
                             ) : (
                                 <React.Fragment />
                             ),
                     },
                     {
                         field: "operario_id",
-                        header: "ID Operario",
+                        header: "Operario",
                         render: (rowData) =>
-                            rowData.operario && rowData.operario.id ? (
-                                <span>{rowData.operario.id}</span>
+                            rowData.operario && rowData.operario.nombre ? (
+                                <span>{rowData.operario.nombre}</span>
                             ) : (
                                 <React.Fragment />
                             ),
                     },
                     {
                         field: "id_proyecto",
-                        header: "ID Proyecto",
+                        header: "Proyecto",
                         render: (rowData) =>
-                            rowData.proyecto && rowData.proyecto.id ? (
-                                <span>{rowData.proyecto.id}</span>
+                            rowData.proyecto && rowData.proyecto.nombre ? (
+                                <span>{rowData.proyecto.nombre}</span>
                             ) : (
                                 <React.Fragment />
                             ),

@@ -211,30 +211,30 @@ const TrazabilidadPage: React.FC = () => {
                         { field: "cantidad_kg", header: "Cantidad (KG)" },
                         {
                             field: "envasado_id",
-                            header: "ID Envasado",
+                            header: "Envasado",
                             render: (rowData) =>
-                                rowData.envasado && rowData.envasado.id ? (
-                                    <span>{rowData.envasado.id}</span>
+                                rowData.envasado && rowData.envasado.nombre ? (
+                                    <span>{rowData.envasado.nombre}</span>
                                 ) : (
                                     <React.Fragment />
                                 ),
                         },
                         {
                             field: "operario_id",
-                            header: "ID Operario",
+                            header: "Operario",
                             render: (rowData) =>
-                                rowData.operario && rowData.operario.id ? (
-                                    <span>{rowData.operario.id}</span>
+                                rowData.operario && rowData.operario.nombre ? (
+                                    <span>{rowData.operario.nombre}</span>
                                 ) : (
                                     <React.Fragment />
                                 ),
                         },
                         {
                             field: "id_proyecto",
-                            header: "ID Proyecto",
+                            header: "Proyecto",
                             render: (rowData) =>
-                                rowData.proyecto && rowData.proyecto.id ? (
-                                    <span>{rowData.proyecto.id}</span>
+                                rowData.proyecto && rowData.proyecto.nombre ? (
+                                    <span>{rowData.proyecto.nombre}</span>
                                 ) : (
                                     <React.Fragment />
                                 ),
@@ -293,8 +293,8 @@ const TrazabilidadPage: React.FC = () => {
                             header: "ID Envasado",
                             render: (rowData) =>
                                 rowData.envasado_id &&
-                                rowData.envasado_id.id ? (
-                                    <span>{rowData.envasado_id.id}</span>
+                                rowData.envasado_id.nombre ? (
+                                    <span>{rowData.envasado_id.nombre}</span>
                                 ) : (
                                     <React.Fragment />
                                 ),
@@ -303,8 +303,9 @@ const TrazabilidadPage: React.FC = () => {
                             field: "formato_id",
                             header: "ID Formato",
                             render: (rowData) =>
-                                rowData.formato_id && rowData.formato_id.id ? (
-                                    <span>{rowData.formato_id.id}</span>
+                                rowData.formato_id &&
+                                rowData.formato_id.nombre ? (
+                                    <span>{rowData.formato_id.nombre}</span>
                                 ) : (
                                     <React.Fragment />
                                 ),
@@ -313,8 +314,9 @@ const TrazabilidadPage: React.FC = () => {
                             field: "destino_id",
                             header: "ID Destino",
                             render: (rowData) =>
-                                rowData.destino_id && rowData.destino_id.id ? (
-                                    <span>{rowData.destino_id.id}</span>
+                                rowData.destino_id &&
+                                rowData.destino_id.nombre ? (
+                                    <span>{rowData.destino_id.nombre}</span>
                                 ) : (
                                     <React.Fragment />
                                 ),
@@ -324,8 +326,8 @@ const TrazabilidadPage: React.FC = () => {
                             header: "ID Vehiculo",
                             render: (rowData) =>
                                 rowData.vehiculo_id &&
-                                rowData.vehiculo_id.id ? (
-                                    <span>{rowData.vehiculo_id.id}</span>
+                                rowData.vehiculo_id.matricula ? (
+                                    <span>{rowData.vehiculo_id.matricula}</span>
                                 ) : (
                                     <React.Fragment />
                                 ),
@@ -334,8 +336,8 @@ const TrazabilidadPage: React.FC = () => {
                             field: "proyecto",
                             header: "ID proyecto",
                             render: (rowData) =>
-                                rowData.proyecto && rowData.proyecto.id ? (
-                                    <span>{rowData.proyecto.id}</span>
+                                rowData.proyecto && rowData.proyecto.nombre ? (
+                                    <span>{rowData.proyecto.nombre}</span>
                                 ) : (
                                     <React.Fragment />
                                 ),
