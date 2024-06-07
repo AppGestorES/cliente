@@ -57,8 +57,9 @@ const EntradaFormulas = () => {
         <div className="card flex justify-content-center">
             <Button
                 label="Añadir formula"
-                icon="pi pi-external-link"
+                icon="pi pi-plus"
                 onClick={() => setVisible(true)}
+                className="bg-[var(--surface-a)] p-2 hover:bg-[var(--primary-color)] mt-2 max-w-[300px]"
             />
             <Dialog
                 header="Añadir"

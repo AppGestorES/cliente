@@ -114,10 +114,10 @@ const ControlMateriaPrima: React.FC = () => {
                     { field: "stock_kgs", header: "Stock (kg)" },
                     {
                         field: "proyecto",
-                        header: "ID Operario",
+                        header: "Proyecto",
                         render: (rowData) =>
-                            rowData.proyecto && rowData.proyecto.id ? (
-                                <span>{rowData.proyecto.id}</span>
+                            rowData.proyecto && rowData.proyecto.nombre ? (
+                                <span>{rowData.proyecto.nombre}</span>
                             ) : (
                                 <React.Fragment />
                             ),
