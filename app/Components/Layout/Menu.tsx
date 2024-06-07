@@ -10,32 +10,12 @@ const prop: MenuProps[] = [
         link: "/dashboard/entrada-productos",
     },
     {
-        icon: "pi pi-chart-line",
-        name: "Análisis de control",
-        link: "/dashboard/analisis-control",
-    },
-    {
-        icon: "pi pi-bell",
-        name: "Alertas de stock",
-        link: "/dashboard/alertas-stock",
-    },
-    {
-        icon: "pi pi-exclamation-triangle",
-        name: "Alertas de caducidad",
-        link: "/dashboard/alertas-caducidad",
-    },
-    {
         icon: "pi pi-external-link",
         name: "Salida de productos",
         link: "/dashboard/salida-productos",
     },
     {
         icon: "pi pi-chart-bar",
-        name: "Análisis de control",
-        link: "/dashboard/analisis-control",
-    },
-    {
-        icon: "pi pi-stack",
         name: "Materias primas",
         link: "/dashboard/materias-primas",
     },

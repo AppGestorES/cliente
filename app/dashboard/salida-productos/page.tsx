@@ -146,10 +146,11 @@ const SalidaProductos: React.FC = () => {
                     },
                     {
                         field: "envasado_id",
-                        header: "ID Envasado",
+                        header: "Envasado",
                         render: (rowData) =>
-                            rowData.envasado_id && rowData.envasado_id.id ? (
-                                <span>{rowData.envasado_id.id}</span>
+                            rowData.envasado_id &&
+                            rowData.envasado_id.nombre ? (
+                                <span>{rowData.envasado_id.nombre}</span>
                             ) : (
                                 <React.Fragment />
                             ),
@@ -158,8 +159,8 @@ const SalidaProductos: React.FC = () => {
                         field: "formato_id",
                         header: "ID Formato",
                         render: (rowData) =>
-                            rowData.formato_id && rowData.formato_id.id ? (
-                                <span>{rowData.formato_id.id}</span>
+                            rowData.formato_id && rowData.formato_id.nombre ? (
+                                <span>{rowData.formato_id.nombre}</span>
                             ) : (
                                 <React.Fragment />
                             ),
@@ -168,28 +169,29 @@ const SalidaProductos: React.FC = () => {
                         field: "destino_id",
                         header: "ID Destino",
                         render: (rowData) =>
-                            rowData.destino_id && rowData.destino_id.id ? (
-                                <span>{rowData.destino_id.id}</span>
+                            rowData.destino_id && rowData.destino_id.nombre ? (
+                                <span>{rowData.destino_id.nombre}</span>
                             ) : (
                                 <React.Fragment />
                             ),
                     },
                     {
                         field: "vehiculo_id",
-                        header: "ID Vehiculo",
+                        header: "Vehiculo",
                         render: (rowData) =>
-                            rowData.vehiculo_id && rowData.vehiculo_id.id ? (
-                                <span>{rowData.vehiculo_id.id}</span>
+                            rowData.vehiculo_id &&
+                            rowData.vehiculo_id.matricula ? (
+                                <span>{rowData.vehiculo_id.matricula}</span>
                             ) : (
                                 <React.Fragment />
                             ),
                     },
                     {
                         field: "proyecto",
-                        header: "ID proyecto",
+                        header: "Proyecto",
                         render: (rowData) =>
-                            rowData.proyecto && rowData.proyecto.id ? (
-                                <span>{rowData.proyecto.id}</span>
+                            rowData.proyecto && rowData.proyecto.nombre ? (
+                                <span>{rowData.proyecto.nombre}</span>
                             ) : (
                                 <React.Fragment />
                             ),
