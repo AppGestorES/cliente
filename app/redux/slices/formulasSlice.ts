@@ -32,7 +32,7 @@ export const fetchFormulas = createAsyncThunk(
         const state = getState() as RootState;
         const token = selectAuthToken(state);
 
-        const response = await fetch("http://localhost:3001/formulas", {
+        const response = await fetch("https://api.appgestor.es/formulas", {
             headers: {
                 Authorization: token + "",
             },
@@ -58,7 +58,7 @@ export const postFormulas = createAsyncThunk(
         const state = getState() as RootState;
         const token = selectAuthToken(state);
 
-        const response = await fetch("http://localhost:3001/formulas", {
+        const response = await fetch("https://api.appgestor.es/formulas", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -92,7 +92,7 @@ export const putFormulas = createAsyncThunk(
         const token = selectAuthToken(state);
 
         const response = await fetch(
-            `http://localhost:3001/formulas/${updatedFormula.id}`,
+            `https://api.appgestor.es/formulas/${updatedFormula.id}`,
             {
                 method: "PUT",
                 headers: {
@@ -128,7 +128,7 @@ export const deleteFormulas = createAsyncThunk(
         const token = selectAuthToken(state);
 
         const promises = ids.map((id) =>
-            fetch(`http://localhost:3001/formulas/${id}`, {
+            fetch(`https://api.appgestor.es/formulas/${id}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
