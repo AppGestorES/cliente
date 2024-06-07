@@ -60,6 +60,7 @@ const ProductosFinalesModal = () => {
                 label="Añadir producto"
                 icon="pi pi-external-link"
                 onClick={() => setVisible(true)}
+                className="bg-[var(--surface-a)] p-2 hover:bg-[var(--primary-color)] mt-2 max-w-[300px]"
             />
             <Dialog
                 header="Añadir"
