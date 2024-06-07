@@ -1,11 +1,12 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { Chart } from "primereact/chart";
-import { AppDispatch, RootState } from "../redux/store";
+import { AppDispatch } from "../redux/store";
 import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
 import { fetchEntradaProductos } from "../redux/slices/entradaProductosSlice";
 import { fetchSalidas } from "../redux/slices/salidaProductosSlice";
+import { verifyToken } from "../utils/utils";
+import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
     const dispatch: AppDispatch = useDispatch();
@@ -15,6 +16,7 @@ export default function Dashboard() {
     const [totalSalida, setTotalSalida] = useState(0);
     const [totalEntrada, setTotalEntrada] = useState(0);
     const [visible, setVisible] = useState(false);
+    const router = useRouter();
 
     const returnProductos = async () => {
         const productos: any = await dispatch(fetchEntradaProductos());
@@ -93,7 +95,12 @@ export default function Dashboard() {
     };
 
     useEffect(() => {
+        verifyToken();
         const fetchData = async () => {
+            const code: number = await verifyToken();
+            if (code != 200) {
+                router.push("/login");
+            }
             await Promise.all([
                 returnProductos(),
                 returnCaduca(),
@@ -103,7 +110,6 @@ export default function Dashboard() {
             ]);
             setVisible(true);
         };
-
         fetchData();
     }, []);
 

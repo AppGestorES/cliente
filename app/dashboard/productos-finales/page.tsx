@@ -9,7 +9,6 @@ import {
     deleteProductosFinales,
 } from "@/app/redux/slices/prodcutosFinalesSlice";
 import GenericTable from "@/app/Components/generics/GenericTable";
-import GenericModal from "@/app/Components/generics/GenericModal";
 import {
     getProductosFinalesInterface,
     postProductosFinalesInterface,

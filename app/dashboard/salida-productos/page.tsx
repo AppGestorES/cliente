@@ -9,7 +9,6 @@ import {
     deleteSalidas,
 } from "@/app/redux/slices/salidaProductosSlice";
 import GenericTable from "@/app/Components/generics/GenericTable";
-import GenericModal from "@/app/Components/generics/GenericModal";
 import {
     putSalidaProductosInterface,
     salidaProductosInterface,
