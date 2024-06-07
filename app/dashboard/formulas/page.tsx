@@ -18,6 +18,8 @@ import { AppDispatch, RootState } from "@/app/redux/store";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
+import EditFormulasModal from "@/app/Components/formulas/editFomulasModal";
+import React from "react";
 
 const FormulasPage: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -38,11 +40,6 @@ const FormulasPage: React.FC = () => {
             dispatch(fetchFormulas());
         }
     }, [status, dispatch]);
-
-    const handleEdit = (formula: getFormulasInterface) => {
-        setSelectedFormula(formula);
-        setModalVisible(true);
-    };
 
     const handleDelete = () => {
         if (selectedFormulas.length > 0) {
@@ -81,21 +78,6 @@ const FormulasPage: React.FC = () => {
         });
     };
 
-    const handleModalSubmit = (formula: postFormulasInterface) => {
-        if (selectedFormula) {
-            dispatch(
-                putFormulas({
-                    id: selectedFormula.id,
-                    updatedFormula: formula,
-                })
-            );
-        } else {
-            dispatch(postFormulas(formula));
-        }
-        setSelectedFormula(null);
-        setModalVisible(false);
-    };
-
     return (
         <div className="w-full">
             <Toast ref={toast} />
@@ -111,12 +93,6 @@ const FormulasPage: React.FC = () => {
                             onClick={confirmDelete}
                         />
                     )}
-                    <Button
-                        label="Añadir fórmula"
-                        icon="pi pi-plus"
-                        className="bg-[var(--surface-a)] p-2 hover:bg-[var(--primary-color)] mt-2 max-w-[200px]"
-                        onClick={() => setModalVisible(true)}
-                    />
                 </div>
             </div>
             <GenericTable
@@ -126,51 +102,37 @@ const FormulasPage: React.FC = () => {
                     { field: "nombre", header: "Nombre" },
                     {
                         field: "caducidad",
-                        header: "Caducidad",
+                        header: "Fecha Caducidad",
                         render: (rowData) =>
-                            new Date(
-                                rowData.caducidad * 1000
-                            ).toLocaleDateString(),
+                            rowData.caducidad ? (
+                                <span>
+                                    {new Date(
+                                        rowData.caducidad * 1000
+                                    ).toLocaleDateString()}
+                                </span>
+                            ) : (
+                                <React.Fragment />
+                            ),
                     },
-                    { field: "id_proyecto", header: "ID Proyecto" },
+                    {
+                        field: "proyecto",
+                        header: "ID proyecto",
+                        render: (rowData) =>
+                            rowData.proyecto.id ? (
+                                <span>{rowData.proyecto.id}</span>
+                            ) : (
+                                <React.Fragment />
+                            ),
+                    },
                 ]}
                 selectedItems={selectedFormulas}
                 setSelectedItems={setSelectedFormulas}
-                onEdit={handleEdit}
                 onDelete={handleDelete}
                 loading={status === "loading"}
                 error={error}
-            />
-            <GenericModal
-                visible={modalVisible}
-                setVisible={setModalVisible}
-                initialValues={
-                    selectedFormula || {
-                        id: 0,
-                        nombre: "",
-                        caducidad: 0,
-                        id_proyecto: 0,
-                    }
-                }
-                onSubmit={handleModalSubmit}
-                onSuccess={() => dispatch(fetchFormulas())}
-                fields={[
-                    {
-                        key: "nombre",
-                        label: "Nombre",
-                        type: "text",
-                    },
-                    {
-                        key: "caducidad",
-                        label: "Caducidad",
-                        type: "date",
-                    },
-                    {
-                        key: "id_proyecto",
-                        label: "ID Proyecto",
-                        type: "number",
-                    },
-                ]}
+                editComponent={(item, onHide) => {
+                    return <EditFormulasModal formula={item} onHide={onHide} />;
+                }}
             />
         </div>
     );

@@ -20,6 +20,7 @@ import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
 import CreateMateriaPrimaModal from "@/app/Components/analisis-control/materiaPrimaModal";
 import EditMateriaPrimaModal from "@/app/Components/analisis-control/editMateriaPrimaModal";
+import React from "react";
 
 const ControlMateriaPrima: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -111,7 +112,16 @@ const ControlMateriaPrima: React.FC = () => {
                     { field: "nombre", header: "Nombre" },
                     { field: "caducidad", header: "Caducidad (días)" },
                     { field: "stock_kgs", header: "Stock (kg)" },
-                    { field: "id_proyecto", header: "ID Proyecto" },
+                    {
+                        field: "proyecto",
+                        header: "ID Operario",
+                        render: (rowData) =>
+                            rowData.proyecto && rowData.proyecto.id ? (
+                                <span>{rowData.proyecto.id}</span>
+                            ) : (
+                                <React.Fragment />
+                            ),
+                    },
                 ]}
                 selectedItems={selectedProducts}
                 setSelectedItems={setSelectedProducts}
