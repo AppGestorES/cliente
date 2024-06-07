@@ -20,6 +20,7 @@ import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
 import EditFormulasModal from "@/app/Components/formulas/editFomulasModal";
 import React from "react";
+import EntradaFormulas from "@/app/Components/formulas/formulasModal";
 
 const FormulasPage: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -93,6 +94,7 @@ const FormulasPage: React.FC = () => {
                             onClick={confirmDelete}
                         />
                     )}
+                    <EntradaFormulas />
                 </div>
             </div>
             <GenericTable
@@ -118,7 +120,7 @@ const FormulasPage: React.FC = () => {
                         field: "proyecto",
                         header: "ID proyecto",
                         render: (rowData) =>
-                            rowData.proyecto.id ? (
+                            rowData.proyecto && rowData.proyecto.id ? (
                                 <span>{rowData.proyecto.id}</span>
                             ) : (
                                 <React.Fragment />
