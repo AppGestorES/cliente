@@ -10,11 +10,17 @@ import {
 } from "@/app/redux/slices/salidaProductosSlice";
 import GenericTable from "@/app/Components/generics/GenericTable";
 import GenericModal from "@/app/Components/generics/GenericModal";
-import { salidaProductosInterface } from "@/app/interfaces/SalidaProductos";
+import {
+    putSalidaProductosInterface,
+    salidaProductosInterface,
+} from "@/app/interfaces/SalidaProductos";
 import { AppDispatch, RootState } from "@/app/redux/store";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
+import React from "react";
+import SalidaProductosModal from "@/app/Components/salida-productos/modalSalidaProductos";
+import EditSalidaProductos from "@/app/Components/salida-productos/editSalidaProductos";
 
 const SalidaProductos: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -84,14 +90,9 @@ const SalidaProductos: React.FC = () => {
         });
     };
 
-    const handleModalSubmit = async (salida: salidaProductosInterface) => {
+    const handleModalSubmit = async (salida: putSalidaProductosInterface) => {
         if (selectedSalida) {
-            await dispatch(
-                putSalidas({
-                    id: selectedSalida.id,
-                    updatedSalida: salida,
-                })
-            );
+            await dispatch(putSalidas(salida));
         } else {
             await dispatch(postSalidas(salida));
         }
@@ -118,12 +119,7 @@ const SalidaProductos: React.FC = () => {
                             onClick={confirmDelete}
                         />
                     )}
-                    <Button
-                        label="Añadir salida"
-                        icon="pi pi-plus"
-                        className="bg-[var(--surface-a)] p-2 hover:bg-[var(--primary-color)] mt-2 max-w-[200px]"
-                        onClick={() => setModalVisible(true)}
-                    />
+                    <SalidaProductosModal />
                 </div>
             </div>
             <GenericTable
@@ -135,110 +131,92 @@ const SalidaProductos: React.FC = () => {
                     { field: "numero_lote", header: "Número de lote" },
                     {
                         field: "fecha_salida",
-                        header: "Fecha de salida",
+                        header: "Fecha Salida",
                         render: (rowData) =>
-                            new Date(
-                                rowData.fecha_salida * 1000
-                            ).toLocaleDateString(),
+                            rowData.fecha_salida ? (
+                                <span>
+                                    {new Date(
+                                        rowData.fecha_salida * 1000
+                                    ).toLocaleDateString()}
+                                </span>
+                            ) : (
+                                <React.Fragment />
+                            ),
                     },
                     { field: "cantidad", header: "Cantidad" },
                     {
                         field: "fecha_caducidad",
-                        header: "Fecha de caducidad",
+                        header: "Fecha Caducidad",
                         render: (rowData) =>
-                            rowData.fecha_caducidad
-                                ? new Date(
-                                      rowData.fecha_caducidad * 1000
-                                  ).toLocaleDateString()
-                                : "",
+                            rowData.fecha_caducidad ? (
+                                <span>
+                                    {new Date(
+                                        rowData.fecha_caducidad * 1000
+                                    ).toLocaleDateString()}
+                                </span>
+                            ) : (
+                                <React.Fragment />
+                            ),
                     },
-                    { field: "envasado_id", header: "ID Envasado" },
-                    { field: "formato_id", header: "ID Formato" },
-                    { field: "destino_id", header: "ID Destino" },
-                    { field: "vehiculo_id", header: "ID Vehiculo" },
-                    { field: "id_proyecto", header: "ID Proyecto" },
+                    {
+                        field: "envasado_id",
+                        header: "ID Envasado",
+                        render: (rowData) =>
+                            rowData.envasado_id && rowData.envasado_id.id ? (
+                                <span>{rowData.envasado_id.id}</span>
+                            ) : (
+                                <React.Fragment />
+                            ),
+                    },
+                    {
+                        field: "formato_id",
+                        header: "ID Formato",
+                        render: (rowData) =>
+                            rowData.formato_id && rowData.formato_id.id ? (
+                                <span>{rowData.formato_id.id}</span>
+                            ) : (
+                                <React.Fragment />
+                            ),
+                    },
+                    {
+                        field: "destino_id",
+                        header: "ID Destino",
+                        render: (rowData) =>
+                            rowData.destino_id && rowData.destino_id.id ? (
+                                <span>{rowData.destino_id.id}</span>
+                            ) : (
+                                <React.Fragment />
+                            ),
+                    },
+                    {
+                        field: "vehiculo_id",
+                        header: "ID Vehiculo",
+                        render: (rowData) =>
+                            rowData.vehiculo_id && rowData.vehiculo_id.id ? (
+                                <span>{rowData.vehiculo_id.id}</span>
+                            ) : (
+                                <React.Fragment />
+                            ),
+                    },
+                    {
+                        field: "proyecto",
+                        header: "ID proyecto",
+                        render: (rowData) =>
+                            rowData.proyecto && rowData.proyecto.id ? (
+                                <span>{rowData.proyecto.id}</span>
+                            ) : (
+                                <React.Fragment />
+                            ),
+                    },
                 ]}
                 selectedItems={selectedSalidas}
                 setSelectedItems={setSelectedSalidas}
-                onEdit={handleEdit}
                 onDelete={handleDelete}
                 loading={status === "loading"}
                 error={error}
-            />
-            <GenericModal
-                visible={modalVisible}
-                setVisible={setModalVisible}
-                initialValues={
-                    selectedSalida || {
-                        id: 0,
-                        producto_final_id: 0,
-                        formula_id: 0,
-                        numero_lote: "",
-                        fecha_salida: Date.now() / 1000,
-                        cantidad: 0,
-                        fecha_caducidad: 0,
-                        envasado_id: 0,
-                        formato_id: 0,
-                        destino_id: 0,
-                        vehiculo_id: 0,
-                        id_proyecto: 1,
-                    }
-                }
-                onSubmit={handleModalSubmit}
-                fields={[
-                    {
-                        key: "producto_final_id",
-                        label: "ID del Producto Final",
-                        type: "number",
-                    },
-                    {
-                        key: "formula_id",
-                        label: "ID de la Formula",
-                        type: "number",
-                    },
-                    {
-                        key: "numero_lote",
-                        label: "Número de lote",
-                        type: "text",
-                    },
-                    {
-                        key: "fecha_salida",
-                        label: "Fecha de salida",
-                        type: "date",
-                    },
-                    { key: "cantidad", label: "Cantidad", type: "number" },
-                    {
-                        key: "fecha_caducidad",
-                        label: "Fecha de caducidad",
-                        type: "date",
-                    },
-                    {
-                        key: "envasado_id",
-                        label: "ID del Envasado",
-                        type: "number",
-                    },
-                    {
-                        key: "formato_id",
-                        label: "ID del Formato",
-                        type: "number",
-                    },
-                    {
-                        key: "destino_id",
-                        label: "ID del Destino",
-                        type: "number",
-                    },
-                    {
-                        key: "vehiculo_id",
-                        label: "ID del Vehículo",
-                        type: "number",
-                    },
-                    {
-                        key: "id_proyecto",
-                        label: "ID del Proyecto",
-                        type: "number",
-                    },
-                ]}
-                onAfterSubmit={onAfterSubmit}
+                editComponent={(item, onHide) => (
+                    <EditSalidaProductos salida={item} onHide={onHide} />
+                )}
             />
         </div>
     );
