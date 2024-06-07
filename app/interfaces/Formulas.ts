@@ -1,4 +1,4 @@
-import { proyectosInterface } from "../../../servidor/src/interfaces/proyectos.interface";
+import { proyectosInterface } from "./Proyectos";
 
 export interface formulasInterface {
     id: number;
