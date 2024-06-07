@@ -37,6 +37,27 @@ const GenericModal = <T,>({
         }));
     };
 
+    const footerContent = (
+        <div className="flex gap-2">
+            <Button
+                type="submit"
+                label="Guardar"
+                icon="pi pi-check"
+                //onClick={handleSubmit}
+                className="mt-2 bg-[var(--primary-color)] p-2"
+            />
+            <Button
+                label="Cancelar"
+                icon="pi pi-times"
+                onClick={() => {
+                    setVisible(false);
+                    //onHide();
+                }}
+                className="mt-2 hover:bg-[var(--red-400)] p-2"
+            />
+        </div>
+    );
+
     const handleSubmit = () => {
         const updatedValues = { ...formValues };
 

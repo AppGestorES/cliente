@@ -13,11 +13,10 @@ interface Props<T> {
     }[];
     selectedItems: T[];
     setSelectedItems: (items: T[]) => void;
-    onEdit: (item: T) => void;
     onDelete: (items: T[]) => void;
     loading: boolean;
     error: string | null;
-    edit: boolean;
+    editComponent?: (item: T, onHide: () => void) => JSX.Element;
 }
 
 const GenericTable = <T extends { id: number }>({
@@ -25,13 +24,14 @@ const GenericTable = <T extends { id: number }>({
     columns,
     selectedItems,
     setSelectedItems,
-    onEdit,
     onDelete,
     loading,
     error,
-    edit,
+    editComponent,
 }: Props<T>) => {
     const toast = useRef<Toast>(null);
+    const [editItem, setEditItem] = useState<T | null>(null);
+    const [visible, setVisible] = useState<boolean>(false);
 
     useEffect(() => {
         if (error) {
@@ -43,6 +43,16 @@ const GenericTable = <T extends { id: number }>({
             });
         }
     }, [error]);
+
+    const handleEditClick = (item: T) => {
+        setEditItem(item);
+        setVisible(true);
+    };
+
+    const handleHide = () => {
+        setVisible(false);
+        setEditItem(null);
+    };
 
     return (
         <div className="w-full mt-4">
@@ -63,7 +73,10 @@ const GenericTable = <T extends { id: number }>({
                 scrollHeight="600px"
                 selectionMode="multiple"
                 selection={selectedItems}
-                onSelectionChange={(e) => setSelectedItems(e.value)}
+                onSelectionChange={(e) => {
+                    setSelectedItems(e.value);
+                    console.log(e.value);
+                }}
             >
                 <Column
                     selectionMode="multiple"
@@ -78,18 +91,21 @@ const GenericTable = <T extends { id: number }>({
                         body={col.render ? col.render : undefined}
                     />
                 ))}
-                {edit ? (
+                {editComponent ? (
                     <Column
                         header="Edit"
                         body={(rowData: T) => (
                             <Button
                                 icon="pi pi-pencil"
-                                onClick={() => onEdit(rowData)}
+                                onClick={() => handleEditClick(rowData)}
                             />
                         )}
                     />
                 ) : undefined}
             </DataTable>
+            {editItem && editComponent && visible && (
+                <div>{editComponent(editItem, handleHide)}</div>
+            )}
         </div>
     );
 };

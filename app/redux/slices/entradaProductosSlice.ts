@@ -92,21 +92,12 @@ export const postEntradaProductos = createAsyncThunk(
 
 export const putEntradaProductos = createAsyncThunk(
     "entradaProductos/putEntradaProductos",
-    async (
-        {
-            id,
-            updatedProduct,
-        }: {
-            id: number;
-            updatedProduct: putEntradasInterface;
-        },
-        { getState }
-    ) => {
+    async (updatedProduct: putEntradasInterface, { getState }) => {
         const state = getState() as RootState;
         const token = selectAuthToken(state);
 
         const data: ApiResponse<getEntradasInterface> = await fetchWithToken(
-            `http://localhost:3001/entradas/${id}`,
+            `http://localhost:3001/entradas/${updatedProduct.id}`,
             {
                 method: "PUT",
                 headers: {

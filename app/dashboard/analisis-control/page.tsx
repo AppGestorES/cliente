@@ -10,12 +10,16 @@ import {
 } from "@/app/redux/slices/controlMateriaPrimaSlice";
 import GenericTable from "@/app/Components/generics/GenericTable";
 import GenericModal from "@/app/Components/generics/GenericModal";
-import { getMateriasPrimasInterface } from "@/app/interfaces/MateriasPrimas";
+import {
+    getMateriasPrimasInterface,
+    putMateriasPrimasInterface,
+} from "@/app/interfaces/MateriasPrimas";
 import { AppDispatch, RootState } from "@/app/redux/store";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
 import { fetchEntradaProductos } from "@/app/redux/slices/entradaProductosSlice";
+import React from "react";
 
 const ControlMateriaPrima: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -95,14 +99,9 @@ const ControlMateriaPrima: React.FC = () => {
         });
     };
 
-    const handleModalSubmit = (product: getMateriasPrimasInterface) => {
+    const handleModalSubmit = (product: putMateriasPrimasInterface) => {
         if (selectedProduct) {
-            dispatch(
-                putMateriasPrimas({
-                    id: selectedProduct.id,
-                    updatedMateriaPrima: product,
-                })
-            ).then((result) => {
+            dispatch(putMateriasPrimas(product)).then((result) => {
                 if (result.meta.requestStatus === "fulfilled") {
                     toast.current?.show({
                         severity: "success",
@@ -175,40 +174,22 @@ const ControlMateriaPrima: React.FC = () => {
                     { field: "nombre", header: "Nombre" },
                     { field: "caducidad", header: "Caducidad (días)" },
                     { field: "stock_kgs", header: "Stock (kg)" },
-                    { field: "id_proyecto", header: "ID Proyecto" },
+                    {
+                        field: "proyecto",
+                        header: "ID Proyecto",
+                        render: (rowData) =>
+                            rowData.proyecto && rowData.proyecto.id ? (
+                                <span>{rowData.proyecto.id}</span>
+                            ) : (
+                                <React.Fragment />
+                            ),
+                    },
                 ]}
                 selectedItems={selectedProducts}
                 setSelectedItems={setSelectedProducts}
-                onEdit={handleEdit}
                 onDelete={handleDelete}
                 loading={status === "loading"}
                 error={error}
-                edit={true}
-            />
-            <GenericModal
-                visible={modalVisible}
-                setVisible={setModalVisible}
-                onSuccess={handleSuccess}
-                initialValues={
-                    selectedProduct || {
-                        id: 0,
-                        nombre: "",
-                        caducidad: 0,
-                        stock_kgs: 0,
-                        id_proyecto: 0,
-                    }
-                }
-                onSubmit={handleModalSubmit}
-                fields={[
-                    { key: "nombre", label: "Nombre", type: "text" },
-                    { key: "caducidad", label: "Caducidad", type: "date" },
-                    { key: "stock_kgs", label: "Stock (kg)", type: "number" },
-                    {
-                        key: "id_proyecto",
-                        label: "ID Proyecto",
-                        type: "number",
-                    },
-                ]}
             />
         </div>
     );

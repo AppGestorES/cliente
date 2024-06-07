@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import {
-    getSalidaProductosInterface,
+    salidaProductosInterface,
     postSalidaProductosInterface,
     putSalidaProductosInterface,
 } from "@/app/interfaces/SalidaProductos";
@@ -18,7 +18,7 @@ interface ApiState<T> {
     error: string | null;
 }
 
-const initialState: ApiState<getSalidaProductosInterface> = {
+const initialState: ApiState<salidaProductosInterface> = {
     salidas: [],
     status: "idle",
     error: null,
@@ -50,7 +50,7 @@ export const fetchSalidas = createAsyncThunk(
         const state = getState() as RootState;
         const token = selectAuthToken(state);
 
-        const data: ApiResponse<getSalidaProductosInterface[]> =
+        const data: ApiResponse<salidaProductosInterface[]> =
             await fetchWithToken("http://localhost:3001/salidas", {}, token);
 
         if (!data.success) {
@@ -67,7 +67,7 @@ export const fetchSalidasByProductoFinal = createAsyncThunk(
         const state = getState() as RootState;
         const token = selectAuthToken(state);
 
-        const data: ApiResponse<getSalidaProductosInterface[]> =
+        const data: ApiResponse<salidaProductosInterface[]> =
             await fetchWithToken(
                 `http://localhost:3001/salidas/producto_final/${producto_final_id}`,
                 {},
@@ -88,7 +88,7 @@ export const fetchSalidasByFechaSalida = createAsyncThunk(
         const state = getState() as RootState;
         const token = selectAuthToken(state);
 
-        const data: ApiResponse<getSalidaProductosInterface[]> =
+        const data: ApiResponse<salidaProductosInterface[]> =
             await fetchWithToken(
                 `http://localhost:3001/salidas/fecha_salida/${fecha_salida}`,
                 {},
@@ -109,7 +109,7 @@ export const fetchSalidasByProyecto = createAsyncThunk(
         const state = getState() as RootState;
         const token = selectAuthToken(state);
 
-        const data: ApiResponse<getSalidaProductosInterface[]> =
+        const data: ApiResponse<salidaProductosInterface[]> =
             await fetchWithToken(
                 `http://localhost:3001/salidas/proyecto/${id_proyecto}`,
                 {},
@@ -130,7 +130,7 @@ export const postSalidas = createAsyncThunk(
         const state = getState() as RootState;
         const token = selectAuthToken(state);
 
-        const data: ApiResponse<getSalidaProductosInterface> =
+        const data: ApiResponse<salidaProductosInterface> =
             await fetchWithToken(
                 "http://localhost:3001/salidas",
                 {
@@ -157,7 +157,7 @@ export const putSalidas = createAsyncThunk(
         const state = getState() as RootState;
         const token = selectAuthToken(state);
 
-        const data: ApiResponse<getSalidaProductosInterface> =
+        const data: ApiResponse<salidaProductosInterface> =
             await fetchWithToken(
                 `http://localhost:3001/salidas/${updatedSalida.id}`,
                 {
@@ -214,10 +214,7 @@ const salidaProductosSlice = createSlice({
             })
             .addCase(
                 fetchSalidas.fulfilled,
-                (
-                    state,
-                    action: PayloadAction<getSalidaProductosInterface[]>
-                ) => {
+                (state, action: PayloadAction<salidaProductosInterface[]>) => {
                     state.status = "succeeded";
                     state.salidas = action.payload;
                 }
@@ -231,10 +228,7 @@ const salidaProductosSlice = createSlice({
             })
             .addCase(
                 fetchSalidasByProductoFinal.fulfilled,
-                (
-                    state,
-                    action: PayloadAction<getSalidaProductosInterface[]>
-                ) => {
+                (state, action: PayloadAction<salidaProductosInterface[]>) => {
                     state.status = "succeeded";
                     state.salidas = action.payload;
                 }
@@ -248,10 +242,7 @@ const salidaProductosSlice = createSlice({
             })
             .addCase(
                 fetchSalidasByFechaSalida.fulfilled,
-                (
-                    state,
-                    action: PayloadAction<getSalidaProductosInterface[]>
-                ) => {
+                (state, action: PayloadAction<salidaProductosInterface[]>) => {
                     state.status = "succeeded";
                     state.salidas = action.payload;
                 }
@@ -265,10 +256,7 @@ const salidaProductosSlice = createSlice({
             })
             .addCase(
                 fetchSalidasByProyecto.fulfilled,
-                (
-                    state,
-                    action: PayloadAction<getSalidaProductosInterface[]>
-                ) => {
+                (state, action: PayloadAction<salidaProductosInterface[]>) => {
                     state.status = "succeeded";
                     state.salidas = action.payload;
                 }
@@ -282,7 +270,7 @@ const salidaProductosSlice = createSlice({
             })
             .addCase(
                 postSalidas.fulfilled,
-                (state, action: PayloadAction<getSalidaProductosInterface>) => {
+                (state, action: PayloadAction<salidaProductosInterface>) => {
                     state.status = "succeeded";
                     state.salidas.push(action.payload);
                 }
@@ -296,7 +284,7 @@ const salidaProductosSlice = createSlice({
             })
             .addCase(
                 putSalidas.fulfilled,
-                (state, action: PayloadAction<getSalidaProductosInterface>) => {
+                (state, action: PayloadAction<salidaProductosInterface>) => {
                     state.status = "succeeded";
                     const index = state.salidas.findIndex(
                         (salida) => salida.id === action.payload.id

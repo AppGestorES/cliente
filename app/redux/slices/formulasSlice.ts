@@ -87,27 +87,21 @@ export const postFormulas = createAsyncThunk(
 
 export const putFormulas = createAsyncThunk(
     "formulas/putFormulas",
-    async (
-        {
-            id,
-            updatedFormula,
-        }: {
-            id: number;
-            updatedFormula: putFormulasInterface;
-        },
-        { getState }
-    ) => {
+    async (updatedFormula: putFormulasInterface, { getState }) => {
         const state = getState() as RootState;
         const token = selectAuthToken(state);
 
-        const response = await fetch(`http://localhost:3001/formulas/${id}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: token + "",
-            },
-            body: JSON.stringify(updatedFormula),
-        });
+        const response = await fetch(
+            `http://localhost:3001/formulas/${updatedFormula.id}`,
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: token + "",
+                },
+                body: JSON.stringify(updatedFormula),
+            }
+        );
 
         if (!response.ok) {
             throw new Error("Network response was not ok");

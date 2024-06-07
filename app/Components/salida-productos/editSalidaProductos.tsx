@@ -1,22 +1,10 @@
-// export interface salidaProductosInterface {
-//     id: number;
-//     producto_final_id: number;
-//     formula_id: number;
-//     numero_lote: string;
-//     fecha_salida: number;
-//     cantidad: number;
-//     fecha_caducidad: number;
-//     envasado_id: envasadosInterface;
-//     formato_id: formatosInterface;
-//     destino_id: destinosInterface;
-//     vehiculo_id: vehiculosInterface;
-//     proyecto: proyectosInterface;
-// }
-
-import { postSalidaProductosInterface } from "@/app/interfaces/SalidaProductos";
+import {
+    putSalidaProductosInterface,
+    salidaProductosInterface,
+} from "@/app/interfaces/SalidaProductos";
 import {
     fetchSalidas,
-    postSalidas,
+    putSalidas,
 } from "@/app/redux/slices/salidaProductosSlice";
 import { AppDispatch } from "@/app/redux/store";
 import { Button } from "primereact/button";
@@ -27,23 +15,39 @@ import { InputText } from "primereact/inputtext";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 
-const SalidaProductosModal = () => {
-    const [visible, setVisible] = useState<boolean>(false);
-    const [productoFinalId, setproductoFinalId] = useState<number>(0);
-    const [formula_id, setFormula_id] = useState<number>(0);
-    const [numero_lote, setNumero_lote] = useState<string>("");
-    const [fecha_salida, setFecha_salida] = useState<Date | null>(null);
-    const [envasado_id, setEnvasado_id] = useState<number>(0);
-    const [formato_id, setFormato_id] = useState<number>(0);
-    const [destino_id, setDestino_id] = useState<number>(0);
-    const [vehiculo_id, setVehiculo_id] = useState<number>(0);
-    const [proyecto_id, setProyecto_id] = useState<number>(0);
-    const [cantidad, setCantidad] = useState<number>(0);
-    const [fecha_caducidad, setFecha_caducidad] = useState<Date | null>(null);
+interface Props {
+    salida: salidaProductosInterface;
+    onHide: () => void;
+}
+
+const EditSalidaProductos: React.FC<Props> = ({ salida, onHide }) => {
+    const [visible, setVisible] = useState<boolean>(true);
+    const [productoFinalId, setproductoFinalId] = useState<number>(
+        salida.producto_final_id
+    );
+    const [formula_id, setFormula_id] = useState<number>(salida.formula_id);
+    const [numero_lote, setNumero_lote] = useState<string>(salida.numero_lote);
+    const [fecha_salida, setFecha_salida] = useState<Date | null>(
+        new Date(salida.fecha_salida * 1000)
+    );
+    const [envasado_id, setEnvasado_id] = useState<number>(
+        salida.envasado_id.id
+    );
+    const [formato_id, setFormato_id] = useState<number>(salida.formato_id.id);
+    const [destino_id, setDestino_id] = useState<number>(salida.destino_id.id);
+    const [vehiculo_id, setVehiculo_id] = useState<number>(
+        salida.vehiculo_id.id
+    );
+    const [proyecto_id, setProyecto_id] = useState<number>(salida.proyecto.id);
+    const [cantidad, setCantidad] = useState<number>(salida.cantidad);
+    const [fecha_caducidad, setFecha_caducidad] = useState<Date | null>(
+        new Date(salida.fecha_caducidad * 1000)
+    );
     const dispatch: AppDispatch = useDispatch();
 
     const handleSubmit = () => {
-        const addSalida: postSalidaProductosInterface = {
+        const putSalida: putSalidaProductosInterface = {
+            id: salida.id,
             producto_final_id: productoFinalId,
             formula_id: formula_id,
             numero_lote: numero_lote,
@@ -58,9 +62,8 @@ const SalidaProductosModal = () => {
             vehiculo_id: vehiculo_id,
             id_proyecto: proyecto_id,
         };
-
         try {
-            dispatch(postSalidas(addSalida));
+            dispatch(putSalidas(putSalida));
             dispatch(fetchSalidas());
             setVisible(false);
         } catch (error) {
@@ -80,7 +83,10 @@ const SalidaProductosModal = () => {
             <Button
                 label="Cancelar"
                 icon="pi pi-times"
-                onClick={() => setVisible(false)}
+                onClick={() => {
+                    setVisible(false);
+                    onHide();
+                }}
                 className="mt-2 hover:bg-[var(--red-400)] p-2"
             />
         </div>
@@ -88,18 +94,16 @@ const SalidaProductosModal = () => {
 
     return (
         <div className="card flex justify-content-center">
-            <Button
-                label="Añadir producto"
-                icon="pi pi-external-link"
-                onClick={() => setVisible(true)}
-            />
             <Dialog
-                header="Añadir"
+                header="Editar Producto"
                 footer={footerContent}
                 visible={visible}
                 className="bg-[var(--surface-c)]"
                 breakpoints={{ "960px": "75vw", "641px": "100vw" }}
-                onHide={() => setVisible(false)}
+                onHide={() => {
+                    setVisible(false);
+                    onHide();
+                }}
             >
                 <form className="w-full grid grid-cols-1 md:grid-cols-3 gap-6 p-5">
                     <div className="flex flex-col gap-2 sm:flex-row">
@@ -262,4 +266,4 @@ const SalidaProductosModal = () => {
     );
 };
 
-export default SalidaProductosModal;
+export default EditSalidaProductos;

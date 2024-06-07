@@ -143,21 +143,12 @@ export const postMateriasPrimas = createAsyncThunk(
 
 export const putMateriasPrimas = createAsyncThunk(
     "materiasPrimas/putMateriasPrimas",
-    async (
-        {
-            id,
-            updatedMateriaPrima,
-        }: {
-            id: number;
-            updatedMateriaPrima: putMateriasPrimasInterface;
-        },
-        { getState }
-    ) => {
+    async (updatedMateriaPrima: putMateriasPrimasInterface, { getState }) => {
         const state = getState() as RootState;
         const token = selectAuthToken(state);
 
         const response = await fetch(
-            `http://localhost:3001/materias_primas/${id}`,
+            `http://localhost:3001/materias_primas/${updatedMateriaPrima.id}`,
             {
                 method: "PUT",
                 headers: {

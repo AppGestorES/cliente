@@ -1,9 +1,11 @@
+import { proyectosInterface } from "../../../servidor/src/interfaces/proyectos.interface";
+
 export interface materiasPrimasInterface {
     id: number;
     nombre: string;
     caducidad: number;
     stock_kgs: number;
-    id_proyecto: number;
+    proyecto: proyectosInterface;
 }
 
 export interface getMateriasPrimasInterface {
@@ -11,7 +13,7 @@ export interface getMateriasPrimasInterface {
     nombre: string;
     caducidad: number;
     stock_kgs: number;
-    id_proyecto: number;
+    proyecto: proyectosInterface;
 }
 
 export interface postMateriasPrimasInterface {
