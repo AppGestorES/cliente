@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { AppDispatch } from "@/app/redux/store";
 import { registerUser } from "@/app/redux/slices/authSlice";
 import Link from "next/link";
+import { sha256 } from "js-sha256";
 
 const schema = z.object({
     nombre: z.string().min(1, "El nombre es requerido"),
@@ -47,7 +48,7 @@ export default function RegisterForm() {
         const usuarioData = {
             nombre: data.nombre,
             apellido: data.apellido,
-            contrasena: data.contrasena,
+            contrasena: sha256(data.contrasena),
             identificador: data.nombreUsuario,
             id_proyecto: 1,
         };
