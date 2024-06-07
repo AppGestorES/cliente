@@ -17,7 +17,7 @@ const initialState: AuthState = {
 export const loginUser = createAsyncThunk(
     "auth/loginUser",
     async (usuarioData: { contrasena: string; usuario: string }) => {
-        const response = await fetch("https://api.appgestor.es/iniciarsesion", {
+        const response = await fetch("http://localhost:3001/iniciarsesion", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -46,16 +46,13 @@ export const registerUser = createAsyncThunk(
         identificador: string;
         id_proyecto: number;
     }) => {
-        const response = await fetch(
-            "https://api.appgestor.es/registrarSesion",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(usuarioData),
-            }
-        );
+        const response = await fetch("http://localhost:3001/registrarSesion", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(usuarioData),
+        });
 
         if (!response.ok) {
             if (response.status === 409) {
