@@ -99,6 +99,20 @@ const EntradaProductosPage: React.FC = () => {
                                 <React.Fragment />
                             ),
                     },
+                    {
+                        field: "fecha_entrada",
+                        header: "Fecha Entrada",
+                        render: (rowData) =>
+                            rowData.fecha_entrada ? (
+                                <span>
+                                    {new Date(
+                                        rowData.fecha_entrada * 1000
+                                    ).toLocaleDateString()}
+                                </span>
+                            ) : (
+                                <React.Fragment />
+                            ),
+                    },
                     { field: "proveedor", header: "Proveedor" },
                     { field: "numero_albaran", header: "Número Albaran" },
                     { field: "numero_lote", header: "Número de lote" },
