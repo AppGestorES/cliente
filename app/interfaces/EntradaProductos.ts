@@ -1,6 +1,6 @@
-import { proyectosInterface } from "../../../servidor/src/interfaces/proyectos.interface";
-import { envasadosInterface } from "../../../servidor/src/interfaces/envasados.interface";
-import { operariosInterface } from "../../../servidor/src/interfaces/operarios.interface";
+import { envasadosInterface } from "./Envasados";
+import { operariosInterface } from "./Operarios";
+import { proyectosInterface } from "./Proyectos";
 
 export interface EntradaDeProductos {
     id: number;

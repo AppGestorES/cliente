@@ -1,22 +1,23 @@
 import { proyectosInterface } from "./Proyectos";
 
-export interface destinosInterface {
+export interface operariosInterface {
     id: number;
     nombre: string;
-    id_proyecto: number;
 }
 
-export interface getDestinosInterface {
+export interface getOperariosInterface {
     id: number;
     nombre: string;
     proyecto: proyectosInterface;
 }
 
-export interface postDestinosInterface {
+export interface postOperariosInterface {
     nombre: string;
     id_proyecto: number;
 }
 
-export interface putDestinosInterface {
+export interface putOperariosInterface {
+    id: number;
     nombre: string;
+    id_proyecto: number;
 }
