@@ -46,6 +46,12 @@ const EntradaProductosPage: React.FC = () => {
             const idsToDelete = selectedProducts.map((product) => product.id);
             dispatch(deleteEntradaProductos(idsToDelete));
             setSelectedProducts([]);
+            toast.current?.show({
+                severity: "success",
+                summary: "Success",
+                detail: "Eliminado con exito",
+                life: 3000,
+            });
         }
     };
 

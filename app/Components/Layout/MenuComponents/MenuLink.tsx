@@ -2,6 +2,7 @@
 
 import { MenuProps } from "@/app/interfaces/MenuInterfaces";
 import Link from "next/link";
+import Logo from "../../Logo";
 
 interface Props {
     prop: MenuProps;

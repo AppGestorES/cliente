@@ -2,6 +2,8 @@
 
 import { MenuProps } from "@/app/interfaces/MenuInterfaces";
 import MenuLink from "@/app/Components/Layout/MenuComponents/MenuLink";
+import Link from "next/link";
+import Logo from "../Logo";
 
 const prop: MenuProps[] = [
     {
@@ -70,6 +72,12 @@ export default function Menu() {
                 <i className={"pi pi-bars text-lg"}></i>
             </button>
             <ul className="hidden gap-2 md:p-0 p-4 flex-col w-full md:h-full absolute mb-[50px] md:mb-0 bottom-0 left-0 translate-x-[-100%] md:translate-x-[0%] md:relative md:bg-transparent md:flex bg-[var(--surface-b)] menuList z-10">
+                <div className="w-full items-center justify-center hidden md:flex">
+                    <Link href={"/dashboard"}>
+                        <Logo estilos="text-2xl" />
+                    </Link>
+                </div>
+
                 {prop.map((opcion, index) => {
                     return <MenuLink prop={opcion} key={index} />;
                 })}
