@@ -75,7 +75,6 @@ const GenericTable = <T extends { id: number }>({
                 selection={selectedItems}
                 onSelectionChange={(e) => {
                     setSelectedItems(e.value);
-                    console.log(e.value);
                 }}
             >
                 <Column

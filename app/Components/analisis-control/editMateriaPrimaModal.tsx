@@ -68,22 +68,18 @@ const EditMateriaPrimaModal: React.FC<Props> = ({ materiaPrima, onHide }) => {
     };
 
     const footerContent = (
-        <div className="flex gap-2">
+        <div className="flex justify-center">
             <Button
                 type="submit"
                 label="Guardar"
                 icon="pi pi-check"
                 onClick={handleSubmit}
-                className="mt-2 bg-[var(--primary-color)] p-2"
             />
             <Button
                 label="Cancelar"
                 icon="pi pi-times"
-                onClick={() => {
-                    setVisible(false);
-                    onHide();
-                }}
-                className="mt-2 hover:bg-[var(--red-400)] p-2"
+                onClick={() => setVisible(false)}
+                severity="danger"
             />
         </div>
     );
