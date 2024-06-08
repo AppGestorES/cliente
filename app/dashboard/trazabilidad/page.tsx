@@ -10,6 +10,7 @@ import { salidaProductosInterface } from "@/app/interfaces/SalidaProductos";
 import { AppDispatch, RootState } from "@/app/redux/store";
 import { Button } from "primereact/button";
 import React from "react";
+import ToggleTheme from "@/app/Components/ToggleTheme";
 
 const TrazabilidadPage: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();

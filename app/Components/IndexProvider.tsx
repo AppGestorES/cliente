@@ -4,7 +4,8 @@ import { poppins } from "@/public/fonts/fonts";
 import { PrimeReactProvider } from "primereact/api";
 import { Provider } from "react-redux";
 import store from "@/app/redux/store";
-import "@/public/themes/viva-dark/theme.css";
+// import "@/public/themes/viva-dark/theme.css";
+import "@/app/globals.scss";
 import "primeicons/primeicons.css";
 
 const IndexProvider: React.FC<{ children: React.ReactNode }> = ({
