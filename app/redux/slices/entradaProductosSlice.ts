@@ -51,7 +51,7 @@ export const fetchEntradaProductos = createAsyncThunk(
         const token = selectAuthToken(state);
 
         const data: ApiResponse<getEntradasInterface[]> = await fetchWithToken(
-            "https://api.appgestor.es/entradas",
+            "http://localhost:3001/entradas",
             {},
             token
         );
@@ -71,7 +71,7 @@ export const postEntradaProductos = createAsyncThunk(
         const token = selectAuthToken(state);
 
         const data: ApiResponse<getEntradasInterface> = await fetchWithToken(
-            "https://api.appgestor.es/entradas",
+            "http://localhost:3001/entradas",
             {
                 method: "POST",
                 headers: {
@@ -97,7 +97,7 @@ export const putEntradaProductos = createAsyncThunk(
         const token = selectAuthToken(state);
 
         const data: ApiResponse<getEntradasInterface> = await fetchWithToken(
-            `https://api.appgestor.es/entradas/${updatedProduct.id}`,
+            `http://localhost:3001/entradas/${updatedProduct.id}`,
             {
                 method: "PUT",
                 headers: {
@@ -124,7 +124,7 @@ export const deleteEntradaProductos = createAsyncThunk(
 
         const promises = ids.map((id) =>
             fetchWithToken(
-                `https://api.appgestor.es/entradas/${id}`,
+                `http://localhost:3001/entradas/${id}`,
                 {
                     method: "DELETE",
                     headers: {

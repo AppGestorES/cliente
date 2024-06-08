@@ -33,14 +33,11 @@ export const fetchMateriasPrimas = createAsyncThunk(
         const state = getState() as RootState;
         const token = selectAuthToken(state);
 
-        const response = await fetch(
-            "https://api.appgestor.es/materias_primas",
-            {
-                headers: {
-                    Authorization: token + "",
-                },
-            }
-        );
+        const response = await fetch("http://localhost:3001/materias_primas", {
+            headers: {
+                Authorization: token + "",
+            },
+        });
         if (!response.ok) {
             throw new Error("Network response was not ok");
         }
@@ -63,7 +60,7 @@ export const fetchMateriasPrimasByNombre = createAsyncThunk(
         const token = selectAuthToken(state);
 
         const response = await fetch(
-            `https://api.appgestor.es/materias_primas/nombre/${nombre}`,
+            `http://localhost:3001/materias_primas/nombre/${nombre}`,
             {
                 headers: {
                     Authorization: token + "",
@@ -92,7 +89,7 @@ export const fetchMateriasPrimasByProyecto = createAsyncThunk(
         const token = selectAuthToken(state);
 
         const response = await fetch(
-            `https://api.appgestor.es/materias_primas/proyecto/${id_proyecto}`,
+            `http://localhost:3001/materias_primas/proyecto/${id_proyecto}`,
             {
                 headers: {
                     Authorization: token + "",
@@ -120,17 +117,14 @@ export const postMateriasPrimas = createAsyncThunk(
         const state = getState() as RootState;
         const token = selectAuthToken(state);
 
-        const response = await fetch(
-            "https://api.appgestor.es/materias_primas",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: token + "",
-                },
-                body: JSON.stringify(newMateriaPrima),
-            }
-        );
+        const response = await fetch("http://localhost:3001/materias_primas", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: token + "",
+            },
+            body: JSON.stringify(newMateriaPrima),
+        });
 
         if (!response.ok) {
             throw new Error("Network response was not ok");
@@ -154,7 +148,7 @@ export const putMateriasPrimas = createAsyncThunk(
         const token = selectAuthToken(state);
 
         const response = await fetch(
-            `https://api.appgestor.es/materias_primas/${updatedMateriaPrima.id}`,
+            `http://localhost:3001/materias_primas/${updatedMateriaPrima.id}`,
             {
                 method: "PUT",
                 headers: {
@@ -187,7 +181,7 @@ export const deleteMateriasPrimas = createAsyncThunk(
         const token = selectAuthToken(state);
 
         const promises = ids.map((id) =>
-            fetch(`https://api.appgestor.es/materias_primas/${id}`, {
+            fetch(`http://localhost:3001/materias_primas/${id}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",

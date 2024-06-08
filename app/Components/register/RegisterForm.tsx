@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { AppDispatch } from "@/app/redux/store";
 import { registerUser } from "@/app/redux/slices/authSlice";
 import Link from "next/link";
+import Logo from "../Logo";
 
 const schema = z.object({
     nombre: z.string().min(1, "El nombre es requerido"),
@@ -79,7 +80,10 @@ export default function RegisterForm() {
         <div className="w-full h-screen p-4 flex items-center justify-center">
             <Toast ref={toast} />
             <div className="w-[70vw] md:w-[30vw] h-auto rounded-md bg-[var(--surface-c)] p-4">
-                <h2 className="text-xl mb-4">Registrar</h2>
+                <div className="flex items-center justify-center">
+                    <Logo estilos="text-3xl" />
+                </div>
+                <h2 className="mb-4">Registrar</h2>
                 <form
                     className="flex flex-col w-full"
                     onSubmit={handleSubmit(onSubmit)}
