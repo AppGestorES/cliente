@@ -19,6 +19,7 @@ import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
 import { fetchEntradaProductos } from "@/app/redux/slices/entradaProductosSlice";
 import React from "react";
+import withAuth from "../withAuth";
 
 const ControlMateriaPrima: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -141,4 +142,4 @@ const ControlMateriaPrima: React.FC = () => {
     );
 };
 
-export default ControlMateriaPrima;
+export default withAuth(ControlMateriaPrima);

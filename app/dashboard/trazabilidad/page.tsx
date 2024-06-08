@@ -11,6 +11,7 @@ import { AppDispatch, RootState } from "@/app/redux/store";
 import { Button } from "primereact/button";
 import React from "react";
 import ToggleTheme from "@/app/Components/ToggleTheme";
+import withAuth from "../withAuth";
 
 const TrazabilidadPage: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -247,4 +248,4 @@ const TrazabilidadPage: React.FC = () => {
     );
 };
 
-export default TrazabilidadPage;
+export default withAuth(TrazabilidadPage);

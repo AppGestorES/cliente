@@ -21,6 +21,7 @@ import { Toast } from "primereact/toast";
 import CreateMateriaPrimaModal from "@/app/Components/analisis-control/materiaPrimaModal";
 import EditMateriaPrimaModal from "@/app/Components/analisis-control/editMateriaPrimaModal";
 import React from "react";
+import withAuth from "../withAuth";
 
 const ControlMateriaPrima: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -139,4 +140,4 @@ const ControlMateriaPrima: React.FC = () => {
     );
 };
 
-export default ControlMateriaPrima;
+export default withAuth(ControlMateriaPrima);

@@ -7,6 +7,7 @@ interface AuthState {
     status: "idle" | "loading" | "succeeded" | "failed";
     error: string | null;
     usuario: UsuarioInterface | null;
+    verified: boolean;
 }
 
 const initialState: AuthState = {
@@ -15,6 +16,7 @@ const initialState: AuthState = {
     status: "idle",
     error: null,
     usuario: null,
+    verified: false,
 };
 
 export const loginUser = createAsyncThunk(
@@ -74,7 +76,7 @@ export const verifyUser = createAsyncThunk("auth/verifyUser", async () => {
     const response = await fetch("http://localhost:3001/verificartoken", {
         method: "GET",
         headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: token + "",
         },
     });
 
@@ -136,6 +138,7 @@ const authSlice = createSlice({
             .addCase(verifyUser.fulfilled, (state, action) => {
                 state.status = "succeeded";
                 state.usuario = action.payload;
+                state.verified = true;
             })
             .addCase(verifyUser.rejected, (state, action) => {
                 state.status = "failed";
