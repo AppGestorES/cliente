@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { verifyUser } from "../redux/slices/authSlice";
 import { AppDispatch } from "../redux/store";
@@ -10,6 +10,7 @@ const withAuth = (WrappedComponent: React.ComponentType) => {
     const WithAuthComponent = (props: any) => {
         const router = useRouter();
         const dispatch: AppDispatch = useDispatch();
+        const pathname = usePathname();
         const [isVerified, setIsVerified] = useState(false);
         const [isMounted, setIsMounted] = useState(false);
 
@@ -24,8 +25,10 @@ const withAuth = (WrappedComponent: React.ComponentType) => {
                 try {
                     await dispatch(verifyUser()).unwrap();
                     setIsVerified(true);
+                    if (pathname === "/login") {
+                        router.push("/dashboard");
+                    }
                 } catch (error) {
-                    console.error(error);
                     router.push("/login");
                 }
             };
@@ -34,10 +37,6 @@ const withAuth = (WrappedComponent: React.ComponentType) => {
                 verifyToken();
             }
         }, [dispatch, router, isMounted]);
-
-        if (!isVerified) {
-            return <p>Loading...</p>;
-        }
 
         return <WrappedComponent {...props} />;
     };
