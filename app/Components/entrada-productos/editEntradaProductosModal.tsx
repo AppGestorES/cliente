@@ -90,22 +90,18 @@ const EditEntradaProductosModal: React.FC<Props> = ({ producto, onHide }) => {
     };
 
     const footerContent = (
-        <div className="flex gap-2">
+        <div className="flex justify-center">
             <Button
                 type="submit"
                 label="Guardar"
                 icon="pi pi-check"
                 onClick={handleSubmit}
-                className="mt-2 bg-[var(--primary-color)] p-2"
             />
             <Button
                 label="Cancelar"
                 icon="pi pi-times"
-                onClick={() => {
-                    setVisible(false);
-                    onHide();
-                }}
-                className="mt-2 hover:bg-[var(--red-400)] p-2"
+                onClick={() => setVisible(false)}
+                severity="danger"
             />
         </div>
     );
@@ -123,7 +119,7 @@ const EditEntradaProductosModal: React.FC<Props> = ({ producto, onHide }) => {
                     onHide();
                 }}
             >
-                <form className="w-full grid grid-cols-3 gap-6 p-5">
+                <form className="w-full grid grid-cols-3 gap-6 p-5 modalForm">
                     <div className="flex flex-col gap-2 sm:flex-row">
                         <FloatLabel>
                             <InputText

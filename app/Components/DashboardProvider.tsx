@@ -7,6 +7,7 @@ import { poppins } from "@/public/fonts/fonts";
 import "@/public/themes/viva-dark/theme.css";
 import "primeicons/primeicons.css";
 import Menu from "@/app/Components/Layout/Menu";
+import Header from "./Header";
 
 const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({
     children,
@@ -18,11 +19,12 @@ const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({
                     <Menu />
                     <div
                         className={
-                            "p-4 w-full overflow-auto max-h-screen " +
+                            "w-full overflow-auto max-h-screen mb-4 " +
                             poppins.className
                         }
                     >
-                        {children}
+                        <Header />
+                        <div className="p-4">{children}</div>
                     </div>
                 </div>
             </PrimeReactProvider>

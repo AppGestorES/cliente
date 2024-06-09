@@ -20,6 +20,7 @@ import { Toast } from "primereact/toast";
 import React from "react";
 import SalidaProductosModal from "@/app/Components/salida-productos/modalSalidaProductos";
 import EditSalidaProductos from "@/app/Components/salida-productos/editSalidaProductos";
+import withAuth from "../withAuth";
 
 const SalidaProductos: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -100,7 +101,7 @@ const SalidaProductos: React.FC = () => {
                         <Button
                             label="Eliminar seleccionados"
                             icon="pi pi-trash"
-                            className="bg-[var(--surface-a)] p-2 hover:bg-[var(--red-400)] mt-2 max-w-[300px]"
+                            severity="danger"
                             onClick={confirmDelete}
                         />
                     )}
@@ -209,4 +210,4 @@ const SalidaProductos: React.FC = () => {
     );
 };
 
-export default SalidaProductos;
+export default withAuth(SalidaProductos);

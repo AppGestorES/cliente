@@ -85,7 +85,7 @@ export default function Menu() {
                     prop={{
                         icon: "pi pi-sign-out",
                         name: "Salir",
-                        link: "/",
+                        link: "https://www.appgestor.es/",
                         className: "md:bottom-0 md:absolute",
                     }}
                 />

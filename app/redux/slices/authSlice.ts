@@ -74,7 +74,7 @@ export const verifyUser = createAsyncThunk("auth/verifyUser", async () => {
     const response = await fetch("http://localhost:3001/verificartoken", {
         method: "GET",
         headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: token + "",
         },
     });
 
@@ -133,10 +133,13 @@ const authSlice = createSlice({
             .addCase(verifyUser.pending, (state) => {
                 state.status = "loading";
             })
-            .addCase(verifyUser.fulfilled, (state, action) => {
-                state.status = "succeeded";
-                state.usuario = action.payload;
-            })
+            .addCase(
+                verifyUser.fulfilled,
+                (state, action: PayloadAction<UsuarioInterface>) => {
+                    state.status = "succeeded";
+                    state.usuario = action.payload;
+                }
+            )
             .addCase(verifyUser.rejected, (state, action) => {
                 state.status = "failed";
                 state.error = action.error.message || "Something went wrong";

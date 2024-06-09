@@ -11,6 +11,7 @@ import { AppDispatch, RootState } from "@/app/redux/store";
 import { Button } from "primereact/button";
 import React from "react";
 import ToggleTheme from "@/app/Components/ToggleTheme";
+import withAuth from "../withAuth";
 
 const TrazabilidadPage: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -53,111 +54,6 @@ const TrazabilidadPage: React.FC = () => {
         }
     }, [entradaStatus, salidaStatus, dispatch]);
 
-    const entradaColumns = [
-        { field: "id", header: "ID" },
-        { field: "producto_final_id", header: "Producto Final Id" },
-        { field: "fecha_entrada", header: "Fecha Entrada" },
-        { field: "proveedor", header: "Proveedor" },
-        { field: "numero_albaran", header: "Número Albaran" },
-        { field: "numero_lote", header: "Numero lote" },
-        { field: "cantidad_kg", header: "Cantidad (KG)" },
-        { field: "fecha_caducidad", header: "Fecha Caducidad" },
-        { field: "envasado_id", header: "ID Envasado" },
-        { field: "operario_id", header: "ID Operario" },
-        { field: "id_proyecto", header: "ID Proyecto" },
-    ];
-
-    const salidaColumns = [
-        { field: "id", header: "ID" },
-        { field: "producto_final_id", header: "Producto Final Id" },
-        { field: "formula_id", header: "ID Formula" },
-        { field: "numero_lote", header: "Número de lote" },
-        {
-            field: "fecha_salida",
-            header: "Fecha Salida",
-            render: (rowData: any) =>
-                rowData.fecha_salida ? (
-                    <span>
-                        {new Date(
-                            rowData.fecha_salida * 1000
-                        ).toLocaleDateString()}
-                    </span>
-                ) : (
-                    <React.Fragment />
-                ),
-        },
-        { field: "cantidad", header: "Cantidad" },
-        {
-            field: "fecha_caducidad",
-            header: "Fecha Caducidad",
-            render: (rowData: any) =>
-                rowData.fecha_caducidad ? (
-                    <span>
-                        {new Date(
-                            rowData.fecha_caducidad * 1000
-                        ).toLocaleDateString()}
-                    </span>
-                ) : (
-                    <React.Fragment />
-                ),
-        },
-        {
-            field: "envasado_id",
-            header: "ID Envasado",
-            render: (rowData: any) =>
-                rowData.envasado_id && rowData.envasado_id.id ? (
-                    <span>{rowData.envasado_id.id}</span>
-                ) : (
-                    <React.Fragment />
-                ),
-        },
-        {
-            field: "formato_id",
-            header: "ID Formato",
-            render: (rowData: any) =>
-                rowData.formato_id && rowData.formato_id.id ? (
-                    <span>{rowData.formato_id.id}</span>
-                ) : (
-                    <React.Fragment />
-                ),
-        },
-        {
-            field: "destino_id",
-            header: "ID Destino",
-            render: (rowData: any) =>
-                rowData.destino_id && rowData.destino_id.id ? (
-                    <span>{rowData.destino_id.id}</span>
-                ) : (
-                    <React.Fragment />
-                ),
-        },
-        {
-            field: "vehiculo_id",
-            header: "ID Vehiculo",
-            render: (rowData: any) =>
-                rowData.vehiculo_id && rowData.vehiculo_id.id ? (
-                    <span>{rowData.vehiculo_id.id}</span>
-                ) : (
-                    <React.Fragment />
-                ),
-        },
-        {
-            field: "proyecto",
-            header: "ID proyecto",
-            render: (rowData: any) =>
-                rowData.proyecto && rowData.proyecto.id ? (
-                    <span>{rowData.proyecto.id}</span>
-                ) : (
-                    <React.Fragment />
-                ),
-        },
-    ];
-
-    const renderDateColumn = (rowData: any, field: string) => {
-        const value = rowData[field];
-        return value ? new Date(value * 1000).toLocaleDateString() : "";
-    };
-
     return (
         <div className="w-full">
             <div className="flex justify-between items-center px-4">
@@ -165,20 +61,18 @@ const TrazabilidadPage: React.FC = () => {
                 <div className="flex gap-2">
                     <Button
                         label="Entradas de Productos"
-                        className={`p-2 ${
+                        severity={
                             selectedTable === "entrada"
-                                ? "bg-[var(--primary-color)]"
-                                : "bg-[var(--surface-a)]"
-                        }`}
+                                ? undefined
+                                : "secondary"
+                        }
                         onClick={() => setSelectedTable("entrada")}
                     />
                     <Button
                         label="Salidas de Productos"
-                        className={`p-2 ${
-                            selectedTable === "salida"
-                                ? "bg-[var(--primary-color)]"
-                                : "bg-[var(--surface-a)]"
-                        }`}
+                        severity={
+                            selectedTable === "salida" ? undefined : "secondary"
+                        }
                         onClick={() => setSelectedTable("salida")}
                     />
                 </div>
@@ -354,4 +248,4 @@ const TrazabilidadPage: React.FC = () => {
     );
 };
 
-export default TrazabilidadPage;
+export default withAuth(TrazabilidadPage);

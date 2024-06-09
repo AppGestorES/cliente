@@ -12,17 +12,29 @@ import { useRouter } from "next/navigation";
 import { AppDispatch } from "@/app/redux/store";
 import { registerUser } from "@/app/redux/slices/authSlice";
 import Link from "next/link";
+import { sha256 } from "js-sha256";
 import Logo from "../Logo";
 
-const schema = z.object({
-    nombre: z.string().min(1, "El nombre es requerido"),
-    apellido: z.string().min(1, "El apellido es requerido"),
-    correo: z.string().email("Correo inválido"),
-    contrasena: z
-        .string()
-        .min(6, "La contraseña debe tener al menos 6 caracteres"),
-    nombreUsuario: z.string().min(1, "El nombre de usuario es requerido"),
-});
+const schema = z
+    .object({
+        nombre: z.string().min(1, "El nombre es requerido"),
+        apellido: z.string().min(1, "El apellido es requerido"),
+        correo: z.string().email("Correo inválido"),
+        contrasena: z
+            .string()
+            .min(6, "La contraseña debe tener al menos 6 caracteres"),
+        confirmarContrasena: z
+            .string()
+            .min(
+                6,
+                "La confirmación de la contraseña debe tener al menos 6 caracteres"
+            ),
+        nombreUsuario: z.string().min(1, "El nombre de usuario es requerido"),
+    })
+    .refine((data) => data.contrasena === data.confirmarContrasena, {
+        message: "Las contraseñas no coinciden",
+        path: ["confirmarContrasena"],
+    });
 
 type FormData = z.infer<typeof schema>;
 
@@ -48,7 +60,7 @@ export default function RegisterForm() {
         const usuarioData = {
             nombre: data.nombre,
             apellido: data.apellido,
-            contrasena: data.contrasena,
+            contrasena: sha256(data.contrasena),
             identificador: data.nombreUsuario,
             id_proyecto: 1,
         };
@@ -141,8 +153,20 @@ export default function RegisterForm() {
                             </span>
                         )}
                         <InputText
+                            type="password"
+                            id="confirmarContrasena"
+                            placeholder="Confirmar contraseña"
+                            className="p-2"
+                            {...register("confirmarContrasena")}
+                        />
+                        {errors.confirmarContrasena && (
+                            <span className="text-red-500">
+                                {errors.confirmarContrasena.message}
+                            </span>
+                        )}
+                        <InputText
                             id="nombreUsuario"
-                            placeholder="Nombre de Usuario"
+                            placeholder="Nombre de usuario"
                             className="p-2"
                             {...register("nombreUsuario")}
                         />
@@ -153,12 +177,12 @@ export default function RegisterForm() {
                         )}
                     </div>
                     <Link href={"/login"} className="text-xs text-blue-300">
-                        Iniciar sesion
+                        Iniciar sesión
                     </Link>
                     <Button
                         type="submit"
-                        label="Confirmar"
-                        className="w-full p-2 bg-[var(--surface-c)] hover:bg-[var(--primary-color)] mt-2"
+                        label="Registrar"
+                        className=" p-2  mt-2"
                     />
                 </form>
             </div>

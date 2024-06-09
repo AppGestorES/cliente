@@ -19,6 +19,7 @@ import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
 import { fetchEntradaProductos } from "@/app/redux/slices/entradaProductosSlice";
 import React from "react";
+import withAuth from "../withAuth";
 
 const ControlMateriaPrima: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -88,59 +89,6 @@ const ControlMateriaPrima: React.FC = () => {
         });
     };
 
-    const handleSuccess = () => {
-        dispatch(fetchEntradaProductos());
-        toast.current?.show({
-            severity: "success",
-            summary: "Éxito",
-            detail: "La operación se realizó con éxito",
-            life: 3000,
-        });
-    };
-
-    const handleModalSubmit = (product: putMateriasPrimasInterface) => {
-        if (selectedProduct) {
-            dispatch(putMateriasPrimas(product)).then((result) => {
-                if (result.meta.requestStatus === "fulfilled") {
-                    toast.current?.show({
-                        severity: "success",
-                        summary: "Actualización Exitosa",
-                        detail: "La materia prima fue actualizada",
-                        life: 3000,
-                    });
-                } else {
-                    toast.current?.show({
-                        severity: "error",
-                        summary: "Error al Actualizar",
-                        detail: "Hubo un error al actualizar la materia prima",
-                        life: 3000,
-                    });
-                }
-                setSelectedProduct(null);
-                setModalVisible(false);
-            });
-        } else {
-            dispatch(postMateriasPrimas(product)).then((result) => {
-                if (result.meta.requestStatus === "fulfilled") {
-                    toast.current?.show({
-                        severity: "success",
-                        summary: "Creación Exitosa",
-                        detail: "La materia prima fue agregada",
-                        life: 3000,
-                    });
-                } else {
-                    toast.current?.show({
-                        severity: "error",
-                        summary: "Error al Crear",
-                        detail: "Hubo un error al agregar la materia prima",
-                        life: 3000,
-                    });
-                }
-                setModalVisible(false);
-            });
-        }
-    };
-
     return (
         <div className="w-full">
             <Toast ref={toast} />
@@ -154,8 +102,8 @@ const ControlMateriaPrima: React.FC = () => {
                         <Button
                             label="Eliminar seleccionados"
                             icon="pi pi-trash"
-                            className="bg-[var(--surface-a)] p-2 hover:bg-[var(--red-400)] mt-2 max-w-[300px]"
                             onClick={confirmDelete}
+                            severity="danger"
                         />
                     )}
                     <Button
@@ -194,4 +142,4 @@ const ControlMateriaPrima: React.FC = () => {
     );
 };
 
-export default ControlMateriaPrima;
+export default withAuth(ControlMateriaPrima);
