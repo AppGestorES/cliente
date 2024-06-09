@@ -9,7 +9,8 @@ import { Calendar } from "primereact/calendar";
 import { Dialog } from "primereact/dialog";
 import { FloatLabel } from "primereact/floatlabel";
 import { InputText } from "primereact/inputtext";
-import { useState } from "react";
+import { Toast } from "primereact/toast";
+import { useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 
 const ProductosFinalesModal = () => {
@@ -19,6 +20,7 @@ const ProductosFinalesModal = () => {
     const [caducidad, setCaducidad] = useState<Date | null>(null);
     const [idProyecto, setIdProyecto] = useState<number>(0);
     const dispatch: AppDispatch = useDispatch();
+    const toast = useRef<Toast>(null);
 
     const handleSubmit = () => {
         const postProducto: postProductosFinalesInterface = {
@@ -30,6 +32,11 @@ const ProductosFinalesModal = () => {
         try {
             dispatch(postProductosFinales(postProducto));
             dispatch(fetchProductosFinales());
+            toast.current?.show({
+                severity: "success",
+                summary: "Agregado",
+                detail: "Agregado con éxito",
+            });
             setVisible(false);
         } catch (error) {
             console.error("Error");
@@ -55,6 +62,7 @@ const ProductosFinalesModal = () => {
 
     return (
         <div className="card flex justify-content-center">
+            <Toast ref={toast} position="bottom-right" />
             <Button
                 label="Añadir producto"
                 icon="pi pi-plus"

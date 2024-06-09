@@ -40,14 +40,14 @@ const EditFormulasModal: React.FC<Props> = ({ formula, onHide }) => {
 
         dispatch(putFormulas(updatedFormula)).then((result) => {
             if (result.meta.requestStatus === "fulfilled") {
+                dispatch(fetchFormulas());
+                setVisible(false);
                 toast.current?.show({
                     severity: "success",
                     summary: "Actualización Exitosa",
                     detail: "La formula fue actualizada",
                     life: 3000,
                 });
-                dispatch(fetchFormulas());
-                setVisible(false);
                 onHide();
             } else {
                 toast.current?.show({
@@ -78,7 +78,8 @@ const EditFormulasModal: React.FC<Props> = ({ formula, onHide }) => {
     );
 
     return (
-        <div>
+        <div className="card flex justify-content-center">
+            <Toast ref={toast} position="bottom-right" />
             <Dialog
                 header="Editar Producto"
                 footer={footerContent}

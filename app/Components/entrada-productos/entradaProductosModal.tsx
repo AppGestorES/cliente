@@ -48,6 +48,11 @@ const EntradaProductosModal = () => {
         try {
             dispatch(postEntradaProductos(addProduct));
             dispatch(fetchEntradaProductos());
+            toast.current?.show({
+                severity: "success",
+                summary: "Agregado",
+                detail: "Agregado con éxito",
+            });
             setVisible(false);
         } catch (error) {
             console.error("Error");
@@ -73,6 +78,7 @@ const EntradaProductosModal = () => {
 
     return (
         <div className="card flex justify-content-center">
+            <Toast ref={toast} position="bottom-right" />
             <Button
                 label="Añadir producto"
                 icon="pi pi-plus"
