@@ -37,19 +37,18 @@ const ProductosFinalesModal = () => {
     };
 
     const footerContent = (
-        <div className="flex gap-2">
+        <div className="flex justify-center">
             <Button
                 type="submit"
                 label="Guardar"
                 icon="pi pi-check"
                 onClick={handleSubmit}
-                className="mt-2 bg-[var(--primary-color)] p-2"
             />
             <Button
                 label="Cancelar"
                 icon="pi pi-times"
                 onClick={() => setVisible(false)}
-                className="mt-2 hover:bg-[var(--red-400)] p-2"
+                severity="danger"
             />
         </div>
     );
@@ -60,7 +59,6 @@ const ProductosFinalesModal = () => {
                 label="Añadir producto"
                 icon="pi pi-plus"
                 onClick={() => setVisible(true)}
-                className="bg-[var(--surface-a)] p-2 hover:bg-[var(--primary-color)] mt-2 max-w-[300px]"
             />
             <Dialog
                 header="Añadir"
@@ -70,7 +68,7 @@ const ProductosFinalesModal = () => {
                 breakpoints={{ "960px": "75vw", "641px": "100vw" }}
                 onHide={() => setVisible(false)}
             >
-                <form className="w-full grid grid-cols-1 md:grid-cols-3 gap-6 p-5">
+                <form className="w-full grid grid-cols-3 gap-6 p-5 modalForm">
                     <div className="flex flex-col gap-2 sm:flex-row">
                         <FloatLabel>
                             <InputText

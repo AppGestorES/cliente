@@ -1,10 +1,12 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "@/app/redux/store";
+import { UsuarioInterface } from "@/app/interfaces/Usuario";
 
 interface AuthState {
     token: string | null;
     status: "idle" | "loading" | "succeeded" | "failed";
     error: string | null;
+    usuario: UsuarioInterface | null;
 }
 
 const initialState: AuthState = {
@@ -12,12 +14,13 @@ const initialState: AuthState = {
         typeof window !== "undefined" ? localStorage.getItem("authToken") : "",
     status: "idle",
     error: null,
+    usuario: null,
 };
 
 export const loginUser = createAsyncThunk(
     "auth/loginUser",
     async (usuarioData: { contrasena: string; usuario: string }) => {
-        const response = await fetch("https://api.appgestor.es/iniciarsesion", {
+        const response = await fetch("http://localhost:3001/iniciarsesion", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -46,16 +49,13 @@ export const registerUser = createAsyncThunk(
         identificador: string;
         id_proyecto: number;
     }) => {
-        const response = await fetch(
-            "https://api.appgestor.es/registrarSesion",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(usuarioData),
-            }
-        );
+        const response = await fetch("http://localhost:3001/registrarSesion", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(usuarioData),
+        });
 
         if (!response.ok) {
             if (response.status === 409) {
@@ -69,6 +69,27 @@ export const registerUser = createAsyncThunk(
     }
 );
 
+export const verifyUser = createAsyncThunk("auth/verifyUser", async () => {
+    const token = localStorage.getItem("authToken");
+    const response = await fetch("http://localhost:3001/verificartoken", {
+        method: "GET",
+        headers: {
+            Authorization: token + "",
+        },
+    });
+
+    if (!response.ok) {
+        throw new Error("Network response was not ok");
+    }
+
+    const data = await response.json();
+    if (data.status !== 200) {
+        throw new Error("Token verification failed");
+    }
+
+    return data.result[0];
+});
+
 const authSlice = createSlice({
     name: "auth",
     initialState,
@@ -80,6 +101,7 @@ const authSlice = createSlice({
         clearToken: (state) => {
             state.token = null;
             localStorage.removeItem("authToken");
+            state.usuario = null;
         },
     },
     extraReducers: (builder) => {
@@ -107,6 +129,20 @@ const authSlice = createSlice({
             .addCase(registerUser.rejected, (state, action) => {
                 state.status = "failed";
                 state.error = action.error.message || "Something went wrong";
+            })
+            .addCase(verifyUser.pending, (state) => {
+                state.status = "loading";
+            })
+            .addCase(
+                verifyUser.fulfilled,
+                (state, action: PayloadAction<UsuarioInterface>) => {
+                    state.status = "succeeded";
+                    state.usuario = action.payload;
+                }
+            )
+            .addCase(verifyUser.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.error.message || "Something went wrong";
             });
     },
 });
@@ -114,5 +150,7 @@ const authSlice = createSlice({
 export const { setToken, clearToken } = authSlice.actions;
 
 export const getToken = (state: RootState): string | null => state.auth.token;
+export const getUsuario = (state: RootState): UsuarioInterface | null =>
+    state.auth.usuario;
 
 export default authSlice.reducer;

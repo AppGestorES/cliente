@@ -13,6 +13,7 @@ import { AppDispatch } from "@/app/redux/store";
 import Link from "next/link";
 import { loginUser } from "@/app/redux/slices/authSlice";
 import { sha256 } from "js-sha256";
+import Logo from "../Logo";
 
 const schema = z.object({
     nombreUsuario: z.string(),
@@ -74,6 +75,9 @@ export default function LoginForm() {
         <div className="w-full h-screen p-4 flex items-center justify-center">
             <Toast ref={toast} />
             <div className="w-[70vw] md:w-[30vw] h-auto rounded-md bg-[var(--surface-c)] p-4">
+                <div className="flex items-center justify-center">
+                    <Logo estilos="text-3xl" />
+                </div>
                 <h2 className="text-xl mb-4">Iniciar sesion</h2>
                 <form
                     className="flex flex-col w-full"
@@ -109,8 +113,8 @@ export default function LoginForm() {
                     </Link>
                     <Button
                         type="submit"
-                        label="Confirmar"
-                        className="w-full p-2 bg-[var(--surface-c)] hover:bg-[var(--primary-color)] mt-2"
+                        label="Iniciar sesión"
+                        className=" p-2  mt-2"
                     />
                 </form>
             </div>

@@ -21,6 +21,7 @@ import { Toast } from "primereact/toast";
 import CreateMateriaPrimaModal from "@/app/Components/analisis-control/materiaPrimaModal";
 import EditMateriaPrimaModal from "@/app/Components/analisis-control/editMateriaPrimaModal";
 import React from "react";
+import withAuth from "../withAuth";
 
 const ControlMateriaPrima: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -98,7 +99,7 @@ const ControlMateriaPrima: React.FC = () => {
                         <Button
                             label="Eliminar seleccionados"
                             icon="pi pi-trash"
-                            className="bg-[var(--surface-a)] p-2 hover:bg-[var(--red-400)] mt-2 max-w-[300px]"
+                            severity="danger"
                             onClick={confirmDelete}
                         />
                     )}
@@ -139,4 +140,4 @@ const ControlMateriaPrima: React.FC = () => {
     );
 };
 
-export default ControlMateriaPrima;
+export default withAuth(ControlMateriaPrima);

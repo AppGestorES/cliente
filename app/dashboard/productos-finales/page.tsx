@@ -9,7 +9,6 @@ import {
     deleteProductosFinales,
 } from "@/app/redux/slices/prodcutosFinalesSlice";
 import GenericTable from "@/app/Components/generics/GenericTable";
-import GenericModal from "@/app/Components/generics/GenericModal";
 import {
     getProductosFinalesInterface,
     postProductosFinalesInterface,
@@ -23,6 +22,7 @@ import ProductosFinalesModal from "@/app/Components/productos-finales/productosF
 import React from "react";
 import EditEntradaProductosModal from "@/app/Components/entrada-productos/editEntradaProductosModal";
 import EditProductosFinalesModal from "@/app/Components/productos-finales/editProductosFinalesModal";
+import withAuth from "../withAuth";
 
 const ProductosFinalesPage: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -100,7 +100,7 @@ const ProductosFinalesPage: React.FC = () => {
                         <Button
                             label="Eliminar seleccionados"
                             icon="pi pi-trash"
-                            className="bg-[var(--surface-a)] p-2 hover:bg-[var(--red-400)] mt-2 max-w-[300px]"
+                            severity="danger"
                             onClick={confirmDelete}
                         />
                     )}
@@ -154,4 +154,4 @@ const ProductosFinalesPage: React.FC = () => {
     );
 };
 
-export default ProductosFinalesPage;
+export default withAuth(ProductosFinalesPage);

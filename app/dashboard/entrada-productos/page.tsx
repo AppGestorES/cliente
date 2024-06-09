@@ -17,6 +17,7 @@ import EditEntradaProductosModal from "@/app/Components/entrada-productos/editEn
 import { EntradaDeProductos } from "@/app/interfaces/EntradaProductos";
 import { AppDispatch, RootState } from "@/app/redux/store";
 import { Toast } from "primereact/toast";
+import withAuth from "../withAuth";
 
 const EntradaProductosPage: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -46,6 +47,12 @@ const EntradaProductosPage: React.FC = () => {
             const idsToDelete = selectedProducts.map((product) => product.id);
             dispatch(deleteEntradaProductos(idsToDelete));
             setSelectedProducts([]);
+            toast.current?.show({
+                severity: "success",
+                summary: "Success",
+                detail: "Eliminado con exito",
+                life: 3000,
+            });
         }
     };
 
@@ -73,7 +80,7 @@ const EntradaProductosPage: React.FC = () => {
                         <Button
                             label="Eliminar seleccionados"
                             icon="pi pi-trash"
-                            className="bg-[var(--surface-a)] p-2 hover:bg-[var(--red-400)] mt-2 max-w-[300px]"
+                            severity="danger"
                             onClick={confirmDelete}
                         />
                     )}
@@ -164,4 +171,4 @@ const EntradaProductosPage: React.FC = () => {
     );
 };
 
-export default EntradaProductosPage;
+export default withAuth(EntradaProductosPage);

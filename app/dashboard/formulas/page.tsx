@@ -9,7 +9,6 @@ import {
     deleteFormulas,
 } from "@/app/redux/slices/formulasSlice";
 import GenericTable from "@/app/Components/generics/GenericTable";
-import GenericModal from "@/app/Components/generics/GenericModal";
 import {
     getFormulasInterface,
     postFormulasInterface,
@@ -21,6 +20,7 @@ import { Toast } from "primereact/toast";
 import EditFormulasModal from "@/app/Components/formulas/editFomulasModal";
 import React from "react";
 import EntradaFormulas from "@/app/Components/formulas/formulasModal";
+import withAuth from "../withAuth";
 
 const FormulasPage: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -90,7 +90,7 @@ const FormulasPage: React.FC = () => {
                         <Button
                             label="Eliminar seleccionados"
                             icon="pi pi-trash"
-                            className="bg-[var(--surface-a)] p-2 hover:bg-[var(--red-400)] mt-2 max-w-[300px]"
+                            severity="danger"
                             onClick={confirmDelete}
                         />
                     )}
@@ -140,4 +140,4 @@ const FormulasPage: React.FC = () => {
     );
 };
 
-export default FormulasPage;
+export default withAuth(FormulasPage);

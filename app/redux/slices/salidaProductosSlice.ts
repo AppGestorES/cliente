@@ -51,7 +51,7 @@ export const fetchSalidas = createAsyncThunk(
         const token = selectAuthToken(state);
 
         const data: ApiResponse<salidaProductosInterface[]> =
-            await fetchWithToken("https://api.appgestor.es/salidas", {}, token);
+            await fetchWithToken("http://localhost:3001/salidas", {}, token);
 
         if (!data.success) {
             throw new Error("Failed to fetch data");
@@ -69,7 +69,7 @@ export const fetchSalidasByProductoFinal = createAsyncThunk(
 
         const data: ApiResponse<salidaProductosInterface[]> =
             await fetchWithToken(
-                `https://api.appgestor.es/salidas/producto_final/${producto_final_id}`,
+                `http://localhost:3001/salidas/producto_final/${producto_final_id}`,
                 {},
                 token
             );
@@ -90,7 +90,7 @@ export const fetchSalidasByFechaSalida = createAsyncThunk(
 
         const data: ApiResponse<salidaProductosInterface[]> =
             await fetchWithToken(
-                `https://api.appgestor.es/salidas/fecha_salida/${fecha_salida}`,
+                `http://localhost:3001/salidas/fecha_salida/${fecha_salida}`,
                 {},
                 token
             );
@@ -111,7 +111,7 @@ export const fetchSalidasByProyecto = createAsyncThunk(
 
         const data: ApiResponse<salidaProductosInterface[]> =
             await fetchWithToken(
-                `https://api.appgestor.es/salidas/proyecto/${id_proyecto}`,
+                `http://localhost:3001/salidas/proyecto/${id_proyecto}`,
                 {},
                 token
             );
@@ -132,7 +132,7 @@ export const postSalidas = createAsyncThunk(
 
         const data: ApiResponse<salidaProductosInterface> =
             await fetchWithToken(
-                "https://api.appgestor.es/salidas",
+                "http://localhost:3001/salidas",
                 {
                     method: "POST",
                     headers: {
@@ -159,7 +159,7 @@ export const putSalidas = createAsyncThunk(
 
         const data: ApiResponse<salidaProductosInterface> =
             await fetchWithToken(
-                `https://api.appgestor.es/salidas/${updatedSalida.id}`,
+                `http://localhost:3001/salidas/${updatedSalida.id}`,
                 {
                     method: "PUT",
                     headers: {
@@ -186,7 +186,7 @@ export const deleteSalidas = createAsyncThunk(
 
         const promises = ids.map((id) =>
             fetchWithToken(
-                `https://api.appgestor.es/salidas/${id}`,
+                `http://localhost:3001/salidas/${id}`,
                 {
                     method: "DELETE",
                     headers: {
