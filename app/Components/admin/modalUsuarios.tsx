@@ -3,6 +3,7 @@
 import { postUsuariosInterface } from "@/app/interfaces/Usuario";
 import { fetchUsuarios, postUsuarios } from "@/app/redux/slices/userSlice";
 import { AppDispatch } from "@/app/redux/store";
+import { sha256 } from "js-sha256";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { FloatLabel } from "primereact/floatlabel";
@@ -25,10 +26,10 @@ const ModalUsuarios = () => {
 
     const handleSubmit = () => {
         const addUsuario: postUsuariosInterface = {
-            nombre: nombre!,
-            apellido: apellido!,
-            contrasena: contrasena!,
-            identificador: identificador!,
+            nombre: nombre,
+            apellido: apellido,
+            contrasena: sha256(contrasena),
+            identificador: identificador,
         };
 
         dispatch(postUsuarios(addUsuario)).then((response) => {
