@@ -112,8 +112,8 @@ export default function LoginForm() {
                     </Link>
                     <Button
                         type="submit"
-                        label="Confirmar"
-                        className="w-full p-2 bg-[var(--surface-c)] hover:bg-[var(--primary-color)] mt-2"
+                        label="Iniciar sesión"
+                        className=" p-2  mt-2"
                     />
                 </form>
             </div>

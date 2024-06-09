@@ -36,19 +36,18 @@ const EntradaFormulas = () => {
     };
 
     const footerContent = (
-        <div className="flex gap-2">
+        <div className="flex justify-center">
             <Button
                 type="submit"
                 label="Guardar"
                 icon="pi pi-check"
                 onClick={handleSubmit}
-                className="mt-2 bg-[var(--primary-color)] p-2"
             />
             <Button
                 label="Cancelar"
                 icon="pi pi-times"
                 onClick={() => setVisible(false)}
-                className="mt-2 hover:bg-[var(--red-400)] p-2"
+                severity="danger"
             />
         </div>
     );
@@ -59,7 +58,6 @@ const EntradaFormulas = () => {
                 label="Añadir formula"
                 icon="pi pi-plus"
                 onClick={() => setVisible(true)}
-                className="bg-[var(--surface-a)] p-2 hover:bg-[var(--primary-color)] mt-2 max-w-[300px]"
             />
             <Dialog
                 header="Añadir"
