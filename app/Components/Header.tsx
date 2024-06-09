@@ -49,15 +49,16 @@ const Header = () => {
 
     return (
         <header className="flex w-full h-[50px] border-b-2 border-b-[var(--primary-color)] px-4">
-            <div className="flex justify-end items-center w-full gap-2">
+            <div className="flex justify-end items-center w-full">
                 <Menu model={items} popup ref={menuLeft} id="popup_menu_left" />
                 <Button
                     text
                     onClick={(event) => menuLeft.current?.toggle(event)}
+                    className="gap-4"
                 >
                     <span>{usuario?.nombre}</span>
+                    <Avatar label="P" size="normal" shape="circle" />
                 </Button>
-                <Avatar label="P" size="normal" shape="circle" />
             </div>
         </header>
     );
