@@ -1,5 +1,10 @@
-import LoginForm from "../Components/login/loginForm";
+"use client";
 
-export default function Login() {
+import LoginForm from "../Components/login/loginForm";
+import withAuth from "../dashboard/withAuth";
+
+const Login = () => {
     return <LoginForm />;
-}
+};
+
+export default withAuth(Login);
