@@ -7,7 +7,6 @@ interface AuthState {
     status: "idle" | "loading" | "succeeded" | "failed";
     error: string | null;
     usuario: UsuarioInterface | null;
-    verified: boolean;
 }
 
 const initialState: AuthState = {
@@ -16,7 +15,6 @@ const initialState: AuthState = {
     status: "idle",
     error: null,
     usuario: null,
-    verified: false,
 };
 
 export const loginUser = createAsyncThunk(
@@ -135,11 +133,13 @@ const authSlice = createSlice({
             .addCase(verifyUser.pending, (state) => {
                 state.status = "loading";
             })
-            .addCase(verifyUser.fulfilled, (state, action) => {
-                state.status = "succeeded";
-                state.usuario = action.payload;
-                state.verified = true;
-            })
+            .addCase(
+                verifyUser.fulfilled,
+                (state, action: PayloadAction<UsuarioInterface>) => {
+                    state.status = "succeeded";
+                    state.usuario = action.payload;
+                }
+            )
             .addCase(verifyUser.rejected, (state, action) => {
                 state.status = "failed";
                 state.error = action.error.message || "Something went wrong";
