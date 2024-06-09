@@ -8,5 +8,3 @@ export const formatDate = (epoch: number): string => {
 export const formatKg = (value: number): string => {
     return `${value} kg`;
 };
-
-export const verifyToken = async () => {};

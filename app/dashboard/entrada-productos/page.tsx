@@ -17,6 +17,7 @@ import EditEntradaProductosModal from "@/app/Components/entrada-productos/editEn
 import { EntradaDeProductos } from "@/app/interfaces/EntradaProductos";
 import { AppDispatch, RootState } from "@/app/redux/store";
 import { Toast } from "primereact/toast";
+import withAuth from "../withAuth";
 
 const EntradaProductosPage: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -170,4 +171,4 @@ const EntradaProductosPage: React.FC = () => {
     );
 };
 
-export default EntradaProductosPage;
+export default withAuth(EntradaProductosPage);

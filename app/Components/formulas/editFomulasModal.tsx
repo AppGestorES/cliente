@@ -90,7 +90,7 @@ const EditFormulasModal: React.FC<Props> = ({ formula, onHide }) => {
                     onHide();
                 }}
             >
-                <form className="w-full grid grid-cols-3 gap-6 p-5">
+                <form className="w-full grid grid-cols-3 gap-6 p-5 modalForm">
                     <div className="flex flex-col gap-2 sm:flex-row">
                         <FloatLabel>
                             <InputText

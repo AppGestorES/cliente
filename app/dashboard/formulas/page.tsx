@@ -20,6 +20,7 @@ import { Toast } from "primereact/toast";
 import EditFormulasModal from "@/app/Components/formulas/editFomulasModal";
 import React from "react";
 import EntradaFormulas from "@/app/Components/formulas/formulasModal";
+import withAuth from "../withAuth";
 
 const FormulasPage: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -139,4 +140,4 @@ const FormulasPage: React.FC = () => {
     );
 };
 
-export default FormulasPage;
+export default withAuth(FormulasPage);

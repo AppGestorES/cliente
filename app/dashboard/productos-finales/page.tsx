@@ -22,6 +22,7 @@ import ProductosFinalesModal from "@/app/Components/productos-finales/productosF
 import React from "react";
 import EditEntradaProductosModal from "@/app/Components/entrada-productos/editEntradaProductosModal";
 import EditProductosFinalesModal from "@/app/Components/productos-finales/editProductosFinalesModal";
+import withAuth from "../withAuth";
 
 const ProductosFinalesPage: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -153,4 +154,4 @@ const ProductosFinalesPage: React.FC = () => {
     );
 };
 
-export default ProductosFinalesPage;
+export default withAuth(ProductosFinalesPage);

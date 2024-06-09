@@ -7,4 +7,6 @@ export interface UsuarioInterface {
     foto?: string | null;
     identificador: string;
     proyecto: proyectosInterface;
+    es_admin: number;
+    proyecto_admin: number;
 }
