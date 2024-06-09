@@ -13,7 +13,8 @@ import { Calendar } from "primereact/calendar";
 import { Dialog } from "primereact/dialog";
 import { FloatLabel } from "primereact/floatlabel";
 import { InputText } from "primereact/inputtext";
-import { useState } from "react";
+import { Toast } from "primereact/toast";
+import { useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 
 interface Props {
@@ -30,6 +31,7 @@ const EditProductosFinalesModal: React.FC<Props> = ({ producto, onHide }) => {
     );
     const [idProyecto, setIdProyecto] = useState<number>(producto.proyecto.id);
     const dispatch: AppDispatch = useDispatch();
+    const toast = useRef<Toast>(null);
 
     const handleSubmit = () => {
         const putProductos: putProductosFinalesInterface = {
@@ -43,6 +45,12 @@ const EditProductosFinalesModal: React.FC<Props> = ({ producto, onHide }) => {
         try {
             dispatch(putProductosFinales(putProductos));
             dispatch(fetchProductosFinales());
+            toast.current?.show({
+                severity: "success",
+                summary: "Actualización Exitosa",
+                detail: "El producto fue actualizado",
+                life: 3000,
+            });
             setVisible(false);
         } catch (error) {
             console.error("Error");
@@ -68,6 +76,7 @@ const EditProductosFinalesModal: React.FC<Props> = ({ producto, onHide }) => {
 
     return (
         <div className="card flex justify-content-center">
+            <Toast ref={toast} position="bottom-right" />
             <Dialog
                 header="Añadir"
                 footer={footerContent}

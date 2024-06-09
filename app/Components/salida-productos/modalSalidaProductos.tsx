@@ -1,18 +1,3 @@
-// export interface salidaProductosInterface {
-//     id: number;
-//     producto_final_id: number;
-//     formula_id: number;
-//     numero_lote: string;
-//     fecha_salida: number;
-//     cantidad: number;
-//     fecha_caducidad: number;
-//     envasado_id: envasadosInterface;
-//     formato_id: formatosInterface;
-//     destino_id: destinosInterface;
-//     vehiculo_id: vehiculosInterface;
-//     proyecto: proyectosInterface;
-// }
-
 import { postSalidaProductosInterface } from "@/app/interfaces/SalidaProductos";
 import {
     fetchSalidas,
@@ -24,7 +9,8 @@ import { Calendar } from "primereact/calendar";
 import { Dialog } from "primereact/dialog";
 import { FloatLabel } from "primereact/floatlabel";
 import { InputText } from "primereact/inputtext";
-import { useState } from "react";
+import { Toast } from "primereact/toast";
+import { useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 
 const SalidaProductosModal = () => {
@@ -41,6 +27,7 @@ const SalidaProductosModal = () => {
     const [cantidad, setCantidad] = useState<number>(0);
     const [fecha_caducidad, setFecha_caducidad] = useState<Date | null>(null);
     const dispatch: AppDispatch = useDispatch();
+    const toast = useRef<Toast>(null);
 
     const handleSubmit = () => {
         const addSalida: postSalidaProductosInterface = {
@@ -62,6 +49,11 @@ const SalidaProductosModal = () => {
         try {
             dispatch(postSalidas(addSalida));
             dispatch(fetchSalidas());
+            toast.current?.show({
+                severity: "success",
+                summary: "Agregado",
+                detail: "Agregado con éxito",
+            });
             setVisible(false);
         } catch (error) {
             console.error("Error");
@@ -87,6 +79,7 @@ const SalidaProductosModal = () => {
 
     return (
         <div className="card flex justify-content-center">
+            <Toast ref={toast} position="bottom-right" />
             <Button
                 label="Añadir producto"
                 icon="pi pi-plus"
