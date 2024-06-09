@@ -10,3 +10,22 @@ export interface UsuarioInterface {
     es_admin: number;
     proyecto_admin: number;
 }
+
+export interface postUsuariosInterface {
+    nombre: string;
+    apellido: string;
+    contrasena: string;
+    identificador: string;
+}
+
+export interface putUsuariosInterface {
+    id: number;
+    nombre: string;
+    apellido: string;
+    foto: string;
+    contrasena: string;
+    identificador: string;
+    id_proyecto: number | null;
+    es_admin: number;
+    proyecto_admin: number | null;
+}

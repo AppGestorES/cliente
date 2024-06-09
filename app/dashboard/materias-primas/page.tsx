@@ -88,7 +88,7 @@ const ControlMateriaPrima: React.FC = () => {
 
     return (
         <div className="w-full">
-            <Toast ref={toast} />
+            <Toast ref={toast} position="bottom-right" />
             <ConfirmDialog />
             <div className="flex flex-col md:flex-row w-full md:items-center justify-between px-4">
                 <h2 className="text-xl">

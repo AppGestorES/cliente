@@ -108,6 +108,7 @@ const EditEntradaProductosModal: React.FC<Props> = ({ producto, onHide }) => {
 
     return (
         <div className="card flex justify-content-center">
+            <Toast ref={toast} position="bottom-right" />
             <Dialog
                 header="Editar Producto"
                 footer={footerContent}

@@ -4,6 +4,9 @@ import { MenuProps } from "@/app/interfaces/MenuInterfaces";
 import MenuLink from "@/app/Components/Layout/MenuComponents/MenuLink";
 import Link from "next/link";
 import Logo from "../Logo";
+import { getUsuario } from "@/app/redux/slices/authSlice";
+import { useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/app/redux/store";
 
 const prop: MenuProps[] = [
     {
@@ -54,6 +57,8 @@ const prop: MenuProps[] = [
 ];
 
 export default function Menu() {
+    const usuario = useSelector((state: RootState) => getUsuario(state));
+
     const toggleMobileMenu = () => {
         const menuList = document.querySelector<HTMLUListElement>(".menuList");
         menuList?.classList.toggle("hidden");
@@ -77,6 +82,15 @@ export default function Menu() {
                         <Logo estilos="text-2xl" />
                     </Link>
                 </div>
+                {usuario?.es_admin === 0 ? null : (
+                    <MenuLink
+                        prop={{
+                            icon: "pi pi-user-edit",
+                            name: "Administrador",
+                            link: "/dashboard/admin",
+                        }}
+                    />
+                )}
 
                 {prop.map((opcion, index) => {
                     return <MenuLink prop={opcion} key={index} />;

@@ -6,6 +6,7 @@ import salidaProductosSlice from "@/app/redux/slices/salidaProductosSlice";
 import materiasPrimasSlice from "./slices/materiasPrimasSlice";
 import formulasSlice from "./slices/formulasSlice";
 import prodcutosFinalesSlice from "./slices/prodcutosFinalesSlice";
+import usuariosSlice from "./slices/userSlice";
 
 const store = configureStore({
     reducer: {
@@ -16,6 +17,7 @@ const store = configureStore({
         materiasPrimas: materiasPrimasSlice,
         formulas: formulasSlice,
         productosFinales: prodcutosFinalesSlice,
+        usuarios: usuariosSlice,
     },
 });
 
