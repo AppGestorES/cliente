@@ -75,7 +75,7 @@ const CreateMateriaPrimaModal = () => {
                 breakpoints={{ "960px": "75vw", "641px": "100vw" }}
                 onHide={() => setVisible(false)}
             >
-                <form className="w-full grid grid-cols-1 md:grid-cols-3 p-5 gap-6">
+                <form className="w-full grid grid-cols-3 p-5 gap-6 modalForm">
                     <div className="flex flex-col gap-2 sm:flex-row">
                         <FloatLabel>
                             <InputText

@@ -52,4 +52,10 @@ body {
     width: auto;
 }
 
-/* bg-[var(--surface-a)] p-2 hover:bg-[var(--primary-color)] mt-2 max-w-[200px] */
+.modalForm {
+    min-width: 700px;
+}
+
+.p-calendar {
+    min-width: 215px;
+}
