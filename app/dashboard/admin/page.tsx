@@ -5,25 +5,25 @@ import withAuth from "../withAuth";
 import { useEffect, useRef, useState } from "react";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { UsuarioInterface } from "@/app/interfaces/Usuario";
-import EntradaProductosModal from "@/app/Components/entrada-productos/entradaProductosModal";
 import { Button } from "primereact/button";
 import { AppDispatch, RootState } from "@/app/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteUsuario, fetchUsuarios } from "@/app/redux/slices/userSlice";
-import GenericTable from "@/app/Components/generics/GenericTable";
-import React from "react";
-import EditEntradaProductosModal from "@/app/Components/entrada-productos/editEntradaProductosModal";
 import EditUsuarioModal from "@/app/Components/admin/editUsuarioModal";
 import ModalUsuarios from "@/app/Components/admin/modalUsuarios";
+import UsuariosTable from "@/app/Components/admin/adminTable";
 
 const AdminPage = () => {
     const toast = useRef<Toast>(null);
 
-    const [selectedUsers, setSelectedUsers] = useState<UsuarioInterface[]>([]);
+    const [selectedUser, setSelectedUser] = useState<UsuarioInterface | null>(
+        null
+    );
     const dispatch: AppDispatch = useDispatch();
     const status = useSelector((state: RootState) => state.usuarios.status);
     const usuarios = useSelector((state: RootState) => state.usuarios.usuarios);
     const error = useSelector((state: RootState) => state.usuarios.error);
+    const [selectedUsers, setSelectedUsers] = useState<UsuarioInterface[]>([]);
 
     useEffect(() => {
         if (status === "idle") {
@@ -31,35 +31,45 @@ const AdminPage = () => {
         }
     }, [status, dispatch]);
 
+    useEffect(() => {
+        if (error) {
+            toast.current?.show({
+                severity: "error",
+                summary: "Error",
+                detail: error,
+                life: 3000,
+            });
+        }
+    }, [error]);
+
     const handleDelete = () => {
-        if (selectedUsers.length > 0) {
-            const idsToDelete = selectedUsers.map((user) => user.id);
-            dispatch(deleteUsuario(idsToDelete)).then((response) => {
-                if (response.meta.requestStatus == "fulfilled") {
+        if (selectedUser) {
+            dispatch(deleteUsuario([selectedUser.id])).then((response) => {
+                if (response.meta.requestStatus === "fulfilled") {
                     toast.current?.show({
                         severity: "success",
                         summary: "Success",
-                        detail: "Eliminado con exito",
+                        detail: "Eliminado con éxito",
                         life: 3000,
                     });
                     dispatch(fetchUsuarios());
                 } else {
                     toast.current?.show({
                         severity: "error",
-                        summary: "Success",
+                        summary: "Error",
                         detail: "Error al eliminar",
                         life: 3000,
                     });
                 }
             });
-            setSelectedUsers([]);
+            setSelectedUser(null);
         }
     };
 
     const confirmDelete = () => {
         confirmDialog({
             message:
-                "¿Está seguro de que desea eliminar los productos seleccionados?",
+                "¿Está seguro de que desea eliminar el usuario seleccionado?",
             header: "Confirmación",
             icon: "pi pi-exclamation-triangle",
             acceptLabel: "Sí",
@@ -76,9 +86,9 @@ const AdminPage = () => {
             <div className="flex flex-col md:flex-row w-full md:items-center justify-between px-4">
                 <h2 className="text-xl">Admin</h2>
                 <div className="flex gap-2 items-center">
-                    {selectedUsers.length > 0 && (
+                    {selectedUser && (
                         <Button
-                            label="Eliminar seleccionados"
+                            label="Eliminar seleccionado"
                             icon="pi pi-trash"
                             severity="danger"
                             onClick={confirmDelete}
@@ -87,45 +97,11 @@ const AdminPage = () => {
                     <ModalUsuarios />
                 </div>
             </div>
-            <GenericTable
-                data={usuarios}
-                columns={[
-                    { field: "id", header: "ID" },
-                    { field: "nombre", header: "Nombre" },
-                    { field: "apellido", header: "Apellido" },
-                    { field: "identificador", header: "Identificador" },
-                    { field: "es_admin", header: "Administrador" },
-                    {
-                        field: "proyecto_admin",
-                        header: "Administrador de proyecto",
-                        render: (rowData) => {
-                            return rowData.proyecto_admin === 1 ? (
-                                <div>Sí</div>
-                            ) : (
-                                <div>No</div>
-                            );
-                        },
-                    },
-                    {
-                        field: "proyecto",
-                        header: "Proyecto",
-                        render: (rowData) => {
-                            if (
-                                !rowData.proyecto ||
-                                rowData.proyecto.id === null
-                            ) {
-                                return <div>Ninguno</div>;
-                            } else {
-                                return <div>{rowData.proyecto.id}</div>;
-                            }
-                        },
-                    },
-                ]}
+            <UsuariosTable
                 selectedItems={selectedUsers}
                 setSelectedItems={setSelectedUsers}
-                onDelete={handleDelete}
+                data={usuarios}
                 loading={status === "loading"}
-                error={error}
                 editComponent={(item, onHide) => (
                     <EditUsuarioModal usuarios={item} onHide={onHide} />
                 )}
