@@ -12,7 +12,6 @@ import {
     fetchEntradaProductos,
     postEntradaProductos,
 } from "@/app/redux/slices/entradaProductosSlice";
-import { ButtonGroup } from "primereact/buttongroup";
 
 const EntradaProductosModal = () => {
     const [visible, setVisible] = useState<boolean>(false);
