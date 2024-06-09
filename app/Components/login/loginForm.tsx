@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { AppDispatch } from "@/app/redux/store";
 import Link from "next/link";
 import { loginUser } from "@/app/redux/slices/authSlice";
+import { sha256 } from "js-sha256";
 import Logo from "../Logo";
 
 const schema = z.object({
@@ -44,7 +45,7 @@ export default function LoginForm() {
     const onSubmit = async (data: FormData) => {
         const usuarioData = {
             usuario: data.nombreUsuario,
-            contrasena: data.contrasena,
+            contrasena: sha256(data.contrasena),
         };
 
         try {
