@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "@/app/redux/store";
 import { UsuarioInterface } from "@/app/interfaces/Usuario";
+import { useRouter } from "next/navigation";
 
 interface AuthState {
     token: string | null;
@@ -69,7 +70,7 @@ export const registerUser = createAsyncThunk(
     }
 );
 
-export const verifyUser = createAsyncThunk("auth/verifyUser", async () => {
+export const verifyUser = createAsyncThunk("auth/verifyUser", async (router: any) => {
     const token = localStorage.getItem("authToken");
     const response = await fetch("https://api.appgestor.es/verificartoken", {
         method: "GET",
@@ -85,6 +86,11 @@ export const verifyUser = createAsyncThunk("auth/verifyUser", async () => {
     const data = await response.json();
     if (data.status !== 200) {
         throw new Error("Token verification failed");
+    } else {
+        console.log(data["result"][0])
+        if(data["result"][0]["proyecto"]["id"] == null && (data["result"][0]["es_admin"] == 0 || data["result"][0]["es_admin"] == null)){
+            router.push("/");
+        }
     }
 
     return data.result[0];

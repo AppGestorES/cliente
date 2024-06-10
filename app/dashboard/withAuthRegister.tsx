@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getUsuario, verifyUser } from "../redux/slices/authSlice";
 import { AppDispatch, RootState } from "../redux/store";
 
-const withAuth = (WrappedComponent: React.ComponentType) => {
+const withAuthRegister = (WrappedComponent: React.ComponentType) => {
     const WithAuthComponent = (props: any) => {
         const usuario = useSelector((state: RootState) => getUsuario(state));
         const router = useRouter();
@@ -25,7 +25,7 @@ const withAuth = (WrappedComponent: React.ComponentType) => {
             const verifyToken = async () => {
                 try {
                     await dispatch(verifyUser(router)).unwrap();
-                    if (pathname === "/login") {
+                    if (pathname === "/register") {
                         router.push("/dashboard");
                     }
                     if (
@@ -35,8 +35,7 @@ const withAuth = (WrappedComponent: React.ComponentType) => {
                         router.push("/dashboard");
                     }
                 } catch (error) {
-                    console.log(error)
-                    router.push("/login");
+                    router.push("/register");
                 } finally {
                     setIsLoading(false);
                 }
@@ -59,4 +58,4 @@ const withAuth = (WrappedComponent: React.ComponentType) => {
     return WithAuthComponent;
 };
 
-export default withAuth;
+export default withAuthRegister;
