@@ -50,7 +50,7 @@ export const fetchUsuarios = createAsyncThunk(
         const token = selectAuthToken(state);
 
         const data: ApiResponse<UsuarioInterface[]> = await fetchWithToken(
-            "http://localhost:3001/usuarios",
+            "https://api.appgestor.es/usuarios",
             {},
             token
         );
@@ -70,7 +70,7 @@ export const postUsuarios = createAsyncThunk(
         const token = selectAuthToken(state);
 
         const data: ApiResponse<UsuarioInterface> = await fetchWithToken(
-            "http://localhost:3001/usuarios",
+            "https://api.appgestor.es/usuarios",
             {
                 method: "POST",
                 headers: {
@@ -96,7 +96,7 @@ export const putUsuarios = createAsyncThunk(
         const token = selectAuthToken(state);
 
         const data: ApiResponse<UsuarioInterface> = await fetchWithToken(
-            `http://localhost:3001/usuarios/${updatedUser.id}`,
+            `https://api.appgestor.es/usuarios/${updatedUser.id}`,
             {
                 method: "PUT",
                 headers: {
@@ -123,7 +123,7 @@ export const deleteUsuario = createAsyncThunk(
 
         const promises = ids.map((id) =>
             fetchWithToken(
-                `http://localhost:3001/usuarios/${id}`,
+                `https://api.appgestor.es/usuarios/${id}`,
                 {
                     method: "DELETE",
                     headers: {
