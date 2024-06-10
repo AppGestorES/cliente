@@ -1,6 +1,6 @@
 @layer tailwind-base, primereact, tailwind-utilities;
 
-@import "/public/themes/viva-dark/theme.css" layer(primereact);
+@import "@/app/utils/themes/viva-dark/theme.css" layer(primereact);
 
 @layer tailwind-base {
     @tailwind base;

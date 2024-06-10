@@ -1,6 +1,6 @@
 "use client";
 
-import { poppins } from "@/app/public/fonts/fonts";
+import { poppins } from "@/app/utils/fonts/fonts";
 import { PrimeReactProvider } from "primereact/api";
 import { Provider } from "react-redux";
 import store from "@/app/redux/store";

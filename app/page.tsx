@@ -1,6 +1,6 @@
 "use client";
 import "./globals.scss";
-import "@/app/public/themes/viva-dark/theme.css";
+import "@/app/utils/themes/viva-dark/theme.css";
 
 export default function Home() {
     return (

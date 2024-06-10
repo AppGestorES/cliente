@@ -17,7 +17,7 @@ export default function ToggleTheme() {
     };
 
     useEffect(() => {
-        import(`@/app/public/themes/${theme}/theme.css`)
+        import(`@/app/utils/themes/${theme}/theme.css`)
             .then(() => {
                 const link = document.createElement("link");
                 link.href = `/themes/${theme}/theme.css`;
