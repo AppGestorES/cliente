@@ -51,7 +51,7 @@ export const fetchProductosFinales = createAsyncThunk(
         const token = selectAuthToken(state);
 
         const data: ApiResponse = await fetchWithToken(
-            "http://localhost:3001/productos_finales",
+            "https://api.appgestor.es/productos_finales",
             {},
             token
         );
@@ -75,7 +75,7 @@ export const postProductosFinales = createAsyncThunk(
             success: boolean;
             result: getProductosFinalesInterface;
         } = await fetchWithToken(
-            "http://localhost:3001/productos_finales",
+            "https://api.appgestor.es/productos_finales",
             {
                 method: "POST",
                 headers: {
@@ -108,7 +108,7 @@ export const putProductosFinales = createAsyncThunk(
             success: boolean;
             result: getProductosFinalesInterface;
         } = await fetchWithToken(
-            `http://localhost:3001/productos_finales/${updatedProductoFinal.id}`,
+            `https://api.appgestor.es/productos_finales/${updatedProductoFinal.id}`,
             {
                 method: "PUT",
                 headers: {
@@ -135,7 +135,7 @@ export const deleteProductosFinales = createAsyncThunk(
 
         const promises = ids.map((id) =>
             fetchWithToken(
-                `http://localhost:3001/productos_finales/${id}`,
+                `https://api.appgestor.es/productos_finales/${id}`,
                 {
                     method: "DELETE",
                     headers: {

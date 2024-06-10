@@ -20,7 +20,7 @@ const initialState: AuthState = {
 export const loginUser = createAsyncThunk(
     "auth/loginUser",
     async (usuarioData: { contrasena: string; usuario: string }) => {
-        const response = await fetch("http://localhost:3001/iniciarsesion", {
+        const response = await fetch("https://api.appgestor.es/iniciarsesion", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -49,7 +49,7 @@ export const registerUser = createAsyncThunk(
         identificador: string;
         id_proyecto: number;
     }) => {
-        const response = await fetch("http://localhost:3001/registrarSesion", {
+        const response = await fetch("https://api.appgestor.es/registrarSesion", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -71,7 +71,7 @@ export const registerUser = createAsyncThunk(
 
 export const verifyUser = createAsyncThunk("auth/verifyUser", async () => {
     const token = localStorage.getItem("authToken");
-    const response = await fetch("http://localhost:3001/verificartoken", {
+    const response = await fetch("https://api.appgestor.es/verificartoken", {
         method: "GET",
         headers: {
             Authorization: token + "",
