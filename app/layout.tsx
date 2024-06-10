@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.scss";
-import "@/public/themes/viva-dark/theme.css";
+import "@/app/utils/themes/viva-dark/theme.css";
 import IndexProvider from "@/app/Components/IndexProvider";
 
 export const metadata: Metadata = {
