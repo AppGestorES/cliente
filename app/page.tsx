@@ -1,7 +1,7 @@
 "use client";
 import withAuth from "./dashboard/withAuth";
 import "./globals.scss";
-import "@/public/themes/viva-dark/theme.css";
+import "@/app/utils/themes/viva-dark/theme.css";
 import { ProgressSpinner } from 'primereact/progressspinner';
 
 const Home = () => {
