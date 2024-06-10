@@ -39,21 +39,21 @@ const prop: MenuProps[] = [
         name: "Trazabilidad",
         link: "/dashboard/trazabilidad",
     },
-    {
-        icon: "pi pi-cog",
-        name: "Configuración",
-        link: "/dashboard/configuracion",
-    },
-    {
-        icon: "pi pi-file",
-        name: "Registro de actividad",
-        link: "/dashboard/registro-actividad",
-    },
-    {
-        icon: "pi pi-shield",
-        name: "Acerca de",
-        link: "/dashboard/acerca-de",
-    },
+    // {
+    //     icon: "pi pi-cog",
+    //     name: "Configuración",
+    //     link: "/dashboard/configuracion",
+    // },
+    // {
+    //     icon: "pi pi-file",
+    //     name: "Registro de actividad",
+    //     link: "/dashboard/registro-actividad",
+    // },
+    // {
+    //     icon: "pi pi-shield",
+    //     name: "Acerca de",
+    //     link: "/dashboard/acerca-de",
+    // },
 ];
 
 export default function Menu() {
