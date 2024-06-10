@@ -1,10 +1,10 @@
 "use client";
 
 import RegisterForm from "../Components/register/RegisterForm";
-import withAuth from "../dashboard/withAuth";
+import withAuthRegister from "../dashboard/withAuthRegister";
 
 const Register = () => {
     return <RegisterForm />;
 };
 
-export default withAuth(Register);
+export default withAuthRegister(Register);
