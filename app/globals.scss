@@ -59,3 +59,9 @@ body {
 .p-calendar {
     min-width: 215px;
 }
+
+.p-datatable-header {
+    transform: translateY(10px);
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+}
