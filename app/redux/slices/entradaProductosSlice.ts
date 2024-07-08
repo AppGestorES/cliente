@@ -5,6 +5,7 @@ import {
     getEntradasInterface,
 } from "@/app/interfaces/EntradaProductos";
 import { RootState } from "@/app/redux/store";
+import { API_URL, ENDPOINTS_ENTRADA_PRODUCTOS } from "@/app/config";
 
 interface ApiResponse<T> {
     status: number;
@@ -51,7 +52,7 @@ export const fetchEntradaProductos = createAsyncThunk(
         const token = selectAuthToken(state);
 
         const data: ApiResponse<getEntradasInterface[]> = await fetchWithToken(
-            "https://api.appgestor.es/entradas",
+            `${API_URL}${ENDPOINTS_ENTRADA_PRODUCTOS.ENTRADA_PRODUCTOS}`,
             {},
             token
         );
@@ -71,7 +72,7 @@ export const postEntradaProductos = createAsyncThunk(
         const token = selectAuthToken(state);
 
         const data: ApiResponse<getEntradasInterface> = await fetchWithToken(
-            "https://api.appgestor.es/entradas",
+            `${API_URL}${ENDPOINTS_ENTRADA_PRODUCTOS.ENTRADA_PRODUCTOS}`,
             {
                 method: "POST",
                 headers: {
@@ -97,7 +98,7 @@ export const putEntradaProductos = createAsyncThunk(
         const token = selectAuthToken(state);
 
         const data: ApiResponse<getEntradasInterface> = await fetchWithToken(
-            `https://api.appgestor.es/entradas/${updatedProduct.id}`,
+            `${API_URL}${ENDPOINTS_ENTRADA_PRODUCTOS.PUTDELETE_ENTRADA_PRODUCTOS}${updatedProduct.id}`,
             {
                 method: "PUT",
                 headers: {
@@ -124,7 +125,7 @@ export const deleteEntradaProductos = createAsyncThunk(
 
         const promises = ids.map((id) =>
             fetchWithToken(
-                `https://api.appgestor.es/entradas/${id}`,
+                `${API_URL}${ENDPOINTS_ENTRADA_PRODUCTOS.PUTDELETE_ENTRADA_PRODUCTOS}${id}`,
                 {
                     method: "DELETE",
                     headers: {

@@ -5,20 +5,21 @@ import {
     putFormulasInterface,
 } from "@/app/interfaces/Formulas";
 import { RootState } from "@/app/redux/store";
+import { API_URL, ENDPOINTS_FORMULAS } from "@/app/config";
 
-interface ApiResponse {
+interface ApiResponse<T> {
     status: number;
     success: boolean;
-    result: formulasInterface[];
+    result: T;
 }
 
-interface ApiState {
-    formulas: formulasInterface[];
+interface ApiState<T> {
+    formulas: T[];
     status: "idle" | "loading" | "succeeded" | "failed";
     error: string | null;
 }
 
-const initialState: ApiState = {
+const initialState: ApiState<formulasInterface> = {
     formulas: [],
     status: "idle",
     error: null,
@@ -26,23 +27,34 @@ const initialState: ApiState = {
 
 const selectAuthToken = (state: RootState) => state.auth.token;
 
+const fetchWithToken = async (
+    url: string,
+    options: RequestInit = {},
+    token: string | null
+) => {
+    const headers = new Headers(options.headers || {});
+    if (token) {
+        headers.append("Authorization", token);
+    }
+    options.headers = headers;
+    const response = await fetch(url, options);
+    if (!response.ok) {
+        throw new Error("Network response was not ok");
+    }
+    return response.json();
+};
+
 export const fetchFormulas = createAsyncThunk(
     "formulas/fetchFormulas",
     async (_, { getState }) => {
         const state = getState() as RootState;
         const token = selectAuthToken(state);
 
-        const response = await fetch("https://api.appgestor.es/formulas", {
-            headers: {
-                Authorization: token + "",
-            },
-        });
-
-        if (!response.ok) {
-            throw new Error("Network response was not ok");
-        }
-
-        const data: ApiResponse = await response.json();
+        const data: ApiResponse<formulasInterface[]> = await fetchWithToken(
+            `${API_URL}${ENDPOINTS_FORMULAS.FORMULAS}`,
+            {},
+            token
+        );
 
         if (!data.success) {
             throw new Error("Failed to fetch data");
@@ -58,24 +70,17 @@ export const postFormulas = createAsyncThunk(
         const state = getState() as RootState;
         const token = selectAuthToken(state);
 
-        const response = await fetch("https://api.appgestor.es/formulas", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: token + "",
+        const data: ApiResponse<formulasInterface> = await fetchWithToken(
+            `${API_URL}${ENDPOINTS_FORMULAS.FORMULAS}`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(newFormula),
             },
-            body: JSON.stringify(newFormula),
-        });
-
-        if (!response.ok) {
-            throw new Error("Network response was not ok");
-        }
-
-        const data: {
-            status: number;
-            success: boolean;
-            result: formulasInterface;
-        } = await response.json();
+            token
+        );
 
         if (!data.success) {
             throw new Error("Failed to post data");
@@ -91,27 +96,17 @@ export const putFormulas = createAsyncThunk(
         const state = getState() as RootState;
         const token = selectAuthToken(state);
 
-        const response = await fetch(
-            `https://api.appgestor.es/formulas/${updatedFormula.id}`,
+        const data: ApiResponse<formulasInterface> = await fetchWithToken(
+            `${API_URL}${ENDPOINTS_FORMULAS.PUTDELETE_FORMULAS}${updatedFormula.id}`,
             {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: token + "",
                 },
                 body: JSON.stringify(updatedFormula),
-            }
+            },
+            token
         );
-
-        if (!response.ok) {
-            throw new Error("Network response was not ok");
-        }
-
-        const data: {
-            status: number;
-            success: boolean;
-            result: formulasInterface;
-        } = await response.json();
 
         if (!data.success) {
             throw new Error("Failed to update data");
@@ -128,17 +123,16 @@ export const deleteFormulas = createAsyncThunk(
         const token = selectAuthToken(state);
 
         const promises = ids.map((id) =>
-            fetch(`https://api.appgestor.es/formulas/${id}`, {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: token + "",
+            fetchWithToken(
+                `${API_URL}${ENDPOINTS_FORMULAS.PUTDELETE_FORMULAS}${id}`,
+                {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
                 },
-            }).then((response) => {
-                if (!response.ok) {
-                    throw new Error(`Failed to delete item with id ${id}`);
-                }
-            })
+                token
+            )
         );
 
         await Promise.all(promises);

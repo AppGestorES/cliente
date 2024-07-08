@@ -13,7 +13,6 @@ const withAuthRegister = (WrappedComponent: React.ComponentType) => {
         const dispatch: AppDispatch = useDispatch();
         const pathname = usePathname();
         const [isMounted, setIsMounted] = useState(false);
-        const [isLoading, setIsLoading] = useState(true);
 
         useEffect(() => {
             setIsMounted(true);
@@ -37,7 +36,6 @@ const withAuthRegister = (WrappedComponent: React.ComponentType) => {
                 } catch (error) {
                     router.push("/register");
                 } finally {
-                    setIsLoading(false);
                 }
             };
 
@@ -45,10 +43,6 @@ const withAuthRegister = (WrappedComponent: React.ComponentType) => {
                 verifyToken();
             }
         }, [dispatch, router, isMounted, pathname, usuario?.es_admin]);
-
-        if (isLoading) {
-            return <p>Loading...</p>;
-        }
 
         return <WrappedComponent {...props} />;
     };

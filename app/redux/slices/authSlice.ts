@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "@/app/redux/store";
 import { UsuarioInterface } from "@/app/interfaces/Usuario";
 import { useRouter } from "next/navigation";
+import { API_URL, ENDPOINTS_AUTH } from "@/app/config";
 
 interface AuthState {
     token: string | null;
@@ -21,7 +22,7 @@ const initialState: AuthState = {
 export const loginUser = createAsyncThunk(
     "auth/loginUser",
     async (usuarioData: { contrasena: string; usuario: string }) => {
-        const response = await fetch("https://api.appgestor.es/iniciarsesion", {
+        const response = await fetch(`${API_URL}${ENDPOINTS_AUTH.LOGIN}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -50,7 +51,7 @@ export const registerUser = createAsyncThunk(
         identificador: string;
         id_proyecto: number;
     }) => {
-        const response = await fetch("https://api.appgestor.es/registrarSesion", {
+        const response = await fetch(`${API_URL}${ENDPOINTS_AUTH.REGISTER}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -72,7 +73,7 @@ export const registerUser = createAsyncThunk(
 
 export const verifyUser = createAsyncThunk("auth/verifyUser", async (router: any) => {
     const token = localStorage.getItem("authToken");
-    const response = await fetch("https://api.appgestor.es/verificartoken", {
+    const response = await fetch(`${API_URL}${ENDPOINTS_AUTH.VERIFY_TOKEN}`, {
         method: "GET",
         headers: {
             Authorization: token + "",

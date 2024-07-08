@@ -5,6 +5,7 @@ import {
     postMateriasPrimasInterface,
     putMateriasPrimasInterface,
 } from "@/app/interfaces/MateriasPrimas";
+import { API_URL, ENDPOINTS_MATERIAS_PRIMAS } from "@/app/config";
 
 interface ApiResponse<T> {
     status: number;
@@ -33,7 +34,7 @@ export const fetchMateriasPrimas = createAsyncThunk(
         const state = getState() as RootState;
         const token = selectAuthToken(state);
 
-        const response = await fetch("https://api.appgestor.es/materias_primas", {
+        const response = await fetch(`${API_URL}${ENDPOINTS_MATERIAS_PRIMAS.MATERIAS_PRIMAS}`, {
             headers: {
                 Authorization: token + "",
             },
@@ -60,7 +61,7 @@ export const fetchMateriasPrimasByNombre = createAsyncThunk(
         const token = selectAuthToken(state);
 
         const response = await fetch(
-            `https://api.appgestor.es/materias_primas/nombre/${nombre}`,
+            `${API_URL}${ENDPOINTS_MATERIAS_PRIMAS.GET_BY_NAME}${nombre}`,
             {
                 headers: {
                     Authorization: token + "",
@@ -89,7 +90,7 @@ export const fetchMateriasPrimasByProyecto = createAsyncThunk(
         const token = selectAuthToken(state);
 
         const response = await fetch(
-            `https://api.appgestor.es/materias_primas/proyecto/${id_proyecto}`,
+            `${API_URL}${ENDPOINTS_MATERIAS_PRIMAS.GET_BY_PROYECTO}${id_proyecto}`,
             {
                 headers: {
                     Authorization: token + "",
@@ -117,7 +118,7 @@ export const postMateriasPrimas = createAsyncThunk(
         const state = getState() as RootState;
         const token = selectAuthToken(state);
 
-        const response = await fetch("https://api.appgestor.es/materias_primas", {
+        const response = await fetch(`${API_URL}${ENDPOINTS_MATERIAS_PRIMAS.MATERIAS_PRIMAS}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -148,7 +149,7 @@ export const putMateriasPrimas = createAsyncThunk(
         const token = selectAuthToken(state);
 
         const response = await fetch(
-            `https://api.appgestor.es/materias_primas/${updatedMateriaPrima.id}`,
+            `${API_URL}${ENDPOINTS_MATERIAS_PRIMAS.PUTDELETE_MATERIAS_PRIMAS}${updatedMateriaPrima.id}`,
             {
                 method: "PUT",
                 headers: {
@@ -181,7 +182,7 @@ export const deleteMateriasPrimas = createAsyncThunk(
         const token = selectAuthToken(state);
 
         const promises = ids.map((id) =>
-            fetch(`https://api.appgestor.es/materias_primas/${id}`, {
+            fetch(`${API_URL}${ENDPOINTS_MATERIAS_PRIMAS.PUTDELETE_MATERIAS_PRIMAS}${id}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",

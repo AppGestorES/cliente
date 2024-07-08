@@ -5,6 +5,7 @@ import {
 } from "@/app/interfaces/Usuario";
 import { RootState } from "../store";
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { API_URL, ENDPOINTS_USUARIOS } from "@/app/config";
 
 interface ApiResponse<T> {
     status: number;
@@ -50,7 +51,7 @@ export const fetchUsuarios = createAsyncThunk(
         const token = selectAuthToken(state);
 
         const data: ApiResponse<UsuarioInterface[]> = await fetchWithToken(
-            "https://api.appgestor.es/usuarios",
+            `${API_URL}${ENDPOINTS_USUARIOS.USUARIOS}`,
             {},
             token
         );
@@ -70,7 +71,7 @@ export const postUsuarios = createAsyncThunk(
         const token = selectAuthToken(state);
 
         const data: ApiResponse<UsuarioInterface> = await fetchWithToken(
-            "https://api.appgestor.es/usuarios",
+            `${API_URL}${ENDPOINTS_USUARIOS.USUARIOS}`,
             {
                 method: "POST",
                 headers: {
@@ -96,7 +97,7 @@ export const putUsuarios = createAsyncThunk(
         const token = selectAuthToken(state);
 
         const data: ApiResponse<UsuarioInterface> = await fetchWithToken(
-            `https://api.appgestor.es/usuarios/${updatedUser.id}`,
+            `${API_URL}${ENDPOINTS_USUARIOS.PUTDELETE_USUARIOS}${updatedUser.id}`,
             {
                 method: "PUT",
                 headers: {
@@ -123,7 +124,7 @@ export const deleteUsuario = createAsyncThunk(
 
         const promises = ids.map((id) =>
             fetchWithToken(
-                `https://api.appgestor.es/usuarios/${id}`,
+                `${API_URL}${ENDPOINTS_USUARIOS.PUTDELETE_USUARIOS}${id}`,
                 {
                     method: "DELETE",
                     headers: {

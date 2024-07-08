@@ -4,6 +4,8 @@ import {
     postMateriasPrimasInterface,
     putMateriasPrimasInterface,
 } from "@/app/interfaces/MateriasPrimas";
+import { RootState } from "@/app/redux/store";
+import { API_URL, ENDPOINTS_MATERIAS_PRIMAS } from "@/app/config";
 
 interface ApiResponse<T> {
     status: number;
@@ -23,16 +25,36 @@ const initialState: ApiState<getMateriasPrimasInterface> = {
     error: null,
 };
 
+const selectAuthToken = (state: RootState) => state.auth.token;
+
+const fetchWithToken = async (
+    url: string,
+    options: RequestInit = {},
+    token: string | null
+) => {
+    const headers = new Headers(options.headers || {});
+    if (token) {
+        headers.append("Authorization", token);
+    }
+    options.headers = headers;
+    const response = await fetch(url, options);
+    if (!response.ok) {
+        throw new Error("Network response was not ok");
+    }
+    return response.json();
+};
+
 export const fetchMateriasPrimas = createAsyncThunk(
     "materiasPrimas/fetchMateriasPrimas",
-    async () => {
-        const response = await fetch("/materias_primas");
-        if (!response.ok) {
-            throw new Error("Network response was not ok");
-        }
+    async (_, { getState }) => {
+        const state = getState() as RootState;
+        const token = selectAuthToken(state);
 
-        const data: ApiResponse<getMateriasPrimasInterface[]> =
-            await response.json();
+        const data: ApiResponse<getMateriasPrimasInterface[]> = await fetchWithToken(
+            `${API_URL}${ENDPOINTS_MATERIAS_PRIMAS.MATERIAS_PRIMAS}`,
+            {},
+            token
+        );
 
         if (!data.success) {
             throw new Error("Failed to fetch data");
@@ -44,14 +66,15 @@ export const fetchMateriasPrimas = createAsyncThunk(
 
 export const fetchMateriasPrimasByNombre = createAsyncThunk(
     "materiasPrimas/fetchMateriasPrimasByNombre",
-    async (nombre: string) => {
-        const response = await fetch(`/materias_primas/nombre/${nombre}`);
-        if (!response.ok) {
-            throw new Error("Network response was not ok");
-        }
+    async (nombre: string, { getState }) => {
+        const state = getState() as RootState;
+        const token = selectAuthToken(state);
 
-        const data: ApiResponse<getMateriasPrimasInterface[]> =
-            await response.json();
+        const data: ApiResponse<getMateriasPrimasInterface[]> = await fetchWithToken(
+            `${API_URL}${ENDPOINTS_MATERIAS_PRIMAS.GET_BY_NAME}${nombre}`,
+            {},
+            token
+        );
 
         if (!data.success) {
             throw new Error("Failed to fetch data");
@@ -63,16 +86,15 @@ export const fetchMateriasPrimasByNombre = createAsyncThunk(
 
 export const fetchMateriasPrimasByProyecto = createAsyncThunk(
     "materiasPrimas/fetchMateriasPrimasByProyecto",
-    async (id_proyecto: number) => {
-        const response = await fetch(
-            `/materias_primas/proyecto/${id_proyecto}`
-        );
-        if (!response.ok) {
-            throw new Error("Network response was not ok");
-        }
+    async (id_proyecto: number, { getState }) => {
+        const state = getState() as RootState;
+        const token = selectAuthToken(state);
 
-        const data: ApiResponse<getMateriasPrimasInterface[]> =
-            await response.json();
+        const data: ApiResponse<getMateriasPrimasInterface[]> = await fetchWithToken(
+            `${API_URL}${ENDPOINTS_MATERIAS_PRIMAS.GET_BY_PROYECTO}${id_proyecto}`,
+            {},
+            token
+        );
 
         if (!data.success) {
             throw new Error("Failed to fetch data");
@@ -84,21 +106,21 @@ export const fetchMateriasPrimasByProyecto = createAsyncThunk(
 
 export const postMateriasPrimas = createAsyncThunk(
     "materiasPrimas/postMateriasPrimas",
-    async (newMateriaPrima: postMateriasPrimasInterface) => {
-        const response = await fetch("/materias_primas", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
+    async (newMateriaPrima: postMateriasPrimasInterface, { getState }) => {
+        const state = getState() as RootState;
+        const token = selectAuthToken(state);
+
+        const data: ApiResponse<getMateriasPrimasInterface> = await fetchWithToken(
+            `${API_URL}${ENDPOINTS_MATERIAS_PRIMAS.MATERIAS_PRIMAS}`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(newMateriaPrima),
             },
-            body: JSON.stringify(newMateriaPrima),
-        });
-
-        if (!response.ok) {
-            throw new Error("Network response was not ok");
-        }
-
-        const data: ApiResponse<getMateriasPrimasInterface> =
-            await response.json();
+            token
+        );
 
         if (!data.success) {
             throw new Error("Failed to post data");
@@ -110,27 +132,21 @@ export const postMateriasPrimas = createAsyncThunk(
 
 export const putMateriasPrimas = createAsyncThunk(
     "materiasPrimas/putMateriasPrimas",
-    async ({
-        id,
-        updatedMateriaPrima,
-    }: {
-        id: number;
-        updatedMateriaPrima: putMateriasPrimasInterface;
-    }) => {
-        const response = await fetch(`/materias_primas/${id}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
+    async ({ id, updatedMateriaPrima }: { id: number; updatedMateriaPrima: putMateriasPrimasInterface }, { getState }) => {
+        const state = getState() as RootState;
+        const token = selectAuthToken(state);
+
+        const data: ApiResponse<getMateriasPrimasInterface> = await fetchWithToken(
+            `${API_URL}${ENDPOINTS_MATERIAS_PRIMAS.PUTDELETE_MATERIAS_PRIMAS}${id}`,
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(updatedMateriaPrima),
             },
-            body: JSON.stringify(updatedMateriaPrima),
-        });
-
-        if (!response.ok) {
-            throw new Error("Network response was not ok");
-        }
-
-        const data: ApiResponse<getMateriasPrimasInterface> =
-            await response.json();
+            token
+        );
 
         if (!data.success) {
             throw new Error("Failed to update data");
@@ -142,13 +158,20 @@ export const putMateriasPrimas = createAsyncThunk(
 
 export const deleteMateriasPrimas = createAsyncThunk(
     "materiasPrimas/deleteMateriasPrimas",
-    async (id: number) => {
-        const response = await fetch(`/materias_primas/${id}`, {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json",
+    async (id: number, { getState }) => {
+        const state = getState() as RootState;
+        const token = selectAuthToken(state);
+
+        const response = await fetchWithToken(
+            `${API_URL}${ENDPOINTS_MATERIAS_PRIMAS.PUTDELETE_MATERIAS_PRIMAS}${id}`,
+            {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                },
             },
-        });
+            token
+        );
 
         if (!response.ok) {
             throw new Error("Network response was not ok");
@@ -169,10 +192,7 @@ const controlMateriaPrimaSlice = createSlice({
             })
             .addCase(
                 fetchMateriasPrimas.fulfilled,
-                (
-                    state,
-                    action: PayloadAction<getMateriasPrimasInterface[]>
-                ) => {
+                (state, action: PayloadAction<getMateriasPrimasInterface[]>) => {
                     state.status = "succeeded";
                     state.materiasPrimas = action.payload;
                 }
@@ -186,10 +206,7 @@ const controlMateriaPrimaSlice = createSlice({
             })
             .addCase(
                 fetchMateriasPrimasByNombre.fulfilled,
-                (
-                    state,
-                    action: PayloadAction<getMateriasPrimasInterface[]>
-                ) => {
+                (state, action: PayloadAction<getMateriasPrimasInterface[]>) => {
                     state.status = "succeeded";
                     state.materiasPrimas = action.payload;
                 }
@@ -203,22 +220,15 @@ const controlMateriaPrimaSlice = createSlice({
             })
             .addCase(
                 fetchMateriasPrimasByProyecto.fulfilled,
-                (
-                    state,
-                    action: PayloadAction<getMateriasPrimasInterface[]>
-                ) => {
+                (state, action: PayloadAction<getMateriasPrimasInterface[]>) => {
                     state.status = "succeeded";
                     state.materiasPrimas = action.payload;
                 }
             )
-            .addCase(
-                fetchMateriasPrimasByProyecto.rejected,
-                (state, action) => {
-                    state.status = "failed";
-                    state.error =
-                        action.error.message || "Something went wrong";
-                }
-            )
+            .addCase(fetchMateriasPrimasByProyecto.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.error.message || "Something went wrong";
+            })
             .addCase(postMateriasPrimas.pending, (state) => {
                 state.status = "loading";
             })

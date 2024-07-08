@@ -5,6 +5,7 @@ import {
     putSalidaProductosInterface,
 } from "@/app/interfaces/SalidaProductos";
 import { RootState } from "@/app/redux/store";
+import { API_URL, ENDPOINTS_SALIDA_PRODUCTOS } from "@/app/config";
 
 interface ApiResponse<T> {
     status: number;
@@ -50,8 +51,11 @@ export const fetchSalidas = createAsyncThunk(
         const state = getState() as RootState;
         const token = selectAuthToken(state);
 
-        const data: ApiResponse<salidaProductosInterface[]> =
-            await fetchWithToken("https://api.appgestor.es/salidas", {}, token);
+        const data: ApiResponse<salidaProductosInterface[]> = await fetchWithToken(
+            `${API_URL}${ENDPOINTS_SALIDA_PRODUCTOS.SALIDA_PRODUCTOS}`,
+            {},
+            token
+        );
 
         if (!data.success) {
             throw new Error("Failed to fetch data");
@@ -67,12 +71,11 @@ export const fetchSalidasByProductoFinal = createAsyncThunk(
         const state = getState() as RootState;
         const token = selectAuthToken(state);
 
-        const data: ApiResponse<salidaProductosInterface[]> =
-            await fetchWithToken(
-                `https://api.appgestor.es/salidas/producto_final/${producto_final_id}`,
-                {},
-                token
-            );
+        const data: ApiResponse<salidaProductosInterface[]> = await fetchWithToken(
+            `${API_URL}${ENDPOINTS_SALIDA_PRODUCTOS.GET_BY_PRODUCTO_FINAL}${producto_final_id}`,
+            {},
+            token
+        );
 
         if (!data.success) {
             throw new Error("Failed to fetch data");
@@ -88,12 +91,11 @@ export const fetchSalidasByFechaSalida = createAsyncThunk(
         const state = getState() as RootState;
         const token = selectAuthToken(state);
 
-        const data: ApiResponse<salidaProductosInterface[]> =
-            await fetchWithToken(
-                `https://api.appgestor.es/salidas/fecha_salida/${fecha_salida}`,
-                {},
-                token
-            );
+        const data: ApiResponse<salidaProductosInterface[]> = await fetchWithToken(
+            `${API_URL}${ENDPOINTS_SALIDA_PRODUCTOS.GET_BY_FECHA_SALIDA}${fecha_salida}`,
+            {},
+            token
+        );
 
         if (!data.success) {
             throw new Error("Failed to fetch data");
@@ -109,12 +111,11 @@ export const fetchSalidasByProyecto = createAsyncThunk(
         const state = getState() as RootState;
         const token = selectAuthToken(state);
 
-        const data: ApiResponse<salidaProductosInterface[]> =
-            await fetchWithToken(
-                `https://api.appgestor.es/salidas/proyecto/${id_proyecto}`,
-                {},
-                token
-            );
+        const data: ApiResponse<salidaProductosInterface[]> = await fetchWithToken(
+            `${API_URL}${ENDPOINTS_SALIDA_PRODUCTOS.GET_BY_PROYECTO}${id_proyecto}`,
+            {},
+            token
+        );
 
         if (!data.success) {
             throw new Error("Failed to fetch data");
@@ -130,18 +131,17 @@ export const postSalidas = createAsyncThunk(
         const state = getState() as RootState;
         const token = selectAuthToken(state);
 
-        const data: ApiResponse<salidaProductosInterface> =
-            await fetchWithToken(
-                "https://api.appgestor.es/salidas",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(newSalida),
+        const data: ApiResponse<salidaProductosInterface> = await fetchWithToken(
+            `${API_URL}${ENDPOINTS_SALIDA_PRODUCTOS.SALIDA_PRODUCTOS}`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
                 },
-                token
-            );
+                body: JSON.stringify(newSalida),
+            },
+            token
+        );
 
         if (!data.success) {
             throw new Error("Failed to post data");
@@ -157,18 +157,17 @@ export const putSalidas = createAsyncThunk(
         const state = getState() as RootState;
         const token = selectAuthToken(state);
 
-        const data: ApiResponse<salidaProductosInterface> =
-            await fetchWithToken(
-                `https://api.appgestor.es/salidas/${updatedSalida.id}`,
-                {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(updatedSalida),
+        const data: ApiResponse<salidaProductosInterface> = await fetchWithToken(
+            `${API_URL}${ENDPOINTS_SALIDA_PRODUCTOS.PUTDELETE_SALIDA_PRODUCTOS}${updatedSalida.id}`,
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
                 },
-                token
-            );
+                body: JSON.stringify(updatedSalida),
+            },
+            token
+        );
 
         if (!data.success) {
             throw new Error("Failed to update data");
@@ -186,7 +185,7 @@ export const deleteSalidas = createAsyncThunk(
 
         const promises = ids.map((id) =>
             fetchWithToken(
-                `https://api.appgestor.es/salidas/${id}`,
+                `${API_URL}${ENDPOINTS_SALIDA_PRODUCTOS.PUTDELETE_SALIDA_PRODUCTOS}${id}`,
                 {
                     method: "DELETE",
                     headers: {

@@ -5,20 +5,21 @@ import {
     putProductosFinalesInterface,
 } from "@/app/interfaces/ProductosFinales";
 import { RootState } from "@/app/redux/store"; // Import RootState
+import { API_URL, ENDPOINTS_PRODUCTOS_FINALES } from "@/app/config";
 
-interface ApiResponse {
+interface ApiResponse<T> {
     status: number;
     success: boolean;
-    result: getProductosFinalesInterface[];
+    result: T;
 }
 
-interface ApiState {
-    productosFinales: getProductosFinalesInterface[];
+interface ApiState<T> {
+    productosFinales: T[];
     status: "idle" | "loading" | "succeeded" | "failed";
     error: string | null;
 }
 
-const initialState: ApiState = {
+const initialState: ApiState<getProductosFinalesInterface> = {
     productosFinales: [],
     status: "idle",
     error: null,
@@ -50,8 +51,8 @@ export const fetchProductosFinales = createAsyncThunk(
         const state = getState() as RootState;
         const token = selectAuthToken(state);
 
-        const data: ApiResponse = await fetchWithToken(
-            "https://api.appgestor.es/productos_finales",
+        const data: ApiResponse<getProductosFinalesInterface[]> = await fetchWithToken(
+            `${API_URL}${ENDPOINTS_PRODUCTOS_FINALES.PRODUCTOS_FINALES}`,
             {},
             token
         );
@@ -70,12 +71,8 @@ export const postProductosFinales = createAsyncThunk(
         const state = getState() as RootState;
         const token = selectAuthToken(state);
 
-        const data: {
-            status: number;
-            success: boolean;
-            result: getProductosFinalesInterface;
-        } = await fetchWithToken(
-            "https://api.appgestor.es/productos_finales",
+        const data: ApiResponse<getProductosFinalesInterface> = await fetchWithToken(
+            `${API_URL}${ENDPOINTS_PRODUCTOS_FINALES.PRODUCTOS_FINALES}`,
             {
                 method: "POST",
                 headers: {
@@ -96,19 +93,12 @@ export const postProductosFinales = createAsyncThunk(
 
 export const putProductosFinales = createAsyncThunk(
     "productosFinales/putProductosFinales",
-    async (
-        updatedProductoFinal: putProductosFinalesInterface,
-        { getState }
-    ) => {
+    async (updatedProductoFinal: putProductosFinalesInterface, { getState }) => {
         const state = getState() as RootState;
         const token = selectAuthToken(state);
 
-        const data: {
-            status: number;
-            success: boolean;
-            result: getProductosFinalesInterface;
-        } = await fetchWithToken(
-            `https://api.appgestor.es/productos_finales/${updatedProductoFinal.id}`,
+        const data: ApiResponse<getProductosFinalesInterface> = await fetchWithToken(
+            `${API_URL}${ENDPOINTS_PRODUCTOS_FINALES.PUTDELETE_PRODUCTOS_FINALES}${updatedProductoFinal.id}`,
             {
                 method: "PUT",
                 headers: {
@@ -135,7 +125,7 @@ export const deleteProductosFinales = createAsyncThunk(
 
         const promises = ids.map((id) =>
             fetchWithToken(
-                `https://api.appgestor.es/productos_finales/${id}`,
+                `${API_URL}${ENDPOINTS_PRODUCTOS_FINALES.PUTDELETE_PRODUCTOS_FINALES}${id}`,
                 {
                     method: "DELETE",
                     headers: {
@@ -163,10 +153,7 @@ const productosFinalesSlice = createSlice({
             })
             .addCase(
                 fetchProductosFinales.fulfilled,
-                (
-                    state,
-                    action: PayloadAction<getProductosFinalesInterface[]>
-                ) => {
+                (state, action: PayloadAction<getProductosFinalesInterface[]>) => {
                     state.status = "succeeded";
                     state.productosFinales = action.payload;
                 }
@@ -180,10 +167,7 @@ const productosFinalesSlice = createSlice({
             })
             .addCase(
                 postProductosFinales.fulfilled,
-                (
-                    state,
-                    action: PayloadAction<getProductosFinalesInterface>
-                ) => {
+                (state, action: PayloadAction<getProductosFinalesInterface>) => {
                     state.status = "succeeded";
                     state.productosFinales.push(action.payload);
                 }
@@ -197,10 +181,7 @@ const productosFinalesSlice = createSlice({
             })
             .addCase(
                 putProductosFinales.fulfilled,
-                (
-                    state,
-                    action: PayloadAction<getProductosFinalesInterface>
-                ) => {
+                (state, action: PayloadAction<getProductosFinalesInterface>) => {
                     state.status = "succeeded";
                     const index = state.productosFinales.findIndex(
                         (producto) => producto.id === action.payload.id
