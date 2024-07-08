@@ -4,6 +4,7 @@ import { UsuarioInterface } from "@/app/interfaces/Usuario";
 import { useRouter } from "next/navigation";
 import { API_URL, ENDPOINTS_AUTH } from "@/app/config";
 
+console.log('API_URL:', API_URL);
 interface AuthState {
     token: string | null;
     status: "idle" | "loading" | "succeeded" | "failed";
@@ -32,6 +33,7 @@ export const loginUser = createAsyncThunk(
 
         if (!response.ok) {
             if (response.status === 404) {
+                
                 throw new Error("Credenciales incorrectas");
             }
             throw new Error("Network response was not ok");
